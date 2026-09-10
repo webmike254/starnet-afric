@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forfaits — Starnét Afric</title>
+  <meta name="description" content="Nos forfaits de données Starlink : Découverte, Standard, Premium, Business et Kit matériel. Paiement mobile money sécurisé.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="/index.html" class="brand">
+        <span class="brand-logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="2.2" fill="#3b82f6"></circle>
+            <ellipse cx="12" cy="12" rx="9" ry="3.4" transform="rotate(-28 12 12)"></ellipse>
+            <ellipse cx="12" cy="12" rx="5" ry="1.9" transform="rotate(62 12 12)"></ellipse>
+          </svg>
+        </span>
+        <span class="brand-name">STARNÉT AFRIC<small>Revendeur de forfaits Starlink</small></span>
+      </a>
+      <nav class="nav-links">
+        <a href="/index.html">Accueil</a>
+        <a href="/forfaits.html">Forfaits</a>
+        <a href="/commandes.html">Commandes</a>
+        <a href="/statut.html">Statut réseau</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <a href="/commandes.html" class="nav-cta">Commander</a>
+      <button class="nav-burger" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="container">
+      <p class="breadcrumb">Accueil → Forfaits</p>
+      <h1 class="page-title">Nos forfaits</h1>
+      <p class="page-sub">Choisissez le forfait qui correspond à votre usage. Le paiement s'effectue en toute
+        sécurité via Moov Money, Orange Money ou Airtel Money.</p>
+
+      <div class="row" style="margin-bottom:22px;">
+        <button class="tab-btn active" data-filtre="tout">Tous</button>
+        <button class="tab-btn" data-filtre="mensuel">Mensuels</button>
+        <button class="tab-btn" data-filtre="kit">Kit matériel</button>
+      </div>
+
+      <div class="grid cols-3" id="grille-forfaits">
+        <p style="grid-column:1/-1;color:#64748b;">Chargement des forfaits…</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="strip">
+    <div class="container">
+      <div class="grid-3">
+        <div>
+          <h4>STARNÉT AFRIC</h4>
+          <p style="font-size:14px;">Revendeur de forfaits de données pour les services Starlink en Afrique.</p>
+        </div>
+        <div>
+          <h4>Contact &amp; support</h4>
+          <p style="font-size:14px;line-height:1.8;">
+            Email : <a id="mail-link" data-site="email" href="#">—</a><br>
+            Téléphone : <a id="tel-link" data-site="telephone" href="#">—</a><br>
+            WhatsApp : <a id="wa-link" data-site="whatsapp" href="#">—</a>
+          </p>
+        </div>
+        <div>
+          <h4>Moyens de paiement</h4>
+          <div class="pay-strip" id="footer-pay"></div>
+        </div>
+      </div>
+      <div class="footer-bottom">© <span data-annee>2026</span> Starnét Afric. Tous droits réservés.</div>
+    </div>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/forfaits.js"></script>
+</body>
+</html>

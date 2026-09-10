@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Starnét Afric — Forfaits Internet Starlink</title>
+  <meta name="description" content="STARNÉT AFRIC, revendeur de forfaits de données Starlink en Afrique. Commandez et payez en mobile money (Moov Money, Orange Money, Airtel Money).">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="/index.html" class="brand">
+        <span class="brand-logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="2.2" fill="#3b82f6"></circle>
+            <ellipse cx="12" cy="12" rx="9" ry="3.4" transform="rotate(-28 12 12)"></ellipse>
+            <ellipse cx="12" cy="12" rx="5" ry="1.9" transform="rotate(62 12 12)"></ellipse>
+          </svg>
+        </span>
+        <span class="brand-name">STARNÉT AFRIC<small>Revendeur de forfaits Starlink</small></span>
+      </a>
+      <nav class="nav-links">
+        <a href="/index.html">Accueil</a>
+        <a href="/forfaits.html">Forfaits</a>
+        <a href="/commandes.html">Commandes</a>
+        <a href="/statut.html">Statut réseau</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <a href="/commandes.html" class="nav-cta">Commander</a>
+      <button class="nav-burger" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <!-- Héros -->
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="tag" style="background:#12233f;color:#7db2ff;">Internet satellite haut débit</span>
+      <h1>Internet fiable, <span class="grad">partout en Afrique</span><br>Commencez dès aujourd'hui.</h1>
+      <p>STARNÉT AFRIC vous fournit des forfaits de données Starlink avec installation facilitée et paiement
+         en mobile money. Choisissez votre forfait, commandez en 2 minutes et restez connecté dans les zones
+         où la fibre n'arrive pas.</p>
+      <div class="hero-actions">
+        <a href="/forfaits.html" class="btn">Voir les forfaits →</a>
+        <a href="/statut.html" class="btn ghost">État du réseau</a>
+        <a href="/contact.html" class="btn ghost">Parlons de votre projet</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b id="stat-clients">—</b><span>Clients accompagnés</span></div>
+        <div class="stat"><b id="stat-pays">—</b><span>Pays desservis</span></div>
+        <div class="stat"><b id="stat-annees">—</b><span>Années d'expérience</span></div>
+        <div class="stat"><b id="stat-dispo">—</b><span>Disponibilité réseau</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comment ça marche -->
+  <section>
+    <div class="container">
+      <h2 style="font-size:26px;font-weight:850;margin:0 0 24px;color:#fff;">Comment ça marche</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="num">01</div>
+          <h4>Choisissez votre forfait</h4>
+          <p>Consultez les forfaits adaptés à votre usage : personnel, famille ou entreprise.</p>
+        </div>
+        <div class="step">
+          <div class="num">02</div>
+          <h4>Commandez &amp; payez</h4>
+          <p>Validez votre commande et payez en toute sécurité via Moov Money, Orange Money ou Airtel Money.</p>
+        </div>
+        <div class="step">
+          <div class="num">03</div>
+          <h4>Restez connecté</h4>
+          <p>Votre forfait est activé rapidement et vous profitez d'un réseau satellite stable.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Forfaits populaires -->
+  <section style="background:#0a0e15;border-top:1px solid #1a2433;border-bottom:1px solid #1a2433;">
+    <div class="container">
+      <h2 style="font-size:26px;font-weight:850;margin:0 0 8px;color:#fff;">Forfaits du moment</h2>
+      <p style="color:#93a5bc;margin:0 0 22px;">Tarifs en Francs Congolais (CDF), ajustables selon votre pays.</p>
+      <div class="grid cols-3" id="forfaits-populaires"><!-- rempli par JS --></div>
+      <p style="margin-top:20px;"><a href="/forfaits.html" class="btn ghost">Tous les forfaits →</a></p>
+    </div>
+  </section>
+
+  <!-- Paiement -->
+  <section>
+    <div class="container">
+      <h2 style="font-size:26px;font-weight:850;margin:0 0 8px;color:#fff;">Paiement mobile money</h2>
+      <p style="color:#93a5bc;margin:0 0 22px;">Nous acceptons les principaux portefeuilles mobile money d'Afrique.</p>
+      <div class="pay-strip" id="pay-methods-home"><!-- rempli par JS --></div>
+    </div>
+  </section>
+
+  <!-- État du réseau -->
+  <section style="background:#0a0e15;border-top:1px solid #1a2433;border-bottom:1px solid #1a2433;">
+    <div class="container">
+      <div class="card" id="reseau-banner" style="background:#101720;border-color:#24344a;">
+        <h3 style="color:#fff;">État du réseau Starlink</h3>
+        <p id="reseau-message">Chargement de l'état du réseau…</p>
+        <a href="/statut.html" class="btn" style="align-self:flex-start;">Voir les détails</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pied de page -->
+  <footer class="strip">
+    <div class="container">
+      <div class="grid-3">
+        <div>
+          <h4>STARNÉT AFRIC</h4>
+          <p style="font-size:14px;">Revendeur de forfaits de données pour les services Starlink en Afrique. Paiement mobile money sécurisé.</p>
+        </div>
+        <div>
+          <h4>Contact &amp; support</h4>
+          <p style="font-size:14px;line-height:1.8;">
+            Email : <a id="mail-link" data-site="email" href="#">—</a><br>
+            Téléphone : <a id="tel-link" data-site="telephone" href="#">—</a><br>
+            WhatsApp : <a id="wa-link" data-site="whatsapp" href="#">—</a>
+          </p>
+        </div>
+        <div>
+          <h4>Moyens de paiement</h4>
+          <div class="pay-strip" id="footer-pay"></div>
+        </div>
+      </div>
+      <div class="footer-bottom">© <span data-annee>2026</span> Starnét Afric. Tous droits réservés.</div>
+    </div>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/index.js"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statut du réseau — Starnét Afric</title>
+  <meta name="description" content="État en temps réel du réseau Starlink et du support Starnét Afric.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="/index.html" class="brand">
+        <span class="brand-logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="2.2" fill="#3b82f6"></circle>
+            <ellipse cx="12" cy="12" rx="9" ry="3.4" transform="rotate(-28 12 12)"></ellipse>
+            <ellipse cx="12" cy="12" rx="5" ry="1.9" transform="rotate(62 12 12)"></ellipse>
+          </svg>
+        </span>
+        <span class="brand-name">STARNÉT AFRIC<small>Revendeur de forfaits Starlink</small></span>
+      </a>
+      <nav class="nav-links">
+        <a href="/index.html">Accueil</a>
+        <a href="/forfaits.html">Forfaits</a>
+        <a href="/commandes.html">Commandes</a>
+        <a href="/statut.html">Statut réseau</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <a href="/commandes.html" class="nav-cta">Commander</a>
+      <button class="nav-burger" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="container">
+      <p class="breadcrumb">Accueil → Statut réseau</p>
+      <h1 class="page-title">Statut du réseau Starlink</h1>
+      <p class="page-sub">État en temps réel de nos services et de l'infrastructure satellite dans votre zone.</p>
+
+      <div class="grid cols-2" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));">
+        <!-- Carte principale -->
+        <div class="card" id="carte-statut">
+          <span class="tag" id="statut-tag">…</span>
+          <h3 style="margin-top:10px;" id="statut-titre">Chargement…</h3>
+          <p id="statut-message">Nous récupérons l'état actuel du réseau…</p>
+          <p class="muted" style="font-size:13px;" id="statut-horodatage"></p>
+        </div>
+
+        <!-- Statuts techniques -->
+        <div class="card">
+          <h3>Services associés</h3>
+          <table class="data">
+            <tr><td>Commande &amp; paiement</td><td class="badge ok">Opérationnel</td></tr>
+            <tr><td>Activation des forfaits</td><td class="badge ok">Opérationnel</td></tr>
+            <tr><td>Support 24/7</td><td class="badge ok">Disponible</td></tr>
+            <tr><td>Réseau satellite</td><td class="badge ok" id="sat-tag">Opérationnel</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:22px;background:#101720;border-color:#24344a;color:#e7ecf2;">
+        <h3 style="color:#fff;">Diagnostic de connexion</h3>
+        <p style="color:#8ea0b5;">Vérifiez votre propre connexion depuis votre position.</p>
+        <div id="diag-result"></div>
+        <button class="btn small" id="btn-diag">Lancer le test</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="strip">
+    <div class="container">
+      <div class="grid-3">
+        <div>
+          <h4>STARNÉT AFRIC</h4>
+          <p style="font-size:14px;">Revendeur de forfaits de données pour les services Starlink en Afrique.</p>
+        </div>
+        <div>
+          <h4>Contact &amp; support</h4>
+          <p style="font-size:14px;line-height:1.8;">
+            Email : <a id="mail-link" data-site="email" href="#">—</a><br>
+            Téléphone : <a id="tel-link" data-site="telephone" href="#">—</a><br>
+            WhatsApp : <a id="wa-link" data-site="whatsapp" href="#">—</a>
+          </p>
+        </div>
+        <div>
+          <h4>Moyens de paiement</h4>
+          <div class="pay-strip" id="footer-pay"></div>
+        </div>
+      </div>
+      <div class="footer-bottom">© <span data-annee>2026</span> Starnét Afric. Tous droits réservés.</div>
+    </div>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/statut.js"></script>
+</body>
+</html>

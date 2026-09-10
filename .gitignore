@@ -1,0 +1,17 @@
+# Dépendances
+node_modules/
+
+# Données locales (bases JSON, ne jamais versionner)
+data/
+
+# Secrets / configuration locale
+.env
+
+# Anciens fichiers téléchargés depuis le site précédent
+legacy/
+
+# Divers
+.DS_Store
+Thumbs.db
+*.log
+.vscode/

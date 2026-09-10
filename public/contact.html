@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — Starnét Afric</title>
+  <meta name="description" content="Contactez Starnét Afric : question, devis, installation, support. WhatsApp, téléphone, email ou formulaire.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="/index.html" class="brand">
+        <span class="brand-logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="2.2" fill="#3b82f6"></circle>
+            <ellipse cx="12" cy="12" rx="9" ry="3.4" transform="rotate(-28 12 12)"></ellipse>
+            <ellipse cx="12" cy="12" rx="5" ry="1.9" transform="rotate(62 12 12)"></ellipse>
+          </svg>
+        </span>
+        <span class="brand-name">STARNÉT AFRIC<small>Revendeur de forfaits Starlink</small></span>
+      </a>
+      <nav class="nav-links">
+        <a href="/index.html">Accueil</a>
+        <a href="/forfaits.html">Forfaits</a>
+        <a href="/commandes.html">Commandes</a>
+        <a href="/statut.html">Statut réseau</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <a href="/commandes.html" class="nav-cta">Commander</a>
+      <button class="nav-burger" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="container">
+      <p class="breadcrumb">Accueil → Contact</p>
+      <h1 class="page-title">Contactez-nous</h1>
+      <p class="page-sub">Une question, un devis, une installation ? Notre équipe vous répond rapidement.</p>
+
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));">
+        <!-- Coordonnées -->
+        <div class="card">
+          <h3>Nos coordonnées</h3>
+          <p style="line-height:2;">
+            📧 <a id="mail-link" data-site="email" href="#">—</a><br>
+            📞 <a id="tel-link" data-site="telephone" href="#">—</a><br>
+            💬 WhatsApp : <a id="wa-link" data-site="whatsapp" href="#">—</a><br>
+            📍 <span data-site="adresse">—</span>
+          </p>
+          <p class="muted" style="font-size:13px;">Disponible 7j/7 — assistance à l'installation incluse.</p>
+        </div>
+
+        <!-- Formulaire -->
+        <div class="card">
+          <h3>Envoyez-nous un message</h3>
+          <div id="contact-alert"></div>
+          <form id="form-contact">
+            <div class="field">
+              <label for="c-nom">Votre nom *</label>
+              <input class="input" id="c-nom" required placeholder="Ex : Marie Nkulu">
+            </div>
+            <div class="grid" style="grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="field">
+                <label for="c-tel">Téléphone</label>
+                <input class="input" id="c-tel" placeholder="+243 …">
+              </div>
+              <div class="field">
+                <label for="c-email">Email</label>
+                <input class="input" id="c-email" type="email" placeholder="vous@exemple.com">
+              </div>
+            </div>
+            <div class="field">
+              <label for="c-sujet">Sujet</label>
+              <select class="input" id="c-sujet">
+                <option value="Question">Question générale</option>
+                <option value="Devis">Demande de devis / Kit</option>
+                <option value="Installation">Installation</option>
+                <option value="Support">Support technique</option>
+                <option value="Autre">Autre</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="c-message">Message *</label>
+              <textarea class="input" id="c-message" required placeholder="Décrivez votre besoin…"></textarea>
+            </div>
+            <button class="btn" type="submit" style="width:100%;justify-content:center;">Envoyer le message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="strip">
+    <div class="container">
+      <div class="grid-3">
+        <div>
+          <h4>STARNÉT AFRIC</h4>
+          <p style="font-size:14px;">Revendeur de forfaits de données pour les services Starlink en Afrique.</p>
+        </div>
+        <div>
+          <h4>Contact &amp; support</h4>
+          <p style="font-size:14px;line-height:1.8;">
+            Email : <a id="mail-link2" data-site="email" href="#">—</a><br>
+            Téléphone : <a id="tel-link2" data-site="telephone" href="#">—</a><br>
+            WhatsApp : <a id="wa-link2" data-site="whatsapp" href="#">—</a>
+          </p>
+        </div>
+        <div>
+          <h4>Moyens de paiement</h4>
+          <div class="pay-strip" id="footer-pay"></div>
+        </div>
+      </div>
+      <div class="footer-bottom">© <span data-annee>2026</span> Starnét Afric. Tous droits réservés.</div>
+    </div>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/contact.js"></script>
+</body>
+</html>

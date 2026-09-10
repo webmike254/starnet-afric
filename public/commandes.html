@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Commander un forfait — Starnét Afric</title>
+  <meta name="description" content="Commandez votre forfait Starlink et payez en toute sécurité en mobile money (Moov Money, Orange Money, Airtel Money). Suivi de commande inclus.">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="/index.html" class="brand">
+        <span class="brand-logo">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="2.2" fill="#3b82f6"></circle>
+            <ellipse cx="12" cy="12" rx="9" ry="3.4" transform="rotate(-28 12 12)"></ellipse>
+            <ellipse cx="12" cy="12" rx="5" ry="1.9" transform="rotate(62 12 12)"></ellipse>
+          </svg>
+        </span>
+        <span class="brand-name">STARNÉT AFRIC<small>Revendeur de forfaits Starlink</small></span>
+      </a>
+      <nav class="nav-links">
+        <a href="/index.html">Accueil</a>
+        <a href="/forfaits.html">Forfaits</a>
+        <a href="/commandes.html">Commandes</a>
+        <a href="/statut.html">Statut réseau</a>
+        <a href="/contact.html">Contact</a>
+      </nav>
+      <a href="/commandes.html" class="nav-cta">Commander</a>
+      <button class="nav-burger" aria-label="Menu">☰</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="container">
+      <p class="breadcrumb">Accueil → Commandes</p>
+      <h1 class="page-title">Commander un forfait</h1>
+      <p class="page-sub">Remplissez le formulaire ci-dessous. Le paiement est initié via le portefeuille
+        mobile money officiel de votre opérateur — vous recevez une demande de confirmation sur votre téléphone.</p>
+
+      <!-- Suivi d'une commande existante -->
+      <div class="card" style="margin-bottom:26px;background:#eef4ff;border-color:#c8dbfc;">
+        <h3>Vous avez déjà passé une commande ?</h3>
+        <p style="margin:0 0 12px;color:#445;">Entrez votre référence (ex : SL-1001) pour suivre son avancement.</p>
+        <form id="form-suivi" class="row" style="align-items:flex-end;">
+          <div class="field" style="flex:1;margin:0;">
+            <label for="suivi-ref">Référence de commande</label>
+            <input class="input" id="suivi-ref" placeholder="SL-1001" required>
+          </div>
+          <button class="btn small" type="submit">Suivre</button>
+        </form>
+        <div id="suivi-result"></div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:minmax(0,1.2fr) minmax(280px,0.8fr);">
+<!-- Formulaire principal -->
+        <div class="card">
+          <h3>Nouvelle commande</h3>
+          <p style="color:#526070;">Tous les champs marqués * sont obligatoires.</p>
+
+          <div id="order-alert"></div>
+
+          <form id="form-commande">
+            <div class="field">
+              <label for="nom">Nom complet *</label>
+              <input class="input" id="nom" required placeholder="Ex : Jean-Marc Kabila" autocomplete="name">
+            </div>
+            <div class="grid" style="grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="field">
+                <label for="telephone">Numéro de téléphone *</label>
+                <input class="input" id="telephone" required placeholder="+243 000 000 000" autocomplete="tel">
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input class="input" id="email" type="email" placeholder="vous@exemple.com" autocomplete="email">
+              </div>
+            </div>
+            <div class="field">
+              <label for="pays">Pays *</label>
+              <select class="input" id="pays"></select>
+            </div>
+            <div class="field">
+              <label for="package">Forfait *</label>
+              <select class="input" id="package"></select>
+            </div>
+
+            <div class="field">
+              <label>Moyen de paiement *</label>
+              <div class="pay-opts" id="pay-opts"><!-- rempli par JS --></div>
+            </div>
+
+            <button class="btn" type="submit" id="submit-commande" style="width:100%;justify-content:center;font-size:16px;">
+              Confirmer et payer
+            </button>
+            <p style="font-size:12.5px;color:#7d8998;margin:10px 0 0;line-height:1.5;">
+              🔒 Aucun code PIN ni mot de passe n'est demandé sur ce site. La confirmation se fait
+              directement via votre opérateur mobile money.
+            </p>
+          </form>
+        </div>
+
+        <!-- Récapitulatif -->
+        <div class="card" style="background:#0e141d;border-color:#24344a;color:#e7ecf2;">
+          <h3 style="color:#fff;">Récapitulatif</h3>
+          <div id="recap">
+            <p style="color:#8ea0b5;font-size:14px;">Sélectionnez un forfait pour voir le détail.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+<!-- Pied de page -->
+  <footer class="strip">
+    <div class="container">
+      <div class="grid-3">
+        <div>
+          <h4>STARNÉT AFRIC</h4>
+          <p style="font-size:14px;">Revendeur de forfaits de données pour les services Starlink en Afrique.</p>
+        </div>
+        <div>
+          <h4>Contact &amp; support</h4>
+          <p style="font-size:14px;line-height:1.8;">
+            Email : <a id="mail-link" data-site="email" href="#">—</a><br>
+            Téléphone : <a id="tel-link" data-site="telephone" href="#">—</a><br>
+            WhatsApp : <a id="wa-link" data-site="whatsapp" href="#">—</a>
+          </p>
+        </div>
+        <div>
+          <h4>Moyens de paiement</h4>
+          <div class="pay-strip" id="footer-pay"></div>
+        </div>
+      </div>
+      <div class="footer-bottom">© <span data-annee>2026</span> Starnét Afric. Tous droits réservés.</div>
+    </div>
+  </footer>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/commandes.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion — Administration Starnét Afric</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-card">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="width:56px;height:56px;border-radius:14px;background:#0f1722;border:1px solid #2b3a52;display:grid;place-items:center;margin:0 auto 12px;">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="2.2" fill="#3b82f6"></circle>
+            <ellipse cx="12" cy="12" rx="9" ry="3.4" transform="rotate(-28 12 12)"></ellipse>
+            <ellipse cx="12" cy="12" rx="5" ry="1.9" transform="rotate(62 12 12)"></ellipse>
+          </svg>
+        </div>
+        <h1 style="color:#fff;font-size:20px;margin:0;">Administration</h1>
+        <p style="color:#8fa0b6;font-size:13.5px;margin:6px 0 0;">STARNÉT AFRIC — plateforme Starlink</p>
+      </div>
+
+      <div id="login-alert"></div>
+
+      <form id="form-login">
+        <div class="field">
+          <label class="admin-label" for="username">Identifiant</label>
+          <input class="admin-input" id="username" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label class="admin-label" for="password">Mot de passe</label>
+          <input class="admin-input" id="password" type="password" autocomplete="current-password" required>
+        </div>
+        <button class="btn" type="submit" style="width:100%;justify-content:center;">Se connecter</button>
+      </form>
+      <p style="color:#6d7d93;font-size:12px;text-align:center;margin-top:16px;">
+        Authentification réservée au personnel autorisé.
+      </p>
+    </div>
+  </div>
+
+  <script src="/js/common.js"></script>
+  <script src="/js/admin-login.js"></script>
+</body>
+</html>

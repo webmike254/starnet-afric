@@ -1,0 +1,184 @@
+"use strict";
+
+// Page Commandes : formulaire + paiement mobile money + suivi.
+
+let packagesCfg = [];
+let methodesPaiement = [];
+let paysListe = [];
+let methodeSelectionnee = null;
+
+function alertEl(message, type) {
+  const box = document.getElementById("order-alert");
+  if (!box) return;
+  box.innerHTML = '<div class="alert ' + (type || "error") + '">' + esc(message) + "</div>";
+  box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+async function chargerOptions() {
+  try {
+    const [packs, pays, meths] = await Promise.all([
+      api("/api/packages"),
+      api("/api/pays"),
+      api("/api/payment-methods")
+    ]);
+    packagesCfg = packs.packages || [];
+    paysListe = pays.pays || [];
+    methodesPaiement = meths.methodes || [];
+
+    const selPays = document.getElementById("pays");
+    selPays.innerHTML = "";
+    paysListe.forEach((p) => {
+      const o = document.createElement("option");
+      o.value = p.code;
+      o.textContent = p.name + " (" + p.devise + ")";
+      selPays.appendChild(o);
+    });
+
+    const selPkg = document.getElementById("package");
+    selPkg.innerHTML = "";
+    packagesCfg.forEach((p) => {
+      const o = document.createElement("option");
+      o.value = p.code;
+      o.textContent = p.nom + " — " + formatMontant(p.prix, p.devise);
+      selPkg.appendChild(o);
+    });
+
+    const pkgParam = getParam("pkg");
+    if (pkgParam && packagesCfg.some((p) => p.code === pkgParam)) selPkg.value = pkgParam;
+
+    const wrap = document.getElementById("pay-opts");
+    wrap.innerHTML = "";
+    methodesPaiement.forEach((m) => {
+      const el = document.createElement("div");
+      el.className = "pay-opt";
+      el.dataset.code = m.code;
+
+      const badge = logoOperateur(m.code, m.nom);
+      badge.style.background = m.couleur || "#334155";
+      badge.style.color = m.texteCouleur || "#fff";
+      badge.style.fontSize = "10px";
+
+      const info = document.createElement("div");
+      info.className = "pay-info";
+      info.innerHTML = "<h4>" + esc(m.nom) + "</h4><p>" + esc(m.description || "") + "</p>";
+
+      const radio = document.createElement("div");
+      radio.className = "radio";
+
+      el.appendChild(badge);
+      el.appendChild(info);
+      el.appendChild(radio);
+      el.addEventListener("click", () => {
+        document.querySelectorAll(".pay-opt").forEach((x) => x.classList.remove("selected"));
+        el.classList.add("selected");
+        methodeSelectionnee = m.code;
+        majRecap();
+      });
+      wrap.appendChild(el);
+    });
+
+    majRecap();
+  } catch (e) {
+    alertEl("Impossible de charger la configuration : " + e.message);
+  }
+}
+
+function packageActuel() {
+  const code = document.getElementById("package").value;
+  return packagesCfg.find((p) => p.code === code) || null;
+}
+
+async function soumettreCommande(e) {
+  e.preventDefault();
+  const alertBox = document.getElementById("order-alert");
+  if (alertBox) alertBox.innerHTML = "";
+
+  const nom = document.getElementById("nom").value.trim();
+  const telephone = document.getElementById("telephone").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const pays = document.getElementById("pays").value;
+  const packageCode = document.getElementById("package").value;
+
+  if (!nom || !telephone || !packageCode) {
+    return alertEl("Veuillez remplir au moins votre nom, votre téléphone et choisir un forfait.");
+  }
+  if (!methodesPaiement.length) {
+    return alertEl("Aucun moyen de paiement actif pour le moment. Contactez le support.");
+  }
+  if (!methodeSelectionnee) {
+    return alertEl("Veuillez choisir un moyen de paiement.");
+  }
+
+  const btn = document.getElementById("submit-commande");
+  btn.disabled = true;
+  btn.textContent = "Traitement en cours…";
+
+  try {
+    const res = await api("/api/orders", {
+      method: "POST",
+      body: { nom, telephone, email, pays, packageCode, methodePaiement: methodeSelectionnee }
+    });
+
+    btn.textContent = "Confirmer et payer";
+    btn.disabled = false;
+
+    const p = packageActuel();
+    const estKit = p && (p.type === "kit" || p.prix <= 0);
+    const statutLabel = estKit ? "en attente de contact" : (res.order && res.order.statut) || "en cours";
+    if (alertBox) {
+      alertBox.innerHTML =
+        '<div class="alert success"><b>✅ Commande enregistrée !</b><br>' +
+        "Votre référence :&nbsp;<b class='mono'>" + esc(res.reference) + "</b><br>" +
+        "Statut : " + esc(statutLabel) + "<br>" +
+        "(Notez cette référence pour le suivi ci-dessus.)</div>";
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    document.getElementById("package").value = "";
+    majRecap();
+  } catch (err) {
+    btn.textContent = "Confirmer et payer";
+    btn.disabled = false;
+    return alertEl(err.message);
+  }
+}
+
+async function suivreCommande(e) {
+  e.preventDefault();
+  const ref = document.getElementById("suivi-ref").value.trim().toUpperCase();
+  const box = document.getElementById("suivi-result");
+  if (!ref) return;
+  box.innerHTML = "<p style='margin-top:12px;color:#445;'>Recherche…</p>";
+  try {
+    const r = await api("/api/track/" + encodeURIComponent(ref));
+    const labels = {
+      en_attente_paiement: "En attente de paiement",
+      payee: "Payée — activation en cours",
+      en_traitement: "En traitement",
+      livree: "Livrée",
+      annulee: "Annulée",
+      echec_paiement: "Paiement échoué"
+    };
+    const statusPm = r.paiement && r.paiement.statut === "confirme" ? " — Paiement confirmé ✅" : "";
+    const montant = r.montant ? formatMontant(r.montant, r.devise) : "Sur devis";
+    box.innerHTML =
+      '<div style="margin-top:14px;border-top:1px solid #c8dbfc;padding-top:12px;font-size:14px;">' +
+      "<b>Référence :</b> " + esc(r.reference) + "<br>" +
+      "<b>Forfait :</b> " + esc(r.package || "—") + "<br>" +
+      "<b>Montant :</b> " + montant + "<br>" +
+      "<b>Statut :</b> " + esc(labels[r.statut] || r.statut) + statusPm + "<br>" +
+      "<b>Passée le :</b> " + new Date(r.creeLe).toLocaleString("fr-FR") +
+      "</div>";
+  } catch (e) {
+    box.innerHTML = "<p style='margin-top:12px;color:#a31621;'>" + esc(e.message) + "</p>";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const f = document.getElementById("form-commande");
+  if (f) f.addEventListener("submit", soumettreCommande);
+  const sf = document.getElementById("form-suivi");
+  if (sf) sf.addEventListener("submit", suivreCommande);
+  const selPkg = document.getElementById("package");
+  if (selPkg) selPkg.addEventListener("change", majRecap);
+  chargerOptions();
+});

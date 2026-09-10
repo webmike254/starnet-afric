@@ -1,0 +1,19 @@
+{
+  "name": "starnet-afric-platform",
+  "version": "1.0.0",
+  "description": "Plateforme de revente Starlink — forfaits données, commandes et paiement mobile (Moov Money, Orange Money, Airtel Money) avec panneau d'administration et analytique.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "reset": "node scripts/reset.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "private": true,
+  "license": "UNLICENSED"
+}
