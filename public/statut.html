@@ -20,31 +20,34 @@
     <div class="nav-inner">
       <a href="/index.html" class="brand">
         <span class="brand-logo">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="2.2" fill="#3b82f6"></circle>
-            <ellipse cx="12" cy="12" rx="9" ry="3.4" transform="rotate(-28 12 12)"></ellipse>
-            <ellipse cx="12" cy="12" rx="5" ry="1.9" transform="rotate(62 12 12)"></ellipse>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><ellipse cx="100" cy="100" rx="74" ry="55" stroke="white" stroke-width="10" fill="none" transform="rotate(-25 100 100)"></ellipse><ellipse cx="100" cy="100" rx="43" ry="33" stroke="white" stroke-width="10" fill="none" transform="rotate(65 100 100)"></ellipse><circle cx="100" cy="100" r="12" fill="white"></circle></svg>
         </span>
-        <span class="brand-name">STARNÉT AFRIC<small>Revendeur de forfaits Starlink</small></span>
+        <span class="brand-name">STARNÉT<small>Reseller Starlink</small></span>
       </a>
-      <nav class="nav-links">
-        <a href="/index.html">Accueil</a>
-        <a href="/forfaits.html">Forfaits</a>
-        <a href="/commandes.html">Commandes</a>
-        <a href="/statut.html">Statut réseau</a>
-        <a href="/contact.html">Contact</a>
-      </nav>
-      <a href="/commandes.html" class="nav-cta">Commander</a>
-      <button class="nav-burger" aria-label="Menu">☰</button>
+      <div class="nav-right">
+        <button class="lang-btn" type="button" aria-label="Langue">🌐 <span data-lang-label>EN</span></button>
+        <nav class="nav-links">
+          <a href="/index.html" data-i18n="nav-statut">Statut</a>
+          <a href="/forfaits.html" data-i18n="nav-forfaits">Forfaits</a>
+          <a href="/commandes.html" data-i18n="nav-commandes">Commandes</a>
+          <a href="/contact.html" data-i18n="nav-contact">Contact</a>
+        </nav>
+        <a href="/commandes.html" class="nav-cta" data-i18n="nav-commander">Commander</a>
+        <button class="nav-burger" aria-label="Menu">☰</button>
+      </div>
     </div>
   </header>
 
   <main class="page">
     <div class="container">
-      <p class="breadcrumb">Accueil → Statut réseau</p>
-      <h1 class="page-title">Statut du réseau Starlink</h1>
-      <p class="page-sub">État en temps réel de nos services et de l'infrastructure satellite dans votre zone.</p>
+      <div class="banner-card">
+        <div>
+          <p class="bc-label">Statut du Réseau</p>
+          <h1 class="bc-title">État du réseau Starlink</h1>
+          <p class="bc-desc">État en temps réel de nos services et de l'infrastructure satellite dans votre zone.</p>
+        </div>
+        <div class="bc-icon">📡</div>
+      </div>
 
       <div class="grid cols-2" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));">
         <!-- Carte principale -->

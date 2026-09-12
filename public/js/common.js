@@ -157,9 +157,54 @@ function startFooter() {
 document.addEventListener("DOMContentLoaded", () => {
   initNav();
   startFooter();
+  initLangToggle();
   initBottomNav();
   envoyerVisite();
 });
+
+// ============================================================
+// Langue FR/EN simple (comme le site de référence)
+// ============================================================
+const I18N = {
+  fr: {
+    "nav-home": "Accueil", "nav-forfaits": "Forfaits", "nav-commandes": "Commandes",
+    "nav-statut": "Statut réseau", "nav-contact": "Contact", "nav-commander": "Commander",
+    "pwa-title": "Installer l'application Starnét"
+  },
+  en: {
+    "nav-home": "Home", "nav-forfaits": "Packages", "nav-commandes": "Orders",
+    "nav-statut": "Status", "nav-contact": "Contact", "nav-commander": "Order",
+    "pwa-title": "Install the Starnét App"
+  }
+};
+
+function estLangueEN() {
+  try { return (localStorage.getItem("starnet_lang") || "fr") === "en"; } catch (_) { return false; }
+}
+
+function appliquerLangue() {
+  const en = estLangueEN();
+  const t = en ? I18N.en : I18N.fr;
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    const val = t[key] || I18N.fr[key];
+    if (val) el.textContent = val;
+  });
+  const btns = document.querySelectorAll(".lang-btn");
+  btns.forEach((b) => { b.setAttribute("aria-label", en ? "Langue : Français" : "Language: English"); });
+  const labels = document.querySelectorAll("[data-lang-label]");
+  labels.forEach((l) => { l.textContent = en ? "FR" : "EN"; });
+}
+
+function initLangToggle() {
+  document.querySelectorAll(".lang-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      try { localStorage.setItem("starnet_lang", estLangueEN() ? "fr" : "en"); } catch (_) { }
+      appliquerLangue();
+    });
+  });
+  appliquerLangue();
+}
 
 // ============================================================
 // PWA : enregistrement du service worker + bannière d'installation
@@ -184,13 +229,30 @@ function basculerBanniere(visible) {
   if (el) el.classList.toggle("hidden", !visible);
 }
 
+// Initialisation de la bannière PWA (style starnetafric.com)
+function creerBannierePWA(i18nTitle) {
+  const el = document.getElementById("pwa-banner") || document.createElement("div");
+  el.id = "pwa-banner";
+  el.className = "pwa-banner";
+  el.innerHTML =
+    '<span class="pwa-logo">' + SVG_LOGO_SATELLITE + "</span>" +
+    '<span class="pwa-text">' +
+    "<b>" + i18nTitle + "</b>" +
+    "<small>" + (i18nTitle === "EN" ? "Quick access to packages" : "Accès rapide aux forfaits") + "</small>" +
+    "</span>" +
+    '<span class="pwa-actions">' +
+    '<button class="pwa-install" id="pwa-install">' + (i18nTitle === "EN" ? "Install" : "Installer") + "</button>" +
+    '<button class="pwa-close" id="pwa-close" aria-label="Close">✕</button>' +
+    "</span>";
+  if (!document.getElementById("pwa-banner")) document.body.prepend(el);
+  return el;
+}
+
+const SVG_LOGO_SATELLITE = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><ellipse cx="100" cy="100" rx="74" ry="55" stroke="white" stroke-width="10" fill="none" transform="rotate(-25 100 100)"></ellipse><ellipse cx="100" cy="100" rx="43" ry="33" stroke="white" stroke-width="10" fill="none" transform="rotate(65 100 100)"></ellipse><circle cx="100" cy="100" r="12" fill="white"></circle></svg>';
+
 function creerBanniere(html) {
   let el = document.getElementById("pwa-banner");
-  if (el) {
-    el.classList.remove("hidden");
-    el.innerHTML = html;
-    return el;
-  }
+  if (el) return el;
   el = document.createElement("div");
   el.id = "pwa-banner";
   el.className = "pwa-banner";
@@ -214,14 +276,8 @@ function initPwa() {
     const m = pwaMemo();
     const dismissed7j = m.dismissed && Date.now() - m.dismissed < 7 * 24 * 3600 * 1000;
     if (m.installed || dismissed7j) return;
-    creerBanniere(
-      "📲 <b>Installez Starnét Afric</b> comme une application sur cet appareil — " +
-      "pas besoin d'onglet, elle reste sur votre écran d'accueil." +
-      '<div class="pwa-actions">' +
-      '<button class="btn small" id="pwa-install">Installer</button>' +
-      '<button class="btn small ghost" id="pwa-dismiss">Plus tard</button>' +
-      "</div>"
-    );
+    const langEn = estLangueEN();
+    creerBannierePWA(langEn ? "Install the Starnét App" : "Installer l'application Starnét");
     document.getElementById("pwa-install").addEventListener("click", async () => {
       if (!deferredPrompt) return;
       deferredPrompt.prompt();
@@ -230,7 +286,7 @@ function initPwa() {
       } catch (_) { }
       deferredPrompt = null;
     });
-    document.getElementById("pwa-dismiss").addEventListener("click", () => {
+    document.getElementById("pwa-close").addEventListener("click", () => {
       pwaSave({ dismissed: Date.now() });
       basculerBanniere(false);
     });

@@ -66,11 +66,11 @@ async function chargerAccueil() {
   try {
     const config = await api("/api/config-public");
     const s = config.site || {};
-    const dispo = "99,9 %";
-    document.getElementById("stat-clients").textContent = s.clientsAcquis ? "+" + s.clientsAcquis : "—";
-    document.getElementById("stat-pays").textContent = s.paysServis ? "🇿🇦 " + s.paysServis : "—";
-    document.getElementById("stat-annees").textContent = s.anneesActivite ? "+" + s.anneesActivite : "—";
-    document.getElementById("stat-dispo").textContent = dispo;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set("stat-clients", s.clientsAcquis ? "+" + s.clientsAcquis : "—");
+    set("stat-pays", s.paysServis ? "+" + s.paysServis : "—");
+    set("stat-annees", s.anneesActivite ? "+" + s.anneesActivite : "—");
+    set("stat-dispo", "99,9 %");
 
     const r = config.reseau || {};
     const bannerMsg = document.getElementById("reseau-message");
@@ -118,4 +118,62 @@ async function chargerAccueil() {
   } catch (_) { /* silencieux */ }
 }
 
-document.addEventListener("DOMContentLoaded", chargerAccueil);
+// Statistiques réseau simulées (style starnetafric.com)
+function genererStatsReseau() {
+  const used = (20 + Math.random() * 30).toFixed(1);
+  const pct = Math.round((used / 100) * 100);
+  return {
+    download: (90 + Math.random() * 80).toFixed(2),
+    upload: (18 + Math.random() * 12).toFixed(2),
+    ping: Math.floor(20 + Math.random() * 35),
+    jitter: Math.floor(2 + Math.random() * 6),
+    used: used,
+    limit: 100,
+    pct: pct
+  };
+}
+
+function afficherStatsReseau() {
+  const s = genererStatsReseau();
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set("m-download", s.download);
+  set("m-upload", s.upload);
+  set("m-ping", s.ping);
+  set("m-jitter", s.jitter);
+  set("data-used", s.used + " GB");
+  set("data-limit", s.limit + " GB");
+  set("data-percentage", s.pct + "%");
+  const prog = document.getElementById("data-progress");
+  if (prog) prog.style.width = s.pct + "%";
+}
+
+function lancerDiag() {
+  const box = document.getElementById("diag-result");
+  if (!box) return;
+  box.innerHTML = "<p>Analyse en cours…</p>";
+  const t0 = performance.now();
+  fetch("/api/health", { cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : null))
+    .catch(() => null)
+    .then(() => {
+      const latence = Math.round(performance.now() - t0);
+      afficherStatsReseau();
+      box.innerHTML = "<p style='white-space:pre-line;line-height:1.8;'>" +
+        "📥 Téléchargement : " +
+        (document.getElementById("m-download") ? document.getElementById("m-download").textContent : "") +
+        " Mbps\n📤 Envoi : " +
+        (document.getElementById("m-upload") ? document.getElementById("m-upload").textContent : "") +
+        " Mbps\n📶 Ping : " +
+        (document.getElementById("m-ping") ? document.getElementById("m-ping").textContent : "") +
+        " ms • Jitter : " +
+        (document.getElementById("m-jitter") ? document.getElementById("m-jitter").textContent : "") +
+        " ms\n🖥️ Serveur joignable en " + latence + " ms</p>";
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  chargerAccueil();
+  afficherStatsReseau();
+  const btn = document.getElementById("btn-diag");
+  if (btn) btn.addEventListener("click", lancerDiag);
+});

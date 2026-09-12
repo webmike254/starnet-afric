@@ -20,47 +20,75 @@
     <div class="nav-inner">
       <a href="/index.html" class="brand">
         <span class="brand-logo">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="2.2" fill="#3b82f6"></circle>
-            <ellipse cx="12" cy="12" rx="9" ry="3.4" transform="rotate(-28 12 12)"></ellipse>
-            <ellipse cx="12" cy="12" rx="5" ry="1.9" transform="rotate(62 12 12)"></ellipse>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><ellipse cx="100" cy="100" rx="74" ry="55" stroke="white" stroke-width="10" fill="none" transform="rotate(-25 100 100)"></ellipse><ellipse cx="100" cy="100" rx="43" ry="33" stroke="white" stroke-width="10" fill="none" transform="rotate(65 100 100)"></ellipse><circle cx="100" cy="100" r="12" fill="white"></circle></svg>
         </span>
-        <span class="brand-name">STARNÉT AFRIC<small>Revendeur de forfaits Starlink</small></span>
+        <span class="brand-name">STARNÉT<small>Reseller Starlink</small></span>
       </a>
-      <nav class="nav-links">
-        <a href="/index.html">Accueil</a>
-        <a href="/forfaits.html">Forfaits</a>
-        <a href="/commandes.html">Commandes</a>
-        <a href="/statut.html">Statut réseau</a>
-        <a href="/contact.html">Contact</a>
-      </nav>
-      <a href="/commandes.html" class="nav-cta">Commander</a>
-      <button class="nav-burger" aria-label="Menu">☰</button>
+      <div class="nav-right">
+        <button class="lang-btn" type="button" aria-label="Langue">🌐 <span data-lang-label>EN</span></button>
+        <nav class="nav-links">
+          <a href="/index.html" data-i18n="nav-statut">Statut</a>
+          <a href="/forfaits.html" data-i18n="nav-forfaits">Forfaits</a>
+          <a href="/commandes.html" data-i18n="nav-commandes">Commandes</a>
+          <a href="/contact.html" data-i18n="nav-contact">Contact</a>
+        </nav>
+        <a href="/commandes.html" class="nav-cta" data-i18n="nav-commander">Commander</a>
+        <button class="nav-burger" aria-label="Menu">☰</button>
+      </div>
     </div>
   </header>
 
-  <!-- Héros -->
-  <section class="hero">
-    <div class="hero-inner">
-      <span class="tag" style="background:#e0e7ff;color:#4338ca;">Internet satellite haut débit</span>
-      <h1>Informations sur le <span class="grad">Service Starlink</span><br>Sélectionnez un forfait pour activer l'internet satellite.</h1>
-      <p>STARNÉT AFRIC vous fournit des forfaits de données Starlink avec installation facilitée et paiement
-         en mobile money. Choisissez votre forfait, commandez en 2 minutes et restez connecté dans les zones
-         où la fibre n'arrive pas.</p>
-      <div class="hero-actions">
-        <a href="/forfaits.html" class="btn">Voir les forfaits →</a>
-        <a href="/statut.html" class="btn ghost">État du réseau</a>
-        <a href="/contact.html" class="btn ghost">Parlons de votre projet</a>
+  <!-- Statut du réseau (style starnetafric.com) -->
+  <main class="page">
+    <div class="container">
+      <div class="banner-card">
+        <div>
+          <p class="bc-label">Informations sur le Service Starlink</p>
+          <h1 class="bc-title">STARNÉT AFRIC</h1>
+          <p class="bc-desc">Choisissez un forfait pour activer l'internet satellite haut débit.</p>
+        </div>
+        <div class="bc-icon">📡</div>
       </div>
-      <div class="hero-stats">
-        <div class="stat"><b id="stat-clients">—</b><span>Clients accompagnés</span></div>
-        <div class="stat"><b id="stat-pays">—</b><span>Pays desservis</span></div>
-        <div class="stat"><b id="stat-annees">—</b><span>Années d'expérience</span></div>
-        <div class="stat"><b id="stat-dispo">—</b><span>Disponibilité réseau</span></div>
+
+      <a href="/forfaits.html" class="btn-hero-big"><span>🛒</span><span>Choisissez Votre Forfait</span></a>
+
+      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:16px;">
+        <div class="metric-card card">
+          <div class="mc-top"><span>Téléchargement</span><span class="mc-icon" style="background:#2563eb;">↓</span></div>
+          <b id="m-download">--</b><small>Mbps</small>
+        </div>
+        <div class="metric-card card">
+          <div class="mc-top"><span>Envoi</span><span class="mc-icon" style="background:#16a34a;">↑</span></div>
+          <b id="m-upload">--</b><small>Mbps</small>
+        </div>
+        <div class="metric-card card">
+          <div class="mc-top"><span>PING</span><span class="mc-icon" style="background:#f97316;">⇄</span></div>
+          <b id="m-ping">--</b><small>ms</small>
+        </div>
+        <div class="metric-card card">
+          <div class="mc-top"><span>JITTER</span><span class="mc-icon" style="background:#8b5cf6;">≈</span></div>
+          <b id="m-jitter">--</b><small>ms</small>
+        </div>
       </div>
+
+      <div class="card" style="margin-bottom:16px;">
+        <div class="usage-head">
+          <h3 class="uh-title">Utilisation des Données</h3>
+          <span class="pct-pill" id="data-percentage">--</span>
+        </div>
+        <div class="usage-bar"><div id="data-progress" style="width:0%;"></div></div>
+        <div class="row" style="justify-content:space-between;margin-top:8px;">
+          <span class="muted" id="data-used">0 GB</span>
+          <span class="muted" id="data-limit">100 GB</span>
+        </div>
+      </div>
+
+      <button id="btn-diag" class="btn ghost" style="width:100%;padding:13px;border-radius:16px;font-weight:800;box-shadow:var(--shadow);border:1px solid #e5e7eb;">
+        ⚡ Lancer le Test de Diagnostic
+      </button>
+      <div id="diag-result"></div>
     </div>
-  </section>
+  </main>
 
   <!-- Comment ça marche -->
   <section>
