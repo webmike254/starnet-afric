@@ -11,7 +11,7 @@ const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const TOKEN = process.env.VERCEL_TOKEN;
 const TEAM = "team_ahD9wtU0XHcTLanZKtryeY01";
-const PROJECT_ID = "prj_gBG1B1wXvIP7ZlWSy1lVZha8emT0";
+const PROJECT_ID = process.env.VERCEL_PROJECT_ID || "prj_gBG1B1wXvIP7ZlWSy1lVZha8emT0";
 const NAME = "starnet-afric";
 
 if (!TOKEN) {
