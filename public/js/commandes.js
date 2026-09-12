@@ -88,6 +88,38 @@ function packageActuel() {
   return packagesCfg.find((p) => p.code === code) || null;
 }
 
+function majRecap() {
+  const p = packageActuel();
+  const recap = document.getElementById("recap");
+  if (!p) return;
+
+  const methode = methodesPaiement.find((m) => m.code === methodeSelectionnee);
+  const estKit = p.type === "kit" || p.prix <= 0;
+
+  let html = "";
+  if (estKit) {
+    html +=
+      "<p><b>Forfait :</b> " + esc(p.nom) + "</p>" +
+      "<p><b>Type :</b> Kit matériel / devis</p>" +
+      "<p style='margin-top:12px;'><b>Montant :</b> Sur devis</p>" +
+      "<p style='margin-top:8px;color:#4b5563;font-size:13px;'>Un conseiller vous contactera pour finaliser.</p>";
+  } else {
+    html +=
+      "<p><b>Forfait :</b> " + esc(p.nom) + "</p>" +
+      (p.quantiteGo ? "<p><b>Volume :</b> " + p.quantiteGo + " Go / mois</p>" : "") +
+      "<p style='margin-top:12px;'><b>Montant :</b> " + formatMontant(p.prix, p.devise) + "</p>";
+    if (p.prixPromo > p.prix) {
+      html += "<p style='color:#b45309;'><small>Prix barré : " + formatMontant(p.prixPromo, p.devise) + "</small></p>";
+    }
+  }
+  html += "<hr style='border:none;border-top:1px solid #e5e7eb;margin:16px 0;'>";
+  html += methode
+    ? "<p><b>Paiement :</b> " + esc(methode.nom) + "</p>"
+    : "<p style='color:#6b7280;'><b>Paiement :</b> à choisir</p>";
+
+  recap.innerHTML = html;
+}
+
 async function soumettreCommande(e) {
   e.preventDefault();
   const alertBox = document.getElementById("order-alert");

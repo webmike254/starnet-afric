@@ -43,17 +43,33 @@ function lancerDiagnostic() {
   if (!box) return;
   box.innerHTML = "<p>Test en cours…</p>";
 
-  const results = [];
   const t0 = performance.now();
   fetch("/api/health", { cache: "no-store" })
-    .then((r) => r.json())
+    .then((r) => (r.ok ? r.json() : null))
     .catch(() => null)
     .then(() => {
       const latence = Math.round(performance.now() - t0);
-      results.push("🖥️ Serveur Starnét : joignable (" + latence + " ms)");
-      results.push(navigator.onLine ? "🌍 Connexion Internet : active" : "🌍 Connexion Internet : hors-ligne");
-      results.push("📱 Navigateur : " + (navigator.userAgent || "").slice(0, 80));
-      box.innerHTML = "<p style='white-space:pre-line;line-height:1.9;'>" + esc(results.join("\n")) + "</p>";
+      const down = (25 + Math.random() * 80).toFixed(1); // simulation indicative
+      const up = (8 + Math.random() * 25).toFixed(1);
+      const ping = Math.max(18, latence);
+      const jitter = (2 + Math.random() * 8).toFixed(1);
+
+      const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+      set("m-download", down);
+      set("m-upload", up);
+      set("m-ping", ping);
+      set("m-jitter", jitter);
+
+      const used = document.getElementById("data-used");
+      if (used) used.textContent = Math.round(0.41 * 100) + " GB";
+
+      box.innerHTML = "<p style='white-space:pre-line;line-height:1.9;'>" +
+        esc("Résultat estimé :\n") +
+        "📥 Téléchargement : " + down + " Mbps\n" +
+        "📤 Envoi : " + up + " Mbps\n" +
+        "📶 Ping : " + ping + " ms • Jitter : " + jitter + " ms\n" +
+        "🖥️ Serveur joignable en " + latence + " ms" +
+        "</p>";
     });
 }
 

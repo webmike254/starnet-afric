@@ -4,34 +4,38 @@
 
 function carteForfait(p) {
   const card = document.createElement("div");
-  card.className = "card";
-  card.style.background = "#101720";
-  card.style.borderColor = "#24344a";
-  card.style.color = "#e7ecf2";
+  card.className = "card package-card";
+  if (p.populaire) {
+    const badge = document.createElement("span");
+    badge.className = "pkg-badge";
+    badge.textContent = "Populaire";
+    card.appendChild(badge);
+  }
 
   const h3 = document.createElement("h3");
-  h3.style.color = "#fff";
   h3.textContent = p.nom;
   card.appendChild(h3);
 
+  if (p.quantiteGo) {
+    const go = document.createElement("p");
+    go.className = "pkg-go";
+    go.style.margin = "0";
+    go.textContent = p.quantiteGo + " Go / mois";
+    card.appendChild(go);
+  }
+
   const desc = document.createElement("p");
+  desc.style.margin = "6px 0 14px";
   desc.textContent = p.description;
   card.appendChild(desc);
 
-  const go = p.quantiteGo ? p.quantiteGo + " Go / mois" : "Kit matériel";
-  const goEl = document.createElement("p");
-  goEl.style.fontWeight = "800";
-  goEl.style.color = "#8ab4ff";
-  goEl.style.margin = "0 0 6px";
-  goEl.textContent = go;
-  card.appendChild(goEl);
-
   const price = document.createElement("div");
-  price.className = "price";
+  price.className = "price-row";
   if (p.prix > 0) {
     price.innerHTML =
+      (p.prixPromo > p.prix ? '<span class="old">' + formatMontant(p.prixPromo, p.devise) + "</span>" : "") +
       "<b>" + formatMontant(p.prix, p.devise) + "</b>" +
-      (p.prixPromo > p.prix ? ' <span class="old">' + formatMontant(p.prixPromo, p.devise) + "</span>" : "") +
+      (p.prixPromo > p.prix ? ' <span class="promo-tag">PROMO</span>' : "") +
       ' <span class="unit">/mois</span>';
   } else {
     price.innerHTML = "<b>Sur devis</b>";
@@ -39,12 +43,11 @@ function carteForfait(p) {
   card.appendChild(price);
 
   const tags = document.createElement("div");
-  tags.style.marginTop = "10px";
+  tags.style.marginTop = "12px";
   (p.tags || []).slice(0, 2).forEach((t) => {
     const s = document.createElement("span");
     s.className = "tag";
-    s.style.background = "#1a2942";
-    s.style.color = "#9cc0ff";
+    s.style.margin = "0 6px 6px 0";
     s.textContent = t;
     tags.appendChild(s);
   });
@@ -53,7 +56,7 @@ function carteForfait(p) {
   const a = document.createElement("a");
   a.href = "/commandes.html?pkg=" + encodeURIComponent(p.code);
   a.className = "btn";
-  a.style.marginTop = "16px";
+  a.style.marginTop = "14px";
   a.textContent = "Choisir ce forfait";
   card.appendChild(a);
   return card;

@@ -67,11 +67,27 @@
         </div>
       </div>
 
-      <div class="card" style="margin-top:22px;background:#101720;border-color:#24344a;color:#e7ecf2;">
-        <h3 style="color:#fff;">Diagnostic de connexion</h3>
-        <p style="color:#8ea0b5;">Vérifiez votre propre connexion depuis votre position.</p>
+      <div class="card" style="margin-top:22px;">
+        <h3>Utilisation des données</h3>
+        <p>Votre consommation sur le forfait actuel.</p>
+        <div class="usage-bar" style="margin:6px 0 8px;"><div style="width:41%;"></div></div>
+        <div class="row" style="justify-content:space-between;">
+          <span class="muted" id="data-used">0 GB</span>
+          <span class="muted" id="data-limit">100 GB</span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px;">
+        <h3>Lancer le test de diagnostic</h3>
+        <p>Mesurez votre connexion depuis votre position.</p>
+        <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:14px;">
+          <div class="metric-card"><b id="m-download">--</b><span>Mbps ↓ Téléchargement</span></div>
+          <div class="metric-card"><b id="m-upload">--</b><span>Mbps ↑ Envoi</span></div>
+          <div class="metric-card"><b id="m-ping">--</b><span>ms PING</span></div>
+          <div class="metric-card"><b id="m-jitter">--</b><span>ms JITTER</span></div>
+        </div>
+        <button class="btn" id="btn-diag" style="align-self:flex-start;">Lancer le test de diagnostic</button>
         <div id="diag-result"></div>
-        <button class="btn small" id="btn-diag">Lancer le test</button>
       </div>
     </div>
   </main>

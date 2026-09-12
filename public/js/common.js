@@ -109,6 +109,30 @@ function envoyerVisite() {
   } catch (_) { }
 }
 
+// Navigation mobile fixe en bas — style app (comme starnetafric.com)
+const BOTTOM_NAV = [
+  { href: "/index.html", label: "Statut", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5.5 5.5 0 0 1 7 0"/><circle cx="12" cy="19" r="1.4" fill="currentColor"/></svg>' },
+  { href: "/forfaits.html", label: "Forfaits", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>' },
+  { href: "/commandes.html", label: "Commandes", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1.6"/><circle cx="19" cy="21" r="1.6"/><path d="M2 3h3l2.6 12.5a2 2 0 0 0 2 1.5h8.9a2 2 0 0 0 2-1.5L22 8H6"/></svg>' },
+  { href: "/contact.html", label: "Contact", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H5l-2 2V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8z"/></svg>' }
+];
+
+function initBottomNav() {
+  if (/^\/admin/.test(location.pathname)) return;
+  const nav = document.createElement("nav");
+  nav.className = "bottom-nav";
+  const actif = location.pathname.split("/").pop() || "index.html";
+  BOTTOM_NAV.forEach((item) => {
+    const href = item.href.split("/").pop();
+    const a = document.createElement("a");
+    a.href = item.href;
+    a.innerHTML = item.icon + "<span>" + item.label + "</span>";
+    if (href === actif || (actif === "index.html" && href === "index.html")) a.classList.add("active");
+    nav.appendChild(a);
+  });
+  document.body.appendChild(nav);
+}
+
 function startFooter() {
   document.querySelectorAll("[data-annee]").forEach((e) => (e.textContent = new Date().getFullYear()));
   hydrateFooter();
@@ -133,6 +157,7 @@ function startFooter() {
 document.addEventListener("DOMContentLoaded", () => {
   initNav();
   startFooter();
+  initBottomNav();
   envoyerVisite();
 });
 
