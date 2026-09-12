@@ -12,33 +12,46 @@ function carteForfait(p) {
     card.appendChild(badge);
   }
 
+  const cols = {
+    vert: { bg: "#dcfce7", ic: "#16a34a" }, bleu: { bg: "#dbeafe", ic: "#2563eb" },
+    violet: { bg: "#f3e8ff", ic: "#9333ea" }, indigo: { bg: "#e0e7ff", ic: "#4f46e5" },
+    cyan: { bg: "#cffafe", ic: "#0891b2" }, gris: { bg: "#f3f4f6", ic: "#4b5563" },
+    orange: { bg: "#ffedd5", ic: "#ea580c" }
+  };
+  const col = cols[p.couleur] || cols.bleu;
+  const periode = { mois: "/mois", "2mois": "/2 mois", "3mois": "/3 mois" };
+
   const h3 = document.createElement("h3");
   h3.textContent = p.nom;
   card.appendChild(h3);
 
-  if (p.quantiteGo) {
-    const go = document.createElement("p");
-    go.className = "pkg-go";
-    go.style.margin = "0";
-    go.textContent = p.quantiteGo + " Go / mois";
-    card.appendChild(go);
-  }
+  const dataTxt = p.type === "kit"
+    ? "Kit matériel"
+    : (p.quantiteGo ? (p.quantiteGo >= 1000 ? p.quantiteGo / 1000 + " TB" : p.quantiteGo + " Go") + " " + (p.periode === "mois" ? "/ mois" : (periode[p.periode] || "/ mois")) : "Données illimitées");
+  const dataEl = document.createElement("p");
+  dataEl.style.margin = "4px 0 0";
+  dataEl.style.color = col.ic;
+  dataEl.style.fontWeight = "800";
+  dataEl.textContent = dataTxt;
+  card.appendChild(dataEl);
 
   const desc = document.createElement("p");
   desc.style.margin = "6px 0 14px";
+  desc.style.fontSize = "13.5px";
   desc.textContent = p.description;
   card.appendChild(desc);
 
   const price = document.createElement("div");
-  price.className = "price-row";
+  price.className = "pkg-right";
+  price.style.textAlign = "left";
   if (p.prix > 0) {
     price.innerHTML =
-      (p.prixPromo > p.prix ? '<span class="old">' + formatMontant(p.prixPromo, p.devise) + "</span>" : "") +
-      "<b>" + formatMontant(p.prix, p.devise) + "</b>" +
-      (p.prixPromo > p.prix ? ' <span class="promo-tag">PROMO</span>' : "") +
-      ' <span class="unit">/mois</span>';
+      (p.prixPromo > p.prix ? '<span class="old" style="display:block;font-size:12px;">' + formatMontant(p.prixPromo, p.devise) + "</span>" : "") +
+      '<span class="cur" style="color:' + col.ic + ';">' + formatMontant(p.prix, p.devise) + "</span>" +
+      (p.prixPromo > p.prix ? ' <span class="promotag-red">PROMO</span>' : "") +
+      '<span class="unit">' + (p.type === "kit" ? "Une fois" : (periode[p.periode] || "/mois")) + "</span>";
   } else {
-    price.innerHTML = "<b>Sur devis</b>";
+    price.innerHTML = '<span class="cur" style="color:' + col.ic + ';">Sur devis</span>';
   }
   card.appendChild(price);
 
@@ -48,6 +61,8 @@ function carteForfait(p) {
     const s = document.createElement("span");
     s.className = "tag";
     s.style.margin = "0 6px 6px 0";
+    s.style.background = col.bg;
+    s.style.color = col.ic;
     s.textContent = t;
     tags.appendChild(s);
   });

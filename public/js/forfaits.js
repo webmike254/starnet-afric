@@ -6,17 +6,32 @@ let packages = [];
 let filtreActif = "tout";
 
 // Couleurs par forfait (style starnetafric.com)
-function couleurForfait(code) {
-  const map = {
-    decouverte: { bg: "#d1fae5", ic: "#15803d", icon: "📶" },
-    standard: { bg: "#dbeafe", ic: "#1d4ed8", icon: "⚡" },
-    standard_plus: { bg: "#ede9fe", ic: "#7c3aed", icon: "🚀" },
-    premium: { bg: "#e0e7ff", ic: "#4f46e5", icon: "🛡️" },
-    business: { bg: "#e5e7eb", ic: "#374151", icon: "🏢" },
-    kit: { bg: "#ffedd5", ic: "#ea580c", icon: "⭐" }
-  };
-  const k = String(code || "").replace(/-/g, "_");
-  return map[k] || map.standard;
+const COULEURS = {
+  vert: { bg: "#dcfce7", ic: "#16a34a", icon: "📶" },
+  bleu: { bg: "#dbeafe", ic: "#2563eb", icon: "⚡" },
+  violet: { bg: "#f3e8ff", ic: "#9333ea", icon: "🚀" },
+  indigo: { bg: "#e0e7ff", ic: "#4f46e5", icon: "🛡️" },
+  cyan: { bg: "#cffafe", ic: "#0891b2", icon: "☁️" },
+  gris: { bg: "#f3f4f6", ic: "#4b5563", icon: "🏢" },
+  orange: { bg: "#ffedd5", ic: "#ea580c", icon: "⭐" }
+};
+function couleurForfait(p) {
+  return COULEURS[p.couleur] || COULEURS.bleu;
+}
+
+const PERIODES = { mois: "/mois", "2mois": "/2 mois", "3mois": "/3 mois" };
+
+function libelleDonnees(p) {
+  if (p.type === "kit") return "Kit matériel";
+  if (!p.quantiteGo) return "Données illimitées";
+  const g = p.quantiteGo;
+  const q = g >= 1000 ? (g / 1000) + " TB" : g + " Go";
+  return q + " " + (p.periode === "mois" ? "/ mois" : PERIODES[p.periode] || "/ mois");
+}
+
+function libellePeriode(p) {
+  if (p.type === "kit") return "Une fois";
+  return PERIODES[p.periode] || "/mois";
 }
 
 function carteForfait(p) {
@@ -29,7 +44,7 @@ function carteForfait(p) {
     card.appendChild(badge);
   }
 
-  const col = couleurForfait(p.code);
+  const col = couleurForfait(p);
 
   // Ligne principale : icône + nom + prix
   const row = document.createElement("div");
@@ -49,7 +64,7 @@ function carteForfait(p) {
   data.style.margin = "2px 0 0";
   data.style.color = "#6b7280";
   data.style.fontSize = "13.5px";
-  data.textContent = p.type === "kit" ? "Kit matériel" : p.quantiteGo + " Go / mois";
+  data.textContent = libelleDonnees(p);
   txt.appendChild(h3);
   txt.appendChild(data);
   left.appendChild(icon);
@@ -69,20 +84,19 @@ function carteForfait(p) {
     }
     const cur = document.createElement("span");
     cur.className = "cur";
+    cur.style.color = col.ic;
     cur.textContent = formatMontant(p.prix, p.devise);
+    right.appendChild(oldP);
+    right.appendChild(cur);
     if (p.prixPromo > p.prix) {
       const tag = document.createElement("span");
       tag.className = "promotag-red";
       tag.textContent = "PROMO";
-      right.appendChild(oldP);
-      right.appendChild(cur);
       right.appendChild(tag);
-    } else {
-      right.appendChild(cur);
     }
     const unit = document.createElement("span");
     unit.className = "unit";
-    unit.textContent = p.type === "kit" ? "Une fois" : "/mois";
+    unit.textContent = libellePeriode(p);
     right.appendChild(unit);
   } else {
     const cur = document.createElement("span");
@@ -154,9 +168,14 @@ function rendu() {
   const grid = document.getElementById("grille-forfaits");
   if (!grid) return;
   grid.innerHTML = "";
-  const liste = packages.filter((p) => filtreActif === "tout" || p.type === filtreActif);
+  const liste = packages.filter((p) => {
+    if (filtreActif === "tout") return true;
+    if (filtreActif === "mensuel") return p.type === "mensuel";
+    if (filtreActif === "kit") return p.type === "kit";
+    return p.periode === filtreActif; // 2mois / 3mois
+  });
   if (!liste.length) {
-    grid.innerHTML = '<p style="grid-column:1/-1;color:#64748b;">Aucun forfait ne correspond à ce filtre.</p>';
+    grid.innerHTML = '<p style="grid-column:1/-1;color:#6b7280;">Aucun forfait ne correspond à ce filtre.</p>';
     return;
   }
   liste.forEach((p) => grid.appendChild(carteForfait(p)));
