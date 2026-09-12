@@ -174,3 +174,22 @@ footer a { color: #9db0c6; text-decoration: none; }
 }
 .table-scroll { overflow-x: auto; }
 .table-scroll table.data { min-width: 640px; }
+.pwa-banner {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: linear-gradient(90deg, #12233f, #0e1a30);
+  color: #dbe8fb;
+  border-bottom: 1px solid #2b4a77;
+  padding: 11px 16px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.pwa-actions { display: flex; gap: 8px; }
+@media (max-width: 720px) {
+  .pwa-banner { font-size: 13px; padding: 10px 12px; }
+}

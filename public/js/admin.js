@@ -418,6 +418,75 @@ function lirePM() {
   return codes;
 }
 }
+// ---------- Telegram ----------
+async function chargerTelegramStatus() {
+  try {
+    const st = await adminGet("/telegram/status");
+    const el = document.getElementById("tg-status");
+    if (el) {
+      el.innerHTML =
+        "Bot : " + (st.botConfigured ? '<span class="badge ok">connecté</span>' : '<span class="badge bad">non configuré</span>') +
+        " — Chat : " + (st.chatConfigured ? '<span class="badge ok">prêt</span>' : '<span class="badge warn">à détecter</span>');
+    }
+  } catch (_) { }
+}
+
+async function detecterTelegram() {
+  const box = document.getElementById("tg-result");
+  if (box) box.innerHTML = "<p class='muted'>Interrogation du bot…</p>";
+  try {
+    const r = await api("/api/admin/telegram/probe", { method: "POST", body: {} });
+    if (!r.chats || !r.chats.length) {
+      if (box) box.innerHTML = "<p class='muted'>Aucun chat trouvé. Ouvrez d'abord <b>@starnettellbot</b> et envoyez « /start ».</p>";
+      return;
+    }
+    if (box) {
+      const onglet = r.chats
+        .map(
+          (c) =>
+            "<div>" +
+            (c.id === Number(localStorage.getItem("tg_selected") || 0) ? "✅ " : "") +
+            "<b>" + esc(c.nom) + "</b> — <span class='mono'>" + c.id + "</span>" +
+            ' <button class="btn small" data-set-chat="' + c.id + '">Utiliser</button>' +
+            "</div>"
+        )
+        .join("");
+      box.innerHTML = "<div style='line-height:2;'>" + onglet + "</div>";
+      box.querySelectorAll("[data-set-chat]").forEach((b) => {
+        b.addEventListener("click", () => {
+          localStorage.setItem("tg_selected", b.getAttribute("data-set-chat"));
+          if (box) box.innerHTML =
+            "<p class='muted'>Chat <span class='mono'>" + b.getAttribute("data-set-chat") + "</span> mémorisé ! " +
+            "Collez cette valeur dans la variable d'environnement  <b>TELEGRAM_CHAT_ID</b> du projet Vercel (Paramètres → Environnement), " +
+            "puis re-déployez.</p>";
+        });
+      });
+    }
+  } catch (e) {
+    if (box) box.innerHTML = '<div class="alert error">' + esc(e.message) + "</div>";
+  }
+}
+
+async function testerTelegram() {
+  const btn = document.getElementById("btn-tg-test");
+  const box = document.getElementById("tg-result");
+  if (btn) { btn.disabled = true; btn.textContent = "Envoi…"; }
+  if (box) box.innerHTML = "<p class='muted'>Envoi…</p>";
+  try {
+    const r = await api("/api/admin/telegram/test", { method: "POST", body: {} });
+    if (r.ok) {
+      if (box) box.innerHTML = '<div class="alert success">✅ Message envoyé. Vérifiez votre Telegram !</div>';
+    } else {
+      if (box) box.innerHTML = '<div class="alert error">Envoi impossible : ' +
+        (r.skipped === "no_chat" ? "chat non configuré" : (r.error || "erreur")) + "</div>";
+    }
+  } catch (e) {
+    if (box) box.innerHTML = '<div class="alert error">' + esc(e.message) + "</div>";
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = "Envoyer un test"; }
+  }
+}
+
 // ---------- Initialisation + événements ----------
 document.addEventListener("DOMContentLoaded", () => {
   initNavigation();
@@ -499,4 +568,11 @@ document.addEventListener("DOMContentLoaded", () => {
       toast(err.message, "error");
     }
   });
+
+  // Telegram
+  const btnProbe = document.getElementById("btn-tg-probe");
+  if (btnProbe) btnProbe.addEventListener("click", detecterTelegram);
+  const btnTest = document.getElementById("btn-tg-test");
+  if (btnTest) btnTest.addEventListener("click", testerTelegram);
+  if (document.getElementById("tg-status")) chargerTelegramStatus();
 });

@@ -1,0 +1,7 @@
+node_modules
+data
+legacy
+.git
+scripts/payload.json
+scripts/gist-payload.json
+.env

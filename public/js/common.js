@@ -95,6 +95,20 @@ function initNav() {
   });
 }
 
+// Beacon analytique : envoie la page vue (les pages statiques passent par le CDN).
+function envoyerVisite() {
+  try {
+    if (!/^\/api\//.test(location.pathname)) {
+      const p = encodeURIComponent(location.pathname.split("/").pop() || "index.html");
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon("/api/visit?p=" + p);
+      } else {
+        fetch("/api/visit?p=" + p, { method: "GET", keepalive: true }).catch(() => {});
+      }
+    }
+  } catch (_) { }
+}
+
 function startFooter() {
   document.querySelectorAll("[data-annee]").forEach((e) => (e.textContent = new Date().getFullYear()));
   hydrateFooter();
@@ -119,4 +133,105 @@ function startFooter() {
 document.addEventListener("DOMContentLoaded", () => {
   initNav();
   startFooter();
+  envoyerVisite();
 });
+
+// ============================================================
+// PWA : enregistrement du service worker + bannière d'installation
+// ============================================================
+
+function pwaMemo() {
+  try {
+    return JSON.parse(localStorage.getItem("starnet_pwa") || "{}");
+  } catch (_) {
+    return {};
+  }
+}
+
+function pwaSave(obj) {
+  try {
+    localStorage.setItem("starnet_pwa", JSON.stringify(obj));
+  } catch (_) { }
+}
+
+function basculerBanniere(visible) {
+  const el = document.getElementById("pwa-banner");
+  if (el) el.classList.toggle("hidden", !visible);
+}
+
+function creerBanniere(html) {
+  let el = document.getElementById("pwa-banner");
+  if (el) {
+    el.classList.remove("hidden");
+    el.innerHTML = html;
+    return el;
+  }
+  el = document.createElement("div");
+  el.id = "pwa-banner";
+  el.className = "pwa-banner";
+  el.innerHTML = html;
+  document.body.prepend(el);
+  return el;
+}
+
+let deferredPrompt = null;
+
+function initPwa() {
+  // ---- Service worker ----
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js").catch((e) => console.warn("SW:", e.message));
+  }
+
+  // ---- Bannière d'installation (Chrome / Android) ----
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const m = pwaMemo();
+    const dismissed7j = m.dismissed && Date.now() - m.dismissed < 7 * 24 * 3600 * 1000;
+    if (m.installed || dismissed7j) return;
+    creerBanniere(
+      "📲 <b>Installez Starnét Afric</b> comme une application sur cet appareil — " +
+      "pas besoin d'onglet, elle reste sur votre écran d'accueil." +
+      '<div class="pwa-actions">' +
+      '<button class="btn small" id="pwa-install">Installer</button>' +
+      '<button class="btn small ghost" id="pwa-dismiss">Plus tard</button>' +
+      "</div>"
+    );
+    document.getElementById("pwa-install").addEventListener("click", async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      try {
+        await deferredPrompt.userChoice;
+      } catch (_) { }
+      deferredPrompt = null;
+    });
+    document.getElementById("pwa-dismiss").addEventListener("click", () => {
+      pwaSave({ dismissed: Date.now() });
+      basculerBanniere(false);
+    });
+  });
+
+  window.addEventListener("appinstalled", () => {
+    pwaSave({ installed: true });
+    basculerBanniere(false);
+  });
+
+  // ---- iOS (Safari) : instructions d'ajout à l'écran d'accueil ----
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent || "")) {
+    const m = pwaMemo();
+    if (m.installed) return;
+    setTimeout(() => {
+      creerBanniere(
+        "📲 <b>Installez Starnét Afric</b> : appuyez sur <b>Partager</b> (icône ⬆️) " +
+        "puis choisissez <b>« Sur l'écran d'accueil »</b>." +
+        '<div class="pwa-actions">' +
+        '<button class="btn small" id="pwa-ios-ok">Compris</button>' +
+        "</div>"
+      );
+      const okBtn = document.getElementById("pwa-ios-ok");
+      if (okBtn) okBtn.addEventListener("click", () => basculerBanniere(false));
+    }, 1200);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", initPwa);
