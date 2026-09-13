@@ -25,7 +25,7 @@
         <span class="brand-name">STARNÉT<small>Reseller Starlink</small></span>
       </a>
       <div class="nav-right">
-        <button class="lang-btn" type="button" aria-label="Langue">🌐 <span data-lang-label>EN</span></button>
+        <button class="lang-btn" type="button" aria-label="Langue"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 4 9 15 15 0 0 1-4 9 15 15 0 0 1-4-9 15 15 0 0 1 4-9z"/></svg> <span data-lang-label>EN</span></button>
         <nav class="nav-links">
           <a href="/index.html" data-i18n="nav-statut">Statut</a>
           <a href="/forfaits.html" data-i18n="nav-forfaits">Forfaits</a>
@@ -46,7 +46,9 @@
           <h1 class="bc-title">État du réseau Starlink</h1>
           <p class="bc-desc">État en temps réel de nos services et de l'infrastructure satellite dans votre zone.</p>
         </div>
-        <div class="bc-icon">📡</div>
+        <div class="bc-icon">
+          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.5" fill="currentColor"/><ellipse cx="12" cy="12" rx="9" ry="3.4" transform="rotate(-28 12 12)"/><ellipse cx="12" cy="12" rx="5" ry="1.9" transform="rotate(62 12 12)"/></svg>
+        </div>
       </div>
 
       <div class="grid cols-2" style="grid-template-columns:repeat(auto-fit,minmax(320px,1fr));">
@@ -71,10 +73,12 @@
       </div>
 
       <div class="card" style="margin-top:22px;">
-        <h3>Utilisation des données</h3>
-        <p>Votre consommation sur le forfait actuel.</p>
-        <div class="usage-bar" style="margin:6px 0 8px;"><div style="width:41%;"></div></div>
-        <div class="row" style="justify-content:space-between;">
+        <div class="usage-head">
+          <h3 class="uh-title">Utilisation des Données</h3>
+          <span class="pct-pill" id="data-percentage">41%</span>
+        </div>
+        <div class="usage-bar"><div style="width:41%;"></div></div>
+        <div class="row" style="justify-content:space-between;margin-top:8px;">
           <span class="muted" id="data-used">0 GB</span>
           <span class="muted" id="data-limit">100 GB</span>
         </div>
@@ -84,10 +88,10 @@
         <h3>Lancer le test de diagnostic</h3>
         <p>Mesurez votre connexion depuis votre position.</p>
         <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:14px;">
-          <div class="metric-card"><b id="m-download">--</b><span>Mbps ↓ Téléchargement</span></div>
-          <div class="metric-card"><b id="m-upload">--</b><span>Mbps ↑ Envoi</span></div>
-          <div class="metric-card"><b id="m-ping">--</b><span>ms PING</span></div>
-          <div class="metric-card"><b id="m-jitter">--</b><span>ms JITTER</span></div>
+          <div class="metric-card"><div class="mc-top"><span>Téléchargement</span><span class="mc-icon" style="background:#2563eb;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span></div><b id="m-download">--</b><small>Mbps</small></div>
+          <div class="metric-card"><div class="mc-top"><span>Envoi</span><span class="mc-icon" style="background:#16a34a;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span></div><b id="m-upload">--</b><small>Mbps</small></div>
+          <div class="metric-card"><div class="mc-top"><span>PING</span><span class="mc-icon" style="background:#f97316;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span></div><b id="m-ping">--</b><small>ms</small></div>
+          <div class="metric-card"><div class="mc-top"><span>JITTER</span><span class="mc-icon" style="background:#8b5cf6;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2l3-9 4 18 3-9h3"/></svg></span></div><b id="m-jitter">--</b><small>ms</small></div>
         </div>
         <button class="btn" id="btn-diag" style="align-self:flex-start;">Lancer le test de diagnostic</button>
         <div id="diag-result"></div>

@@ -159,7 +159,7 @@ async function soumettreCommande(e) {
     const statutLabel = estKit ? "en attente de contact" : (res.order && res.order.statut) || "en cours";
     if (alertBox) {
       alertBox.innerHTML =
-        '<div class="alert success"><b>✅ Commande enregistrée !</b><br>' +
+        '<div class="alert success"><b>✓ Commande enregistrée !</b><br>' +
         "Votre référence :&nbsp;<b class='mono'>" + esc(res.reference) + "</b><br>" +
         "Statut : " + esc(statutLabel) + "<br>" +
         "(Notez cette référence pour le suivi ci-dessus.)</div>";
@@ -190,7 +190,7 @@ async function suivreCommande(e) {
       annulee: "Annulée",
       echec_paiement: "Paiement échoué"
     };
-    const statusPm = r.paiement && r.paiement.statut === "confirme" ? " — Paiement confirmé ✅" : "";
+    const statusPm = r.paiement && r.paiement.statut === "confirme" ? " — Paiement confirmé" : "";
     const montant = r.montant ? formatMontant(r.montant, r.devise) : "Sur devis";
     box.innerHTML =
       '<div style="margin-top:14px;border-top:1px solid #c8dbfc;padding-top:12px;font-size:14px;">' +

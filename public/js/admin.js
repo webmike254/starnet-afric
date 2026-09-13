@@ -266,7 +266,7 @@ async function chargerForfaitsAdmin() {
             "<td>" + (p.prix ? formatMontant(p.prix, p.devise) : "Devis") + "</td>" +
             "<td>" + esc(p.devise) + "</td>" +
             "<td>" + (p.type === "kit" ? "Kit" : "Mensuel") + "</td>" +
-            "<td>" + (p.populaire ? "⭐" : "—") + "</td>" +
+            "<td>" + (p.populaire ? "★" : "—") + "</td>" +
             "<td>" + (p.actif ? '<span class="badge ok">Oui</span>' : '<span class="badge bad">Non</span>') + "</td>" +
             "<td style='white-space:nowrap;'>" +
             '<button class="btn small" onclick="apercuForfait(\'' + esc(p.code) + '\')">Modifier</button> ' +
@@ -445,7 +445,7 @@ async function detecterTelegram() {
         .map(
           (c) =>
             "<div>" +
-            (c.id === Number(localStorage.getItem("tg_selected") || 0) ? "✅ " : "") +
+            (c.id === Number(localStorage.getItem("tg_selected") || 0) ? "✓ " : "") +
             "<b>" + esc(c.nom) + "</b> — <span class='mono'>" + c.id + "</span>" +
             ' <button class="btn small" data-set-chat="' + c.id + '">Utiliser</button>' +
             "</div>"
@@ -475,7 +475,7 @@ async function testerTelegram() {
   try {
     const r = await api("/api/admin/telegram/test", { method: "POST", body: {} });
     if (r.ok) {
-      if (box) box.innerHTML = '<div class="alert success">✅ Message envoyé. Vérifiez votre Telegram !</div>';
+      if (box) box.innerHTML = '<div class="alert success">✓ Message envoyé. Vérifiez votre Telegram !</div>';
     } else {
       if (box) box.innerHTML = '<div class="alert error">Envoi impossible : ' +
         (r.skipped === "no_chat" ? "chat non configuré" : (r.error || "erreur")) + "</div>";

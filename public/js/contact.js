@@ -30,7 +30,7 @@ async function envoyerMessage(e) {
       body: { nom, telephone, email, sujet, message }
     });
     if (alertBox) {
-      alertBox.innerHTML = '<div class="alert success">✅ Message envoyé ! Nous vous répondrons rapidement.</div>';
+      alertBox.innerHTML = '<div class="alert success">✓ Message envoyé ! Nous vous répondrons rapidement.</div>';
     }
     e.target.reset();
   } catch (err) {

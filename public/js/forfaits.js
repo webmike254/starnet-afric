@@ -5,15 +5,32 @@
 let packages = [];
 let filtreActif = "tout";
 
+// Icônes SVG par forfait (à la place des émojis) — style starnetafric.com
+const SVG_ICONS = {
+  signal: '<path d="M4 20h16"/><path d="M6 16l3-3"/><path d="M10 12l4-4"/><path d="M14 8l4-4"/>',
+  bolt: '<path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>',
+  rocket: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+  shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
+  cloud: '<path d="M17.5 19a4.5 4.5 0 0 0 0-9h-1.8A7 7 0 1 0 4 14.9"/>',
+  building: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/>',
+  star: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>'
+};
+
+function iconeSvg(key, color) {
+  return '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="' + color +
+    '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+    (SVG_ICONS[key] || SVG_ICONS.bolt) + "</svg>";
+}
+
 // Couleurs par forfait (style starnetafric.com)
 const COULEURS = {
-  vert: { bg: "#dcfce7", ic: "#16a34a", icon: "📶" },
-  bleu: { bg: "#dbeafe", ic: "#2563eb", icon: "⚡" },
-  violet: { bg: "#f3e8ff", ic: "#9333ea", icon: "🚀" },
-  indigo: { bg: "#e0e7ff", ic: "#4f46e5", icon: "🛡️" },
-  cyan: { bg: "#cffafe", ic: "#0891b2", icon: "☁️" },
-  gris: { bg: "#f3f4f6", ic: "#4b5563", icon: "🏢" },
-  orange: { bg: "#ffedd5", ic: "#ea580c", icon: "⭐" }
+  vert: { bg: "#dcfce7", ic: "#16a34a", icon: "signal" },
+  bleu: { bg: "#dbeafe", ic: "#2563eb", icon: "bolt" },
+  violet: { bg: "#f3e8ff", ic: "#9333ea", icon: "rocket" },
+  indigo: { bg: "#e0e7ff", ic: "#4f46e5", icon: "shield" },
+  cyan: { bg: "#cffafe", ic: "#0891b2", icon: "cloud" },
+  gris: { bg: "#f3f4f6", ic: "#4b5563", icon: "building" },
+  orange: { bg: "#ffedd5", ic: "#ea580c", icon: "star" }
 };
 function couleurForfait(p) {
   return COULEURS[p.couleur] || COULEURS.bleu;
@@ -55,7 +72,7 @@ function carteForfait(p) {
   const icon = document.createElement("div");
   icon.className = "pkg-icon";
   icon.style.background = col.bg;
-  icon.textContent = col.icon;
+  icon.innerHTML = iconeSvg(col.icon, col.ic);
   const txt = document.createElement("div");
   const h3 = document.createElement("h3");
   h3.textContent = p.nom;

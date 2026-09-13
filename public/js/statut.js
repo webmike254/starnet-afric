@@ -3,9 +3,9 @@
 // Page Statut : état du réseau + petit diagnostic client.
 
 const RESEAU_LABELS = {
-  operational: { tag: "Opérationnel", titre: "Tout fonctionne ✅", couleur: "#16a34a" },
-  degrade: { tag: "Dégradé", titre: "Dégradation temporaire 🟠", couleur: "#d97706" },
-  maintenance: { tag: "Maintenance", titre: "Maintenance planifiée 🔧", couleur: "#2563eb" }
+  operational: { tag: "Opérationnel", titre: "Tout fonctionne normalement", couleur: "#16a34a" },
+  degrade: { tag: "Dégradé", titre: "Dégradation temporaire", couleur: "#d97706" },
+  maintenance: { tag: "Maintenance", titre: "Maintenance planifiée", couleur: "#2563eb" }
 };
 
 async function chargerStatut() {
@@ -63,12 +63,12 @@ function lancerDiagnostic() {
       const used = document.getElementById("data-used");
       if (used) used.textContent = Math.round(0.41 * 100) + " GB";
 
-      box.innerHTML = "<p style='white-space:pre-line;line-height:1.9;'>" +
+      box.innerHTML = "<p style='white-space:pre-line;line-height:1.8;'>" +
         esc("Résultat estimé :\n") +
-        "📥 Téléchargement : " + down + " Mbps\n" +
-        "📤 Envoi : " + up + " Mbps\n" +
-        "📶 Ping : " + ping + " ms • Jitter : " + jitter + " ms\n" +
-        "🖥️ Serveur joignable en " + latence + " ms" +
+        "Téléchargement : " + down + " Mbps\n" +
+        "Envoi : " + up + " Mbps\n" +
+        "Ping : " + ping + " ms • Jitter : " + jitter + " ms\n" +
+        "Serveur joignable en " + latence + " ms" +
         "</p>";
     });
 }

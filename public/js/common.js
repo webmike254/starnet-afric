@@ -51,12 +51,23 @@ function esc(s) {
     ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
-// Logo texte des opérateurs (remplaçable par les fichiers officiels dans /assets/logos/<code>.png)
+// Logo des opérateurs — utilise les fichiers officiels dans /assets/logos/<code>.svg
+// quand ils existent (rendu image), sinon un badge texte classique.
+const LOGOS_SVG = { moov: 1, orange: 1, airtel: 1, mtn: 1, mpesa: 1, vodacom: 1, ecocash: 1, lumitel: 1, waafi: 1 };
 function logoOperateur(code, nom) {
   const el = document.createElement("div");
   el.className = "pay-badge";
-  el.textContent = nom || code;
   el.dataset.code = code;
+  const codeNorm = String(code || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (LOGOS_SVG[codeNorm]) {
+    const img = document.createElement("img");
+    img.src = "/assets/logos/" + codeNorm + ".svg";
+    img.alt = nom || code;
+    img.loading = "lazy";
+    el.appendChild(img);
+  } else {
+    el.textContent = nom || code;
+  }
   return el;
 }
 
@@ -303,7 +314,7 @@ function initPwa() {
     if (m.installed) return;
     setTimeout(() => {
       creerBanniere(
-        "📲 <b>Installez Starnét Afric</b> : appuyez sur <b>Partager</b> (icône ⬆️) " +
+        "<b>Installez Starnét Afric</b> : appuyez sur <b>Partager</b> (icône Partager) " +
         "puis choisissez <b>« Sur l'écran d'accueil »</b>." +
         '<div class="pwa-actions">' +
         '<button class="btn small" id="pwa-ios-ok">Compris</button>' +

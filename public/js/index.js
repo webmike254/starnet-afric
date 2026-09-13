@@ -92,11 +92,11 @@ async function chargerAccueil() {
     const banner = document.getElementById("reseau-banner");
     if (bannerMsg) {
       if (r.statut === "maintenance") {
-        bannerMsg.textContent = "⚠️ Maintenance planifiée : " + (r.message || "intervention en cours.");
+        bannerMsg.textContent = "Maintenance planifiée : " + (r.message || "intervention en cours.");
       } else if (r.statut === "degrade") {
-        bannerMsg.textContent = "🟠 Dégradation temporaire : " + (r.message || "le service reste accessible.");
+        bannerMsg.textContent = "Dégradation temporaire : " + (r.message || "le service reste accessible.");
       } else {
-        bannerMsg.textContent = "✅ " + (r.message || "Le réseau Starlink fonctionne normalement dans votre zone.");
+        bannerMsg.textContent = r.message || "Le réseau Starlink fonctionne normalement dans votre zone.";
       }
       if (bannerMsg.parentElement) {
         const b = bannerMsg.parentElement;
@@ -174,15 +174,15 @@ function lancerDiag() {
       const latence = Math.round(performance.now() - t0);
       afficherStatsReseau();
       box.innerHTML = "<p style='white-space:pre-line;line-height:1.8;'>" +
-        "📥 Téléchargement : " +
+        "Téléchargement : " +
         (document.getElementById("m-download") ? document.getElementById("m-download").textContent : "") +
-        " Mbps\n📤 Envoi : " +
+        " Mbps\nEnvoi : " +
         (document.getElementById("m-upload") ? document.getElementById("m-upload").textContent : "") +
-        " Mbps\n📶 Ping : " +
+        " Mbps\nPing : " +
         (document.getElementById("m-ping") ? document.getElementById("m-ping").textContent : "") +
         " ms • Jitter : " +
         (document.getElementById("m-jitter") ? document.getElementById("m-jitter").textContent : "") +
-        " ms\n🖥️ Serveur joignable en " + latence + " ms</p>";
+        " ms\nServeur joignable en " + latence + " ms</p>";
     });
 }
 
