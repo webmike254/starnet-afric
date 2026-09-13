@@ -155,8 +155,8 @@ function startFooter() {
         payEl.innerHTML = "";
         for (const m of d.methodes.slice(0, 5)) {
           const b = logoOperateur(m.code, m.nom);
-          b.style.background = m.couleur || "#334155";
-          b.style.color = m.texteCouleur || "#fff";
+          b.style.background = "#f3f4f6";
+          b.style.color = "#374151";
           b.title = m.nom;
           payEl.appendChild(b);
         }
@@ -259,7 +259,7 @@ function creerBannierePWA(i18nTitle) {
   return el;
 }
 
-const SVG_LOGO_SATELLITE = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><ellipse cx="100" cy="100" rx="74" ry="55" stroke="white" stroke-width="10" fill="none" transform="rotate(-25 100 100)"></ellipse><ellipse cx="100" cy="100" rx="43" ry="33" stroke="white" stroke-width="10" fill="none" transform="rotate(65 100 100)"></ellipse><circle cx="100" cy="100" r="12" fill="white"></circle></svg>';
+const SVG_LOGO_SATELLITE = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="100" fill="#000"></circle><ellipse cx="100" cy="100" rx="74" ry="55" stroke="white" stroke-width="10" fill="none" transform="rotate(-25 100 100)"></ellipse><ellipse cx="100" cy="100" rx="43" ry="33" stroke="white" stroke-width="10" fill="none" transform="rotate(65 100 100)"></ellipse><circle cx="100" cy="100" r="12" fill="white"></circle></svg>';
 
 function creerBanniere(html) {
   let el = document.getElementById("pwa-banner");

@@ -100,7 +100,7 @@ async function chargerAccueil() {
       }
       if (bannerMsg.parentElement) {
         const b = bannerMsg.parentElement;
-        b.style.borderLeft = r.statut === "operational" ? "4px solid #16a34a" : "4px solid #d97706";
+        b.style.borderLeft = r.statut === "operational" ? "4px solid #6b7280" : "4px solid #9ca3af";
       }
     }
   } catch (_) { /* laisse les valeurs par défaut */ }
@@ -117,20 +117,8 @@ async function chargerAccueil() {
     }
   } catch (_) { /* silencieux */ }
 
-  // Moyens de paiement sur la page d'accueil
-  try {
-    const d = await api("/api/payment-methods");
-    const strip = document.getElementById("pay-methods-home");
-    if (strip && d.methodes) {
-      d.methodes.forEach((m) => {
-        const b = logoOperateur(m.code, m.nom);
-        b.style.background = m.couleur || "#334155";
-        b.style.color = m.texteCouleur || "#fff";
-        b.title = m.nom;
-        strip.appendChild(b);
-      });
-    }
-  } catch (_) { /* silencieux */ }
+  // Moyens de paiement (charge silencieuse — section accueil supprimée)
+  // La liste reste disponible sur la page de commande et dans le pied de page.
 }
 
 // Statistiques réseau simulées (style starnetafric.com)

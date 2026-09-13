@@ -54,8 +54,8 @@ async function chargerOptions() {
       el.dataset.code = m.code;
 
       const badge = logoOperateur(m.code, m.nom);
-      badge.style.background = m.couleur || "#334155";
-      badge.style.color = m.texteCouleur || "#fff";
+      badge.style.background = "#f3f4f6";
+      badge.style.color = "#374151";
       badge.style.fontSize = "10px";
 
       const info = document.createElement("div");
@@ -125,14 +125,15 @@ async function soumettreCommande(e) {
   const alertBox = document.getElementById("order-alert");
   if (alertBox) alertBox.innerHTML = "";
 
-  const nom = document.getElementById("nom").value.trim();
   const telephone = document.getElementById("telephone").value.trim();
-  const email = document.getElementById("email").value.trim();
   const pays = document.getElementById("pays").value;
   const packageCode = document.getElementById("package").value;
+  // Le nom et l'email ne sont plus demandés : on garde un libellé simple depuis le téléphone.
+  const nom = "Client " + telephone.replace(/[^0-9]/g, "").slice(-9);
+  const email = "";
 
-  if (!nom || !telephone || !packageCode) {
-    return alertEl("Veuillez remplir au moins votre nom, votre téléphone et choisir un forfait.");
+  if (!telephone || !packageCode) {
+    return alertEl("Veuillez renseigner votre numéro de téléphone et choisir un forfait.");
   }
   if (!methodesPaiement.length) {
     return alertEl("Aucun moyen de paiement actif pour le moment. Contactez le support.");

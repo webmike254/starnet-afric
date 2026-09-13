@@ -52,7 +52,7 @@
       </div>
 
       <!-- Suivi d'une commande existante -->
-      <div class="card" style="margin-bottom:26px;background:#eef4ff;border-color:#c8dbfc;">
+      <div class="card" style="margin-bottom:26px;background:#f3f4f6;border-color:#d1d5db;">
         <h3>Vous avez déjà passé une commande ?</h3>
         <p style="margin:0 0 12px;color:#445;">Entrez votre référence (ex : SL-1001) pour suivre son avancement.</p>
         <form id="form-suivi" class="row" style="align-items:flex-end;">
@@ -75,18 +75,8 @@
 
           <form id="form-commande">
             <div class="field">
-              <label for="nom">Nom complet *</label>
-              <input class="input" id="nom" required placeholder="Ex : Jean-Marc Kabila" autocomplete="name">
-            </div>
-            <div class="grid" style="grid-template-columns:1fr 1fr;gap:12px;">
-              <div class="field">
-                <label for="telephone">Numéro de téléphone *</label>
-                <input class="input" id="telephone" required placeholder="+243 000 000 000" autocomplete="tel">
-              </div>
-              <div class="field">
-                <label for="email">Email</label>
-                <input class="input" id="email" type="email" placeholder="vous@exemple.com" autocomplete="email">
-              </div>
+              <label for="telephone">Numéro de téléphone *</label>
+              <input class="input" id="telephone" required placeholder="+243 000 000 000" autocomplete="tel" pattern="[+0-9 ]{7,20}" title="Entrez un numéro valide (ex : +243 000 000 000)">
             </div>
             <div class="field">
               <label for="pays">Pays *</label>

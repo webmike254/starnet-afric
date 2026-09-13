@@ -3,9 +3,9 @@
 // Page Statut : état du réseau + petit diagnostic client.
 
 const RESEAU_LABELS = {
-  operational: { tag: "Opérationnel", titre: "Tout fonctionne normalement", couleur: "#16a34a" },
-  degrade: { tag: "Dégradé", titre: "Dégradation temporaire", couleur: "#d97706" },
-  maintenance: { tag: "Maintenance", titre: "Maintenance planifiée", couleur: "#2563eb" }
+  operational: { tag: "Opérationnel", titre: "Tout fonctionne normalement", couleur: "#6b7280" },
+  degrade: { tag: "Dégradé", titre: "Dégradation temporaire", couleur: "#9ca3af" },
+  maintenance: { tag: "Maintenance", titre: "Maintenance planifiée", couleur: "#4b5563" }
 };
 
 async function chargerStatut() {
@@ -29,7 +29,9 @@ async function chargerStatut() {
 
     const sat = document.getElementById("sat-tag");
     if (sat) {
-      sat.className = "badge " + (r.statut === "operational" ? "ok" : "warn");
+      sat.className = "badge";
+      sat.style.background = info.couleur;
+      sat.style.color = "#fff";
       sat.textContent = info.tag;
     }
   } catch (_) {
