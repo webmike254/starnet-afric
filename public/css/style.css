@@ -47,6 +47,10 @@ body { margin: 0; font-family: var(--font); background: var(--bg); color: var(--
 /* Mise en page & boutons */
 .container { max-width: 1180px; margin: 0 auto; padding: 0 18px; }
 section { padding: 44px 0; }
+.commande-grid { grid-template-columns: minmax(0,1.2fr) minmax(280px,0.8fr); }
+@media (max-width: 920px) {
+  .commande-grid { grid-template-columns: 1fr; }
+}
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: none; background: var(--accent); color: #fff; font-weight: 700; font-size: 14.5px; padding: 11px 20px; border-radius: 999px; cursor: pointer; text-decoration: none; transition: box-shadow .15s, transform .12s; }
 .btn:hover { background: var(--accent2); box-shadow: 0 6px 14px rgba(0,0,0,.18); }
 .btn.ghost { background: #fff; border: 1.5px solid #d1d5db; color: #374151; }

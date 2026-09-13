@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="0; url=/forfaits.html">
   <title>Starnét Afric — Forfaits Internet Starlink</title>
+  <script>
+    // Page d'arrivée : ouvrir directement les Forfaits (pas le Statut).
+    if (window.location.pathname === "/" || window.location.pathname === "/index.html") {
+      window.location.replace("/forfaits.html");
+    }
+  </script>
   <meta name="description" content="STARNÉT AFRIC, revendeur de forfaits de données Starlink en Afrique. Commandez et payez en mobile money (Moov Money, Orange Money, Airtel Money).">
   <link rel="stylesheet" href="/css/style.css">
   <meta name="theme-color" content="#0b0f14">

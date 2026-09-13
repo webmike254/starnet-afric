@@ -2,7 +2,7 @@
   "name": "Starnét Afric — Forfaits Starlink",
   "short_name": "Starnét",
   "description": "STARNÉT AFRIC : forfaits de données Starlink, commandes et paiement mobile money en Afrique.",
-  "start_url": "/index.html",
+  "start_url": "/forfaits.html",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
