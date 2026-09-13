@@ -6,6 +6,7 @@ data/
 
 # Secrets / configuration locale
 .env
+secret-payload.json
 
 # Anciens fichiers téléchargés depuis le site précédent
 legacy/

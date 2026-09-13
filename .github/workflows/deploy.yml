@@ -1,0 +1,25 @@
+name: "Déploiement Vercel (auto)"
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Utiliser Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Déployer sur Vercel (production)
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: node scripts/api-deploy.js
