@@ -46,40 +46,80 @@ async function chargerOptions() {
     const pkgParam = getParam("pkg");
     if (pkgParam && packagesCfg.some((p) => p.code === pkgParam)) selPkg.value = pkgParam;
 
-    const wrap = document.getElementById("pay-opts");
-    wrap.innerHTML = "";
-    methodesPaiement.forEach((m) => {
-      const el = document.createElement("div");
-      el.className = "pay-opt";
-      el.dataset.code = m.code;
+    const wrap = document.getElementById("pm-opts");
+    if (wrap) {
+      wrap.innerHTML = "";
+      methodesPaiement.forEach((m) => {
+        const el = document.createElement("div");
+        el.className = "pm-opt";
+        el.dataset.code = m.code;
 
-      const badge = logoOperateur(m.code, m.nom);
-      badge.style.background = "#f3f4f6";
-      badge.style.color = "#374151";
-      badge.style.fontSize = "10px";
+        const badge = logoOperateur(m.code, m.nom);
+        badge.style.background = "#f3f4f6";
+        badge.style.color = "#374151";
+        badge.style.fontSize = "10px";
 
-      const info = document.createElement("div");
-      info.className = "pay-info";
-      info.innerHTML = "<h4>" + esc(m.nom) + "</h4><p>" + esc(m.description || "") + "</p>";
+        const info = document.createElement("div");
+        info.className = "pay-info";
+        info.innerHTML = "<h4>" + esc(m.nom) + "</h4><p>" + esc(m.description || "") + "</p>";
 
-      const radio = document.createElement("div");
-      radio.className = "radio";
+        const radio = document.createElement("div");
+        radio.className = "radio";
 
-      el.appendChild(badge);
-      el.appendChild(info);
-      el.appendChild(radio);
-      el.addEventListener("click", () => {
-        document.querySelectorAll(".pay-opt").forEach((x) => x.classList.remove("selected"));
-        el.classList.add("selected");
-        methodeSelectionnee = m.code;
-        majRecap();
+        el.appendChild(badge);
+        el.appendChild(info);
+        el.appendChild(radio);
+        el.addEventListener("click", () => selecterPaiement(m.code));
+        wrap.appendChild(el);
       });
-      wrap.appendChild(el);
-    });
+    }
 
     majRecap();
   } catch (e) {
     alertEl("Impossible de charger la configuration : " + e.message);
+  }
+}
+
+// ── Sélection du moyen de paiement (fenêtre pop-up) ──
+function selecterPaiement(code) {
+  methodeSelectionnee = code;
+  const m = methodesPaiement.find((x) => x.code === code);
+  document.querySelectorAll(".pm-opt").forEach((x) => {
+    x.classList.toggle("selected", x.dataset.code === code);
+  });
+  const choix = document.getElementById("pm-choix");
+  if (choix) choix.textContent = m ? m.nom : code;
+
+  const prev = document.getElementById("pm-preview");
+  if (prev && m) {
+    prev.className = "pm-preview";
+    prev.innerHTML = "";
+    const b = logoOperateur(m.code, m.nom);
+    b.style.background = "#f3f4f6";
+    b.style.color = "#374151";
+    prev.appendChild(b);
+    const t = document.createElement("span");
+    t.textContent = m.nom;
+    prev.appendChild(t);
+  }
+
+  fermerModalPaiement();
+  majRecap();
+}
+
+function ouvrirModalPaiement() {
+  const modal = document.getElementById("pm-modal");
+  if (modal) {
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+  }
+}
+
+function fermerModalPaiement() {
+  const modal = document.getElementById("pm-modal");
+  if (modal) {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
   }
 }
 
@@ -213,5 +253,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (sf) sf.addEventListener("submit", suivreCommande);
   const selPkg = document.getElementById("package");
   if (selPkg) selPkg.addEventListener("change", majRecap);
+
+  const btnPm = document.getElementById("btn-ouvrir-paiement");
+  if (btnPm) btnPm.addEventListener("click", ouvrirModalPaiement);
+  const pmClose = document.getElementById("pm-close");
+  if (pmClose) pmClose.addEventListener("click", fermerModalPaiement);
+  const pmModal = document.getElementById("pm-modal");
+  if (pmModal) pmModal.addEventListener("click", (e) => { if (e.target === pmModal) fermerModalPaiement(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") fermerModalPaiement(); });
+
   chargerOptions();
 });

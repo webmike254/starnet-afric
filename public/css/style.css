@@ -121,6 +121,19 @@ textarea.input { min-height: 110px; resize: vertical; }
 .pay-opt .pay-info p { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
 .pay-opt .radio { width: 20px; height: 20px; border: 2px solid #d1d5db; border-radius: 50%; flex: none; }
 .pay-opt.selected .radio { border-color: var(--accent); background: radial-gradient(circle at 50%, var(--accent) 58%, transparent); }
+
+/* Fenêtre pop-up de choix du paiement */
+.pm-modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(17,24,39,.55); z-index: 1000; padding: 18px; }
+.pm-modal.open { display: flex; }
+.pm-panel { width: min(92vw, 430px); background: #fff; border-radius: 18px; box-shadow: 0 20px 60px rgba(0,0,0,.3); padding: 20px 18px; max-height: 85vh; overflow-y: auto; }
+.pm-panel h3 { margin: 0; font-size: 18px; font-weight: 800; }
+.pm-close { background: none; border: none; color: #6b7280; font-size: 20px; cursor: pointer; line-height: 1; padding: 2px 6px; }
+.pm-close:hover { color: #111827; }
+.pm-opts { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.pm-opt { display: flex; align-items: center; gap: 14px; padding: 14px 12px; border: 1.5px solid #e5e7eb; border-radius: 14px; cursor: pointer; background: #fff; transition: border-color .15s, box-shadow .15s; }
+.pm-opt:hover { border-color: #111827; }
+.pm-opt.selected { border-color: #111827; background: #f3f4f6; box-shadow: 0 0 0 3px rgba(17,24,39,.1); }
+.pm-preview { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-weight: 700; color: #111827; }
 .pay-badge { width: 50px; height: 50px; border-radius: 12px; display: grid; place-items: center; font-weight: 850; font-size: 8px; letter-spacing: -.3px; color: #fff; line-height: 1.05; flex: none; }
 .pay-badge img { width: 30px; height: 30px; object-fit: contain; border-radius: 6px; background: #fff; padding: 3px; box-sizing: border-box; }
 .pay-strip .pay-badge img { width: 40px; height: 40px; }

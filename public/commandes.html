@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Commander un forfait — Starnét Afric</title>
-  <meta name="description" content="Commandez votre forfait Starlink et payez en toute sécurité en mobile money (Moov Money, Orange Money, Airtel Money). Suivi de commande inclus.">
+  <meta name="description" content="Commandez votre forfait Starlink et payez en toute sécurité en mobile money (Orange Money, Airtel Money). Suivi de commande inclus.">
   <link rel="stylesheet" href="/css/style.css">
   <meta name="theme-color" content="#0b0f14">
   <link rel="manifest" href="/manifest.webmanifest">
@@ -89,7 +89,11 @@
 
             <div class="field">
               <label>Moyen de paiement *</label>
-              <div class="pay-opts" id="pay-opts"><!-- rempli par JS --></div>
+              <button type="button" class="btn ghost" id="btn-ouvrir-paiement" style="width:100%;justify-content:space-between;text-align:left;padding:12px 16px;">
+                <span id="pm-choix">Choisir un moyen de paiement…</span>
+                <span class="pm-chevron" style="flex:none;">▾</span>
+              </button>
+              <div id="pm-preview" class="hidden"></div>
             </div>
 
             <button class="btn" type="submit" id="submit-commande" style="width:100%;justify-content:center;font-size:16px;">
@@ -136,6 +140,18 @@
       <div class="footer-bottom">© <span data-annee>2026</span> Starnét Afric. Tous droits réservés.</div>
     </div>
   </footer>
+
+  <!-- Fenêtre de sélection du moyen de paiement -->
+  <div class="pm-modal" id="pm-modal" aria-hidden="true">
+    <div class="pm-panel">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <h3>Choisissez votre paiement</h3>
+        <button class="pm-close" id="pm-close" type="button" aria-label="Fermer">✕</button>
+      </div>
+      <p class="muted" style="margin:6px 0 0;font-size:13.5px;">Payez en toute sécurité avec votre opérateur mobile money.</p>
+      <div class="pm-opts" id="pm-opts"><!-- rempli par JS --></div>
+    </div>
+  </div>
 
   <script src="/js/common.js"></script>
   <script src="/js/commandes.js"></script>
