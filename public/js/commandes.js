@@ -185,11 +185,10 @@ async function soumettreCommande(e) {
   const currency = p ? p.devise : "KES";
   const packageName = p ? p.nom : "Starlink Package";
 
-  let provider = "moov";
+  let provider = "orange";
   const code = String(methodeSelectionnee || "").toLowerCase();
   if (code.includes("airtel")) provider = "airtel";
-  else if (code.includes("orange")) provider = "orange";
-  else if (code.includes("moov")) provider = "moov";
+  else if (code.includes("orange") || code.includes("moov")) provider = "orange";
 
   const url = "/verify-payment.html"
     + "?provider=" + encodeURIComponent(provider)
