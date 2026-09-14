@@ -1,82 +1,67 @@
 "use strict";
 
-// Page Statut : état du réseau + petit diagnostic client.
-
-const RESEAU_LABELS = {
-  operational: { tag: "Opérationnel", titre: "Tout fonctionne normalement", couleur: "#6b7280" },
-  degrade: { tag: "Dégradé", titre: "Dégradation temporaire", couleur: "#9ca3af" },
-  maintenance: { tag: "Maintenance", titre: "Maintenance planifiée", couleur: "#4b5563" }
-};
-
-async function chargerStatut() {
-  try {
-    const c = await api("/api/config-public");
-    const r = c.reseau || {};
-    const info = RESEAU_LABELS[r.statut] || RESEAU_LABELS.operational;
-
-    const tag = document.getElementById("statut-tag");
-    if (tag) {
-      tag.style.background = info.couleur;
-      tag.style.color = "#fff";
-      tag.textContent = info.tag;
-    }
-    const titre = document.getElementById("statut-titre");
-    if (titre) titre.textContent = info.titre;
-    const msg = document.getElementById("statut-message");
-    if (msg) msg.textContent = r.message || "Le réseau Starlink fonctionne normalement dans votre zone.";
-    const horo = document.getElementById("statut-horodatage");
-    if (horo) horo.textContent = "Mis à jour : " + (r.misAJour ? new Date(r.misAJour).toLocaleString("fr-FR") : "à l'instant");
-
-    const sat = document.getElementById("sat-tag");
-    if (sat) {
-      sat.className = "badge";
-      sat.style.background = info.couleur;
-      sat.style.color = "#fff";
-      sat.textContent = info.tag;
-    }
-  } catch (_) {
-    const msg = document.getElementById("statut-message");
-    if (msg) msg.textContent = "Impossible de charger l'état du réseau.";
-  }
+function randStats() {
+  return {
+    download: (Math.random() * 80 + 90).toFixed(2),
+    upload: (Math.random() * 20 + 18).toFixed(2),
+    ping: Math.floor(Math.random() * 40 + 25),
+    jitter: Math.floor(Math.random() * 6 + 1),
+    dataUsed: (Math.random() * 40 + 15).toFixed(1),
+    dataLimit: 100
+  };
 }
 
-function lancerDiagnostic() {
-  const box = document.getElementById("diag-result");
-  if (!box) return;
-  box.innerHTML = "<p>Test en cours…</p>";
+function applyStats(s) {
+  const dl = document.getElementById("dl");
+  const ul = document.getElementById("ul");
+  const ping = document.getElementById("ping");
+  const jitter = document.getElementById("jitter");
+  if (dl) dl.textContent = s.download;
+  if (ul) ul.textContent = s.upload;
+  if (ping) ping.textContent = String(s.ping);
+  if (jitter) jitter.textContent = String(s.jitter);
+  const pct = Math.min(100, Math.round((s.dataUsed / s.dataLimit) * 100));
+  const dataPct = document.getElementById("dataPct");
+  const dataBar = document.getElementById("dataBar");
+  const dataUsed = document.getElementById("dataUsed");
+  const dataLimit = document.getElementById("dataLimit");
+  if (dataPct) dataPct.textContent = pct + "%";
+  if (dataBar) dataBar.style.width = pct + "%";
+  if (dataUsed) dataUsed.textContent = s.dataUsed + " GB";
+  if (dataLimit) dataLimit.textContent = s.dataLimit + " GB";
+}
 
-  const t0 = performance.now();
-  fetch("/api/health", { cache: "no-store" })
-    .then((r) => (r.ok ? r.json() : null))
-    .catch(() => null)
-    .then(() => {
-      const latence = Math.round(performance.now() - t0);
-      const down = (25 + Math.random() * 80).toFixed(1); // simulation indicative
-      const up = (8 + Math.random() * 25).toFixed(1);
-      const ping = Math.max(18, latence);
-      const jitter = (2 + Math.random() * 8).toFixed(1);
-
-      const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
-      set("m-download", down);
-      set("m-upload", up);
-      set("m-ping", ping);
-      set("m-jitter", jitter);
-
-      const used = document.getElementById("data-used");
-      if (used) used.textContent = Math.round(0.41 * 100) + " GB";
-
-      box.innerHTML = "<p style='white-space:pre-line;line-height:1.8;'>" +
-        esc("Résultat estimé :\n") +
-        "Téléchargement : " + down + " Mbps\n" +
-        "Envoi : " + up + " Mbps\n" +
-        "Ping : " + ping + " ms • Jitter : " + jitter + " ms\n" +
-        "Serveur joignable en " + latence + " ms" +
-        "</p>";
-    });
+function runDiagnostic() {
+  const btn = document.getElementById("diagBtn");
+  if (!btn) return;
+  btn.disabled = true;
+  btn.textContent = "Analyse en cours…";
+  setTimeout(() => {
+    applyStats(randStats());
+    btn.disabled = false;
+    btn.textContent = "⚡ Lancer le Test de Diagnostic";
+  }, 2200);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  chargerStatut();
-  const btn = document.getElementById("btn-diag");
-  if (btn) btn.addEventListener("click", lancerDiagnostic);
+  applyStats(randStats());
+  const btn = document.getElementById("diagBtn");
+  if (btn) btn.addEventListener("click", runDiagnostic);
+
+  // After payment verification redirect
+  const q = new URLSearchParams(location.search);
+  if (q.get("paid") === "1" || sessionStorage.getItem("starnet_paid") === "1") {
+    const el = document.getElementById("paySuccess");
+    if (el) el.classList.add("show");
+    try { sessionStorage.removeItem("starnet_paid"); } catch (_) {}
+  }
+
+  // Country label
+  const title = document.getElementById("serviceTitle");
+  if (title) {
+    const cur = q.get("cur") || "";
+    if (cur === "KES") title.textContent = "Starlink Kenya";
+    else if (cur === "CDF") title.textContent = "Starlink RDC";
+    else title.textContent = "Starlink";
+  }
 });

