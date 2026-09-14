@@ -1,6 +1,6 @@
 /* Service Worker STARNÉT AFRIC — PWA installable & consultation hors-ligne. */
 
-const CACHE = "starnet-v1";
+const CACHE = "starnet-v2";
 const CORE = [
   "/",
   "/index.html",
@@ -68,7 +68,21 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Actifs statiques : cache d'abord.
+  // Actifs statiques : réseau d'abord pour JS (évite overlay/auth bloqués par ancien cache).
+  if (url.pathname.startsWith("/js/")) {
+    event.respondWith(
+      fetch(event.request)
+        .then((res) => {
+          const copy = res.clone();
+          caches.open(CACHE).then((c) => c.put(event.request, copy)).catch(() => {});
+          return res;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Autres actifs : cache d'abord.
   event.respondWith(
     caches.match(event.request).then(
       (cached) =>
