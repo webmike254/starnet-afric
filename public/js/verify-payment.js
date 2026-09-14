@@ -142,7 +142,7 @@
 
   function goStatus() {
     try { sessionStorage.setItem("starnet_paid", "1"); } catch (_) {}
-    location.href = "/statut.html?paid=1";
+    location.href = "/index.html?paid=1";
   }
 
   document.getElementById("btnNext").addEventListener("click", async () => {
