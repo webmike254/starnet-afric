@@ -1,0 +1,6 @@
+/* Footer 2 colonnes sans Contact & support */
+footer .footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+}
