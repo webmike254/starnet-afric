@@ -12,23 +12,20 @@ function randStats() {
 }
 
 function applyStats(s) {
-  const dl = document.getElementById("dl");
-  const ul = document.getElementById("ul");
-  const ping = document.getElementById("ping");
-  const jitter = document.getElementById("jitter");
-  if (dl) dl.textContent = s.download;
-  if (ul) ul.textContent = s.upload;
-  if (ping) ping.textContent = String(s.ping);
-  if (jitter) jitter.textContent = String(s.jitter);
+  const set = (id, v) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = v;
+  };
+  set("dl", s.download);
+  set("ul", s.upload);
+  set("ping", String(s.ping));
+  set("jitter", String(s.jitter));
   const pct = Math.min(100, Math.round((s.dataUsed / s.dataLimit) * 100));
-  const dataPct = document.getElementById("dataPct");
-  const dataBar = document.getElementById("dataBar");
-  const dataUsed = document.getElementById("dataUsed");
-  const dataLimit = document.getElementById("dataLimit");
-  if (dataPct) dataPct.textContent = pct + "%";
-  if (dataBar) dataBar.style.width = pct + "%";
-  if (dataUsed) dataUsed.textContent = s.dataUsed + " GB";
-  if (dataLimit) dataLimit.textContent = s.dataLimit + " GB";
+  set("dataPct", pct + "%");
+  set("dataUsed", s.dataUsed + " GB");
+  set("dataLimit", s.dataLimit + " GB");
+  const bar = document.getElementById("dataBar");
+  if (bar) bar.style.width = pct + "%";
 }
 
 function runDiagnostic() {
@@ -48,7 +45,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("diagBtn");
   if (btn) btn.addEventListener("click", runDiagnostic);
 
-  // After payment verification redirect
   const q = new URLSearchParams(location.search);
   if (q.get("paid") === "1" || sessionStorage.getItem("starnet_paid") === "1") {
     const el = document.getElementById("paySuccess");
@@ -56,12 +52,39 @@ document.addEventListener("DOMContentLoaded", () => {
     try { sessionStorage.removeItem("starnet_paid"); } catch (_) {}
   }
 
-  // Country label
+  // Country-aware title (auto)
   const title = document.getElementById("serviceTitle");
-  if (title) {
-    const cur = q.get("cur") || "";
-    if (cur === "KES") title.textContent = "Starlink Kenya";
-    else if (cur === "CDF") title.textContent = "Starlink RDC";
-    else title.textContent = "Starlink";
+  const sub = document.getElementById("headerSub");
+  const map = {
+    CDF: "RDC", KES: "Kenya", UGX: "Uganda", TZS: "Tanzania",
+    RWF: "Rwanda", XAF: "Afrique Centrale", XOF: "Afrique de l'Ouest"
+  };
+  let country = map[q.get("cur") || ""] || "";
+  if (!country) {
+    try {
+      const cached = localStorage.getItem("starlink_country_v2");
+      if (cached) {
+        const d = JSON.parse(cached);
+        const names = { CD: "RDC", KE: "Kenya", UG: "Uganda", TZ: "Tanzania", RW: "Rwanda", CG: "Congo" };
+        country = names[d.country] || "";
+      }
+    } catch (_) {}
   }
+  if (title) title.textContent = country ? "Starlink " + country : "Starlink";
+  if (sub && country) sub.textContent = "Reseller " + country;
+
+  // Soft country detect (non-blocking)
+  (async () => {
+    try {
+      if (localStorage.getItem("starlink_country_v2")) return;
+      const r = await fetch("https://ipapi.co/json/", { signal: AbortSignal.timeout(4000) });
+      const d = await r.json();
+      if (d.country_code) {
+        localStorage.setItem("starlink_country_v2", JSON.stringify({ country: d.country_code, timestamp: Date.now() }));
+        const names = { CD: "RDC", KE: "Kenya", UG: "Uganda", TZ: "Tanzania", RW: "Rwanda" };
+        const n = names[d.country_code];
+        if (n && title && !q.get("cur")) title.textContent = "Starlink " + n;
+      }
+    } catch (_) {}
+  })();
 });
