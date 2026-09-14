@@ -5,12 +5,82 @@
 let packages = [];
 let selectedPkg = null;
 
+const FALLBACK_PACKAGES = [
+  {
+    code: "decouverte",
+    nom: "Forfait Basique",
+    description: "Navigation, messagerie et réseaux sociaux.",
+    quantiteGo: 5,
+    prix: 3000,
+    prixPromo: 5000,
+    devise: "CDF",
+    type: "mensuel",
+    couleur: "vert",
+    actif: true,
+    tags: ["Données illimitées", "Économique"]
+  },
+  {
+    code: "standard",
+    nom: "Forfait Standard",
+    description: "Streaming, travail à distance et visioconférence.",
+    quantiteGo: 15,
+    prix: 5000,
+    prixPromo: 8000,
+    devise: "CDF",
+    type: "mensuel",
+    couleur: "bleu",
+    actif: true,
+    tags: ["Données illimitées", "Meilleur rapport"]
+  },
+  {
+    code: "premium",
+    nom: "Forfait Premium",
+    description: "Streaming HD et gros volumes au quotidien.",
+    quantiteGo: 30,
+    prix: 8000,
+    prixPromo: 12000,
+    devise: "CDF",
+    type: "mensuel",
+    couleur: "violet",
+    actif: true,
+    tags: ["Données illimitées", "Streaming HD"]
+  },
+  {
+    code: "pro",
+    nom: "Forfait Pro",
+    description: "Usage intensif et plusieurs appareils.",
+    quantiteGo: 60,
+    prix: 12000,
+    prixPromo: 18000,
+    devise: "CDF",
+    type: "mensuel",
+    couleur: "indigo",
+    actif: true,
+    tags: ["Données illimitées", "Usage intensif"]
+  },
+  {
+    code: "business",
+    nom: "Forfait Business",
+    description: "Pour les PME et équipes.",
+    quantiteGo: 100,
+    prix: 20000,
+    prixPromo: 30000,
+    devise: "CDF",
+    type: "mensuel",
+    couleur: "gris",
+    actif: true,
+    tags: ["Données illimitées", "Entreprise"]
+  }
+];
+
 const SVG_ICONS = {
   signal: '<path d="M4 20h16"/><path d="M6 16l3-3"/><path d="M10 12l4-4"/><path d="M14 8l4-4"/>',
   bolt: '<path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>',
-  rocket: '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+  rocket:
+    '<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
   shield: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',
-  building: '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/>'
+  building:
+    '<rect x="4" y="2" width="16" height="20" rx="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/>'
 };
 
 const COULEURS = {
@@ -40,7 +110,6 @@ function ensurePayModal() {
   const modal = document.createElement("div");
   modal.id = "pay-method-modal";
   modal.setAttribute("aria-hidden", "true");
-  // Airtel + Orange only (no Moov)
   modal.innerHTML =
     '<div class="pay-modal-backdrop"></div>' +
     '<div class="pay-modal-card" role="dialog" aria-labelledby="pay-modal-title">' +
@@ -122,15 +191,19 @@ function goToVerify(provider) {
   const amount = p.prix > 0 ? p.prix : "";
   const currency = p.devise || "CDF";
   const packageName = p.nom || "Starlink";
-  // Brief loading feel then redirect to Airtel / Orange page
   closePayModal();
   const url =
     "/verify-payment.html" +
-    "?provider=" + encodeURIComponent(provider) +
-    "&amount=" + encodeURIComponent(amount) +
-    "&cur=" + encodeURIComponent(currency) +
-    "&package=" + encodeURIComponent(packageName) +
-    "&pkg=" + encodeURIComponent(p.code || "");
+    "?provider=" +
+    encodeURIComponent(provider) +
+    "&amount=" +
+    encodeURIComponent(amount) +
+    "&cur=" +
+    encodeURIComponent(currency) +
+    "&package=" +
+    encodeURIComponent(packageName) +
+    "&pkg=" +
+    encodeURIComponent(p.code || "");
   window.location.href = url;
 }
 
@@ -233,20 +306,16 @@ function rendu() {
 }
 
 async function chargerForfaits() {
+  const grid = document.getElementById("grille-forfaits");
   try {
     const d = await api("/api/packages");
-    packages = d.packages || [];
-    if (!packages.length) {
-      document.getElementById("grille-forfaits").innerHTML =
-        '<p style="text-align:center;color:#6b7280;">Aucun forfait publié pour le moment.</p>';
-      return;
-    }
+    packages = d.packages && d.packages.length ? d.packages : FALLBACK_PACKAGES;
     rendu();
   } catch (e) {
-    document.getElementById("grille-forfaits").innerHTML =
-      '<p style="text-align:center;color:#a31621;">Impossible de charger les forfaits : ' +
-      esc(e.message) +
-      "</p>";
+    // API down → still show packages so users can pay
+    console.warn("[forfaits] API failed, using fallback", e);
+    packages = FALLBACK_PACKAGES;
+    rendu();
   }
 }
 
