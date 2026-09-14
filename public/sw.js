@@ -1,11 +1,10 @@
 /* Service Worker STARNÉT AFRIC */
 
-const CACHE = "starnet-v5";
+const CACHE = "starnet-v6";
 const CORE = [
   "/", "/index.html", "/forfaits.html", "/commandes.html", "/statut.html",
   "/contact.html", "/verify-payment.html", "/404.html",
-  "/css/style.css", "/js/common.js", "/js/index.js", "/js/forfaits.js",
-  "/js/commandes.js", "/js/statut.js", "/js/contact.js",
+  "/css/style.css", "/js/common.js", "/js/forfaits.js",
   "/manifest.webmanifest", "/assets/favicon.svg",
   "/assets/icon-192.png", "/assets/icon-512.png"
 ];

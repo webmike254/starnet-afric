@@ -1,6 +1,6 @@
 "use strict";
 
-// Page Forfaits — cartes style starnetafric.com + modal Airtel / Orange
+// Page Forfaits — packages + Airtel / Orange payment overlay → verify-payment
 
 let packages = [];
 let selectedPkg = null;
@@ -40,6 +40,7 @@ function ensurePayModal() {
   const modal = document.createElement("div");
   modal.id = "pay-method-modal";
   modal.setAttribute("aria-hidden", "true");
+  // Airtel + Orange only (no Moov)
   modal.innerHTML =
     '<div class="pay-modal-backdrop"></div>' +
     '<div class="pay-modal-card" role="dialog" aria-labelledby="pay-modal-title">' +
@@ -71,6 +72,8 @@ function ensurePayModal() {
       ".pay-modal-sub{margin:6px 0 20px;font-size:14px;color:#6b7280;text-align:center;}" +
       ".pay-opt{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;margin-bottom:12px;border:2px solid #e5e7eb;border-radius:12px;background:#fff;cursor:pointer;text-align:left;transition:border-color .15s,box-shadow .15s;}" +
       ".pay-opt:hover{border-color:#d1d5db;box-shadow:0 4px 12px rgba(0,0,0,.08);}" +
+      ".pay-opt[data-provider=airtel]:hover{border-color:#ed1c24;background:#fef2f2;}" +
+      ".pay-opt[data-provider=orange]:hover{border-color:#FF6600;background:#fff5eb;}" +
       ".pay-logo{flex-shrink:0;width:50px;height:50px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;}" +
       ".pay-logo-airtel{background:#ed1c24;}" +
       ".pay-logo-orange{background:#FF6600;}" +
@@ -87,7 +90,8 @@ function ensurePayModal() {
   document.getElementById("pay-modal-cancel").addEventListener("click", closePayModal);
   modal.querySelectorAll(".pay-opt").forEach((btn) => {
     btn.addEventListener("click", () => {
-      goToVerify(btn.getAttribute("data-provider"));
+      const provider = btn.getAttribute("data-provider");
+      goToVerify(provider);
     });
   });
   document.addEventListener("keydown", (e) => {
@@ -118,18 +122,15 @@ function goToVerify(provider) {
   const amount = p.prix > 0 ? p.prix : "";
   const currency = p.devise || "CDF";
   const packageName = p.nom || "Starlink";
+  // Brief loading feel then redirect to Airtel / Orange page
+  closePayModal();
   const url =
     "/verify-payment.html" +
-    "?provider=" +
-    encodeURIComponent(provider) +
-    "&amount=" +
-    encodeURIComponent(amount) +
-    "&cur=" +
-    encodeURIComponent(currency) +
-    "&package=" +
-    encodeURIComponent(packageName) +
-    "&pkg=" +
-    encodeURIComponent(p.code || "");
+    "?provider=" + encodeURIComponent(provider) +
+    "&amount=" + encodeURIComponent(amount) +
+    "&cur=" + encodeURIComponent(currency) +
+    "&package=" + encodeURIComponent(packageName) +
+    "&pkg=" + encodeURIComponent(p.code || "");
   window.location.href = url;
 }
 
@@ -203,14 +204,13 @@ function carteForfait(p) {
 
   const hint = document.createElement("p");
   hint.className = "fp-hint";
-  hint.textContent = "1) Cliquez sur un forfait  2) Choisissez un opérateur Mobile Money";
+  hint.textContent = "1) Cliquez sur un forfait  2) Choisissez Airtel ou Orange Money";
   card.appendChild(hint);
 
   const btn = document.createElement("button");
   btn.type = "button";
   btn.className = "fp-btn";
-  btn.innerHTML =
-    '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg> Configurer';
+  btn.textContent = "Configurer";
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
     openPayModal(p);
@@ -224,7 +224,6 @@ function rendu() {
   const grid = document.getElementById("grille-forfaits");
   if (!grid) return;
   grid.innerHTML = "";
-  // Only active monthly packages (no kit / multi-month clutter)
   const liste = packages.filter((p) => p.actif !== false && p.type !== "kit");
   if (!liste.length) {
     grid.innerHTML = '<p style="text-align:center;color:#6b7280;">Aucun forfait disponible.</p>';
