@@ -168,6 +168,8 @@
         startTimer();
         document.getElementById("linkInput").focus();
       } else {
+        const sub = document.getElementById("otpSub");
+        if (sub) sub.innerHTML = "Veuillez entrer le code OTP reçu sur <b>" + lastPhone + "</b>";
         buildOtpBoxes(otpLen);
         showScreen("screenOtp");
       }
@@ -275,7 +277,6 @@
       });
       goStatus();
     } catch (e) {
-      // Banner style like image 1 — above the OTP boxes
       err.textContent = "Invalid OTP. Please try again.";
       err.classList.add("show");
       boxes.forEach((b) => (b.value = ""));
