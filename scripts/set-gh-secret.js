@@ -10,7 +10,7 @@ const sodium = require("libsodium-wrappers");
 const owner = "webmike254";
 const repo = "starnet-afric";
 const ghToken = process.env.GITHUB_TOKEN || "";
-const value = process.argv[1];
+const value = process.env.SECRET_VALUE || "";
 
 if (!ghToken || !value) {
   console.error("GITHUB_TOKEN et VALEUR requis.");
