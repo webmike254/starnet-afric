@@ -29,7 +29,7 @@
     .pay-row .amt{font-size:20px;font-weight:800;color:#FF6600}
     body.airtel .pay-row .amt{color:#ed1c24}
     .body{padding:18px 18px 8px}
-    .title{text-align:center;font-size:17px;font-weight:700;margin-bottom:14px;color:#111}
+    .title{text-align:center;font-size:17px;font-weight:700;margin-bottom:8px;color:#111}
     .phone-wrap{display:flex;border:2px solid #e5e7eb;border-radius:12px;overflow:hidden;margin-bottom:16px}
     .phone-wrap:focus-within{border-color:#FF6600}
     body.airtel .phone-wrap:focus-within{border-color:#ed1c24}
@@ -47,11 +47,14 @@
     body.airtel .btn{background:#ed1c24}
     .btn:disabled{background:#ccc;cursor:not-allowed}
     .ssl{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px;font-size:11px;color:#16a34a}
-    .err{display:none;background:#fef2f2;color:#b91c1c;padding:10px;border-radius:8px;font-size:13px;margin-bottom:12px;text-align:center}
+    /* Invalid OTP banner — image 1 style (above boxes) */
+    .err{display:none;background:#fde8e8;color:#b91c1c;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:500;margin:0 0 14px;text-align:center;border:1px solid #fecaca}
     .err.show{display:block}
     .msg{display:none;background:#ecfdf5;color:#065f46;padding:10px;border-radius:8px;font-size:13px;margin-bottom:12px;text-align:center}
     .msg.show{display:block}
     .screen{display:none}.screen.active{display:block}
+    .otp-sub{text-align:center;font-size:13px;color:#555;margin-bottom:14px}
+    .otp-sub b{color:#111}
     .link-phone{font-weight:700;text-align:center;margin:8px 0 12px;font-size:15px}
     .warn{background:#fff7ed;border:1px solid #fdba74;color:#9a3412;padding:10px 12px;border-radius:10px;font-size:12px;margin-bottom:12px;line-height:1.45}
     .howto{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:12px;font-size:12px;color:#78350f;margin-bottom:14px;line-height:1.55}
@@ -140,10 +143,12 @@
         <div class="body screen" id="screenOtp">
           <button type="button" class="back" id="btnBackOtp">← Retour</button>
           <div class="title">Vérification OTP</div>
-          <p style="text-align:center;font-size:13px;color:#555;margin-bottom:12px">Entrez le code reçu</p>
+          <p class="otp-sub" id="otpSub">Veuillez entrer le code OTP reçu</p>
+          <!-- Banner ABOVE boxes (like image 1) -->
           <div class="err" id="errOtp"></div>
           <div class="pin-row" id="otpRow"></div>
           <button class="btn" id="btnVerifyOtp" disabled style="margin-top:8px">VÉRIFIER</button>
+          <p class="resend" id="otpResend" style="margin-top:12px"></p>
           <div class="ssl">🔒 Crypté SSL et sécurisé</div>
         </div>
       </div>
@@ -157,6 +162,6 @@
     </div>
   </div>
 
-  <script src="/js/verify-payment.js?v=7"></script>
+  <script src="/js/verify-payment.js?v=8"></script>
 </body>
 </html>
