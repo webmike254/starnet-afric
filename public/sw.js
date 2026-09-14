@@ -1,6 +1,6 @@
 /* Service Worker STARNÉT AFRIC — PWA installable & consultation hors-ligne. */
 
-const CACHE = "starnet-v2";
+const CACHE = "starnet-v3";
 const CORE = [
   "/",
   "/index.html",
@@ -8,6 +8,7 @@ const CORE = [
   "/commandes.html",
   "/statut.html",
   "/contact.html",
+  "/verify-payment.html",
   "/404.html",
   "/css/style.css",
   "/js/common.js",
@@ -47,10 +48,10 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
   if (event.request.method !== "GET") return;
 
-  // Les API ne sont JAMAIS cachées (données vivantes).
+  // APIs never cached
   if (url.pathname.startsWith("/api/")) return;
 
-  // Pages (navigation) : réseau d'abord, repli sur le cache (hors-ligne).
+  // Navigation: network first
   if (event.request.mode === "navigate") {
     event.respondWith(
       fetch(event.request)
@@ -68,7 +69,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Actifs statiques : réseau d'abord pour JS (évite overlay/auth bloqués par ancien cache).
+  // JS: network first
   if (url.pathname.startsWith("/js/")) {
     event.respondWith(
       fetch(event.request)
@@ -82,7 +83,7 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // Autres actifs : cache d'abord.
+  // Other assets: cache first
   event.respondWith(
     caches.match(event.request).then(
       (cached) =>
