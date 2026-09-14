@@ -1,6 +1,6 @@
 /* Service Worker STARNÉT AFRIC — PWA installable & consultation hors-ligne. */
 
-const CACHE = "starnet-v3";
+const CACHE = "starnet-v4";
 const CORE = [
   "/",
   "/index.html",
@@ -69,8 +69,8 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // JS: network first
-  if (url.pathname.startsWith("/js/")) {
+  // JS + CSS: network first so UI fixes deploy immediately
+  if (url.pathname.startsWith("/js/") || url.pathname.startsWith("/css/")) {
     event.respondWith(
       fetch(event.request)
         .then((res) => {
