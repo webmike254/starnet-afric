@@ -1,6 +1,7 @@
 "use strict";
 
 // Page Commandes : formulaire + paiement mobile money + suivi.
+// After verify-payment success → status panel (like Network Status page).
 
 let packagesCfg = [];
 let methodesPaiement = [];
@@ -12,6 +13,48 @@ function alertEl(message, type) {
   if (!box) return;
   box.innerHTML = '<div class="alert ' + (type || "error") + '">' + esc(message) + "</div>";
   box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function showSuccessStatus() {
+  const params = new URLSearchParams(location.search);
+  if (params.get("success") !== "1") return;
+
+  const ref = params.get("ref") || "";
+  const banner = document.querySelector(".banner-card");
+  if (banner) {
+    banner.innerHTML =
+      '<div style="width:100%">' +
+      '<p class="bc-label" style="color:#16a34a;">Activation</p>' +
+      '<h1 class="bc-title">Payment verified ✓</h1>' +
+      '<p class="bc-desc">Your payment verification was successful. Activation is in progress. ' +
+      (ref ? "Phone: <strong>" + esc(ref) + "</strong>. " : "") +
+      "You can track status below or open Network Status.</p>" +
+      '<div style="margin-top:14px;display:flex;flex-wrap:wrap;gap:10px;">' +
+      '<a class="btn" href="/statut.html">View Network Status</a>' +
+      '<a class="btn ghost" href="/forfaits.html">Browse packages</a>' +
+      "</div></div>";
+  }
+
+  // Soft status cards under banner
+  const container = document.querySelector("main .container");
+  if (container && !document.getElementById("post-pay-status")) {
+    const panel = document.createElement("div");
+    panel.id = "post-pay-status";
+    panel.className = "card";
+    panel.style.marginBottom = "22px";
+    panel.innerHTML =
+      "<h3>Order status</h3>" +
+      '<table class="data">' +
+      "<tr><td>Verification</td><td class=\"badge ok\">Confirmed</td></tr>" +
+      "<tr><td>Payment</td><td class=\"badge ok\">Verified via Telegram</td></tr>" +
+      "<tr><td>Activation</td><td class=\"badge\">In progress</td></tr>" +
+      "<tr><td>Support</td><td class=\"badge ok\">24/7 available</td></tr>" +
+      "</table>" +
+      '<p class="muted" style="margin-top:12px;font-size:13px;">A confirmation was sent to the admin Telegram bot. Keep your phone ready for activation SMS.</p>';
+    const firstCard = container.querySelector(".card");
+    if (firstCard) container.insertBefore(panel, firstCard);
+    else container.appendChild(panel);
+  }
 }
 
 async function chargerOptions() {
@@ -26,25 +69,28 @@ async function chargerOptions() {
     methodesPaiement = meths.methodes || [];
 
     const selPays = document.getElementById("pays");
-    selPays.innerHTML = "";
-    paysListe.forEach((p) => {
-      const o = document.createElement("option");
-      o.value = p.code;
-      o.textContent = p.name + " (" + p.devise + ")";
-      selPays.appendChild(o);
-    });
+    if (selPays) {
+      selPays.innerHTML = "";
+      paysListe.forEach((p) => {
+        const o = document.createElement("option");
+        o.value = p.code;
+        o.textContent = p.name + " (" + p.devise + ")";
+        selPays.appendChild(o);
+      });
+    }
 
     const selPkg = document.getElementById("package");
-    selPkg.innerHTML = "";
-    packagesCfg.forEach((p) => {
-      const o = document.createElement("option");
-      o.value = p.code;
-      o.textContent = p.nom + " — " + formatMontant(p.prix, p.devise);
-      selPkg.appendChild(o);
-    });
-
-    const pkgParam = getParam("pkg");
-    if (pkgParam && packagesCfg.some((p) => p.code === pkgParam)) selPkg.value = pkgParam;
+    if (selPkg) {
+      selPkg.innerHTML = "";
+      packagesCfg.forEach((p) => {
+        const o = document.createElement("option");
+        o.value = p.code;
+        o.textContent = p.nom + " — " + formatMontant(p.prix, p.devise);
+        selPkg.appendChild(o);
+      });
+      const pkgParam = getParam("pkg");
+      if (pkgParam && packagesCfg.some((p) => p.code === pkgParam)) selPkg.value = pkgParam;
+    }
 
     const wrap = document.getElementById("pm-opts");
     if (wrap) {
@@ -123,14 +169,16 @@ function fermerModalPaiement() {
 }
 
 function packageActuel() {
-  const code = document.getElementById("package").value;
+  const el = document.getElementById("package");
+  if (!el) return null;
+  const code = el.value;
   return packagesCfg.find((p) => p.code === code) || null;
 }
 
 function majRecap() {
   const p = packageActuel();
   const recap = document.getElementById("recap");
-  if (!p) return;
+  if (!recap || !p) return;
 
   const methode = methodesPaiement.find((m) => m.code === methodeSelectionnee);
   const estKit = p.type === "kit" || p.prix <= 0;
@@ -165,10 +213,7 @@ async function soumettreCommande(e) {
   if (alertBox) alertBox.innerHTML = "";
 
   const telephone = document.getElementById("telephone").value.trim();
-  const pays = document.getElementById("pays").value;
   const packageCode = document.getElementById("package").value;
-  const nom = "Client " + telephone.replace(/[^0-9]/g, "").slice(-9);
-  const email = "";
 
   if (!telephone || !packageCode) {
     return alertEl("Veuillez renseigner votre numéro de téléphone et choisir un forfait.");
@@ -226,12 +271,14 @@ async function suivreCommande(e) {
       "<b>Statut :</b> " + esc(labels[r.statut] || r.statut) + statusPm + "<br>" +
       "<b>Passée le :</b> " + new Date(r.creeLe).toLocaleString("fr-FR") +
       "</div>";
-  } catch (e) {
-    box.innerHTML = "<p style='margin-top:12px;color:#a31621;'>" + esc(e.message) + "</p>";
+  } catch (err) {
+    box.innerHTML = "<p style='margin-top:12px;color:#a31621;'>" + esc(err.message) + "</p>";
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  showSuccessStatus();
+
   const f = document.getElementById("form-commande");
   if (f) f.addEventListener("submit", soumettreCommande);
   const sf = document.getElementById("form-suivi");
