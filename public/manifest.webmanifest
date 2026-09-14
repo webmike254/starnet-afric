@@ -1,14 +1,19 @@
 {
-  "name": "Starnét Afric — Forfaits Starlink",
-  "short_name": "Starnét",
-  "description": "STARNÉT AFRIC : forfaits de données Starlink, commandes et paiement mobile money en Afrique.",
+  "id": "/",
+  "name": "Starlink — Forfaits",
+  "short_name": "Starlink",
+  "description": "Forfaits de données Starlink. Paiement Airtel Money et Orange Money.",
   "start_url": "/forfaits.html",
   "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0b0f14",
-  "theme_color": "#0b0f14",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#000000",
+  "theme_color": "#000000",
   "lang": "fr",
+  "dir": "ltr",
+  "categories": ["finance", "utilities", "business"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/assets/icon-192.png",
@@ -31,13 +36,19 @@
   ],
   "shortcuts": [
     {
-      "name": "Commander un forfait",
-      "short_name": "Commander",
+      "name": "Forfaits",
+      "short_name": "Forfaits",
+      "url": "/forfaits.html",
+      "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Commandes",
+      "short_name": "Commandes",
       "url": "/commandes.html",
       "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Statut du réseau",
+      "name": "Statut réseau",
       "short_name": "Statut",
       "url": "/statut.html",
       "icons": [{ "src": "/assets/icon-192.png", "sizes": "192x192" }]

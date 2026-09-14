@@ -1,6 +1,6 @@
 "use strict";
 
-/* Importants utilitaires partagés du site public. */
+/* Shared utilities + PWA install (Starlink) */
 
 function getParam(nom) {
   return new URLSearchParams(window.location.search).get(nom);
@@ -67,21 +67,18 @@ function logoOperateur(code, nom) {
 async function hydrateFooter() {
   try {
     const c = await api("/api/config-public");
-    const els = document.querySelectorAll("[data-site]");
-    for (const el of els) {
+    document.querySelectorAll("[data-site]").forEach((el) => {
       const key = el.getAttribute("data-site");
       const val = c.site && c.site[key];
       if (val) el.textContent = val;
-    }
+    });
   } catch (_) {}
 }
 
 function initNav() {
   const burger = document.querySelector(".nav-burger");
   const links = document.querySelector(".nav-links");
-  if (burger && links) {
-    burger.addEventListener("click", () => links.classList.toggle("open"));
-  }
+  if (burger && links) burger.addEventListener("click", () => links.classList.toggle("open"));
   const actuel = location.pathname.split("/").pop() || "index.html";
   document.querySelectorAll(".nav-links a").forEach((a) => {
     const href = a.getAttribute("href").split("?")[0].split("/").pop();
@@ -189,18 +186,27 @@ function initLangToggle() {
   appliquerLangue();
 }
 
+/* ========== PWA install (same UI banner) ========== */
+
 function pwaMemo() {
   try { return JSON.parse(localStorage.getItem("starnet_pwa") || "{}"); }
   catch (_) { return {}; }
 }
-
-function pwaSave(obj) {
-  try { localStorage.setItem("starnet_pwa", JSON.stringify(obj)); } catch (_) {}
+function pwaSave(patch) {
+  try {
+    const cur = pwaMemo();
+    localStorage.setItem("starnet_pwa", JSON.stringify(Object.assign(cur, patch)));
+  } catch (_) {}
 }
-
 function basculerBanniere(visible) {
   const el = document.getElementById("pwa-banner");
   if (el) el.classList.toggle("hidden", !visible);
+}
+function isStandalone() {
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true
+  );
 }
 
 const SVG_LOGO_SATELLITE =
@@ -211,10 +217,15 @@ const SVG_LOGO_SATELLITE =
   '<circle cx="100" cy="100" r="12" fill="white"></circle></svg>';
 
 function creerBannierePWA(title) {
-  const el = document.getElementById("pwa-banner") || document.createElement("div");
-  el.id = "pwa-banner";
+  let el = document.getElementById("pwa-banner");
+  if (!el) {
+    el = document.createElement("div");
+    el.id = "pwa-banner";
+    document.body.prepend(el);
+  }
   el.className = "pwa-banner";
-  const isEn = title.indexOf("Install") === 0;
+  el.classList.remove("hidden");
+  const isEn = String(title).indexOf("Install") === 0;
   el.innerHTML =
     '<span class="pwa-logo">' + SVG_LOGO_SATELLITE + "</span>" +
     '<span class="pwa-text"><b>' + title + "</b>" +
@@ -222,67 +233,118 @@ function creerBannierePWA(title) {
     '<span class="pwa-actions">' +
     '<button type="button" class="pwa-install" id="pwa-install">' + (isEn ? "Install" : "Installer") + "</button>" +
     '<button type="button" class="pwa-close" id="pwa-close" aria-label="Close">✕</button></span>';
-  if (!document.getElementById("pwa-banner")) document.body.prepend(el);
-  return el;
-}
-
-function creerBanniere(html) {
-  let el = document.getElementById("pwa-banner");
-  if (el) { el.innerHTML = html; return el; }
-  el = document.createElement("div");
-  el.id = "pwa-banner";
-  el.className = "pwa-banner";
-  el.innerHTML = html;
-  document.body.prepend(el);
   return el;
 }
 
 let deferredPrompt = null;
 
+function wireInstallButton() {
+  const btn = document.getElementById("pwa-install");
+  if (!btn) return;
+  btn.onclick = async () => {
+    if (!deferredPrompt) {
+      toast(estLangueEN() ? "Use browser menu → Install app" : "Menu du navigateur → Installer l'application");
+      return;
+    }
+    deferredPrompt.prompt();
+    try {
+      const choice = await deferredPrompt.userChoice;
+      if (choice && choice.outcome === "accepted") pwaSave({ installed: true });
+    } catch (_) {}
+    deferredPrompt = null;
+    basculerBanniere(false);
+  };
+  const close = document.getElementById("pwa-close");
+  if (close) {
+    close.onclick = () => {
+      pwaSave({ dismissed: Date.now() });
+      basculerBanniere(false);
+    };
+  }
+}
+
+function showInstallBannerIfAllowed() {
+  if (isStandalone()) return;
+  const m = pwaMemo();
+  if (m.installed) return;
+  const dismissed7j = m.dismissed && Date.now() - m.dismissed < 7 * 24 * 3600 * 1000;
+  if (dismissed7j && getParam("pwa") !== "1") return;
+  const langEn = estLangueEN();
+  creerBannierePWA(langEn ? "Install the Starlink App" : "Installer l'application Starlink");
+  wireInstallButton();
+}
+
 function initPwa() {
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/sw.js").catch((e) => console.warn("SW:", e.message));
+  // Already installed as app → no banner
+  if (isStandalone()) {
+    pwaSave({ installed: true });
+    return;
   }
 
+  // Register service worker (required for installability)
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("/sw.js", { scope: "/" })
+      .then((reg) => {
+        // Update when new SW found
+        if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
+        reg.addEventListener("updatefound", () => {
+          const nw = reg.installing;
+          if (!nw) return;
+          nw.addEventListener("statechange", () => {
+            if (nw.state === "installed" && navigator.serviceWorker.controller) {
+              nw.postMessage({ type: "SKIP_WAITING" });
+            }
+          });
+        });
+      })
+      .catch((e) => console.warn("SW:", e.message));
+  }
+
+  // Chrome / Edge / Android: capture install prompt
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    const m = pwaMemo();
-    const dismissed7j = m.dismissed && Date.now() - m.dismissed < 7 * 24 * 3600 * 1000;
-    if (m.installed || dismissed7j) return;
-    const langEn = estLangueEN();
-    creerBannierePWA(langEn ? "Install the Starlink App" : "Installer l'application Starlink");
-    document.getElementById("pwa-install").addEventListener("click", async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      try { await deferredPrompt.userChoice; } catch (_) {}
-      deferredPrompt = null;
-    });
-    document.getElementById("pwa-close").addEventListener("click", () => {
-      pwaSave({ dismissed: Date.now() });
-      basculerBanniere(false);
-    });
+    showInstallBannerIfAllowed();
   });
 
   window.addEventListener("appinstalled", () => {
     pwaSave({ installed: true });
+    deferredPrompt = null;
     basculerBanniere(false);
+    toast(estLangueEN() ? "App installed!" : "Application installée !", "success");
   });
 
+  // Force banner for testing: ?pwa=1
+  if (getParam("pwa") === "1") {
+    showInstallBannerIfAllowed();
+  }
+
+  // iOS Safari: cannot use beforeinstallprompt — show tip
   if (/iphone|ipad|ipod/i.test(navigator.userAgent || "")) {
     const m = pwaMemo();
-    if (m.installed) return;
-    setTimeout(() => {
-      creerBanniere(
-        '<span class="pwa-logo">' + SVG_LOGO_SATELLITE + "</span>" +
-        '<span class="pwa-text"><b>Installer l\'application Starlink</b>' +
-        "<small>Partager → Sur l'écran d'accueil</small></span>" +
-        '<span class="pwa-actions">' +
-        '<button type="button" class="pwa-install" id="pwa-ios-ok">Compris</button></span>'
-      );
-      const okBtn = document.getElementById("pwa-ios-ok");
-      if (okBtn) okBtn.addEventListener("click", () => basculerBanniere(false));
-    }, 1200);
+    if (!m.installed && !(m.dismissed && Date.now() - m.dismissed < 7 * 24 * 3600 * 1000)) {
+      setTimeout(() => {
+        if (isStandalone()) return;
+        creerBannierePWA("Installer l'application Starlink");
+        const btn = document.getElementById("pwa-install");
+        if (btn) {
+          btn.textContent = "Compris";
+          btn.onclick = () => {
+            pwaSave({ dismissed: Date.now() });
+            basculerBanniere(false);
+            toast("Partager → Sur l'écran d'accueil");
+          };
+        }
+        const close = document.getElementById("pwa-close");
+        if (close) {
+          close.onclick = () => {
+            pwaSave({ dismissed: Date.now() });
+            basculerBanniere(false);
+          };
+        }
+      }, 1500);
+    }
   }
 }
 
