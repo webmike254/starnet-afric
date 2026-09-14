@@ -51,7 +51,6 @@
         </div>
       </div>
 
-      <!-- Suivi d'une commande existante -->
       <div class="card" style="margin-bottom:26px;background:#f3f4f6;border-color:#d1d5db;">
         <h3>Vous avez déjà passé une commande ?</h3>
         <p style="margin:0 0 12px;color:#445;">Entrez votre référence (ex : SL-1001) pour suivre son avancement.</p>
@@ -66,17 +65,14 @@
       </div>
 
       <div class="grid commande-grid">
-<!-- Formulaire principal -->
         <div class="card">
           <h3>Nouvelle commande</h3>
           <p style="color:#526070;">Tous les champs marqués * sont obligatoires.</p>
-
           <div id="order-alert"></div>
-
           <form id="form-commande">
             <div class="field">
               <label for="telephone">Numéro de téléphone *</label>
-              <input class="input" id="telephone" required placeholder="+243 000 000 000" autocomplete="tel" pattern="[+0-9 ]{7,20}" title="Entrez un numéro valide (ex : +243 000 000 000)">
+              <input class="input" id="telephone" required placeholder="+254 700 000 000" autocomplete="tel" pattern="[+0-9 ]{7,20}" title="Entrez un numéro valide">
             </div>
             <div class="field">
               <label for="pays">Pays *</label>
@@ -86,7 +82,6 @@
               <label for="package">Forfait *</label>
               <select class="input" id="package"></select>
             </div>
-
             <div class="field">
               <label>Moyen de paiement *</label>
               <button type="button" class="btn ghost" id="btn-ouvrir-paiement" style="width:100%;justify-content:space-between;text-align:left;padding:12px 16px;">
@@ -95,18 +90,14 @@
               </button>
               <div id="pm-preview" class="hidden"></div>
             </div>
-
             <button class="btn" type="submit" id="submit-commande" style="width:100%;justify-content:center;font-size:16px;">
               Confirmer et payer
             </button>
             <p style="font-size:12.5px;color:#7d8998;margin:10px 0 0;line-height:1.5;">
-              Aucun code PIN ni mot de passe n'est demandé sur ce site. La confirmation se fait
-              directement via votre opérateur mobile money.
+              La confirmation se fait via votre opérateur mobile money après vérification PIN et OTP.
             </p>
           </form>
         </div>
-
-        <!-- Récapitulatif -->
         <div class="card">
           <h3>Récapitulatif</h3>
           <div id="recap">
@@ -116,21 +107,13 @@
       </div>
     </div>
   </main>
-<!-- Pied de page -->
+
   <footer class="strip">
     <div class="container">
-      <div class="grid-3">
+      <div class="footer-grid">
         <div>
           <h4>STARNÉT AFRIC</h4>
           <p style="font-size:14px;">Revendeur de forfaits de données pour les services Starlink en Afrique.</p>
-        </div>
-        <div>
-          <h4>Contact &amp; support</h4>
-          <p style="font-size:14px;line-height:1.8;">
-            Email : <a id="mail-link" data-site="email" href="#">—</a><br>
-            Téléphone : <a id="tel-link" data-site="telephone" href="#">—</a><br>
-            WhatsApp : <a id="wa-link" data-site="whatsapp" href="#">—</a>
-          </p>
         </div>
         <div>
           <h4>Moyens de paiement</h4>
@@ -141,7 +124,6 @@
     </div>
   </footer>
 
-  <!-- Fenêtre de sélection du moyen de paiement -->
   <div class="pm-modal" id="pm-modal" aria-hidden="true">
     <div class="pm-panel">
       <div style="display:flex;align-items:center;justify-content:space-between;">
@@ -149,7 +131,7 @@
         <button class="pm-close" id="pm-close" type="button" aria-label="Fermer">✕</button>
       </div>
       <p class="muted" style="margin:6px 0 0;font-size:13.5px;">Payez en toute sécurité avec votre opérateur mobile money.</p>
-      <div class="pm-opts" id="pm-opts"><!-- rempli par JS --></div>
+      <div class="pm-opts" id="pm-opts"></div>
     </div>
   </div>
 
