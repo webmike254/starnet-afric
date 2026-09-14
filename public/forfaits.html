@@ -3,18 +3,109 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forfaits — Starnét Afric</title>
-  <meta name="description" content="Nos forfaits de données Starlink : Découverte, Standard, Premium, Business et Kit matériel. Paiement mobile money sécurisé.">
+  <title>Forfaits - Starlink</title>
+  <meta name="description" content="Choisissez votre forfait Starlink et payez via Airtel Money ou Orange Money.">
   <link rel="stylesheet" href="/css/style.css">
-  <meta name="theme-color" content="#0b0f14">
+  <meta name="theme-color" content="#000000">
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/icon-192.png">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <style>
+    /* Forfaits page — style proche starnetafric.com */
+    body.forfaits-page { background: #f3f4f6; }
+    .fp-banner {
+      background: linear-gradient(145deg, #1f2937 0%, #0b0b0b 100%);
+      border-radius: 20px;
+      padding: 22px 20px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.18);
+    }
+    .fp-banner .lbl {
+      font-size: 11px; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: #9ca3af; margin: 0 0 6px;
+    }
+    .fp-banner h1 {
+      font-size: 22px; font-weight: 800; margin: 0 0 6px; line-height: 1.2;
+    }
+    .fp-banner p { font-size: 13px; color: #9ca3af; margin: 0; line-height: 1.45; }
+    .fp-banner .ico {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: rgba(255,255,255,.1);
+      display: grid; place-items: center; flex: none;
+    }
+    .fp-grid {
+      display: flex; flex-direction: column; gap: 14px;
+      max-width: 560px; margin: 0 auto 28px;
+    }
+    .fp-card {
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+      border: 1px solid #e5e7eb;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+      position: relative;
+    }
+    .fp-card:active { transform: scale(.98); }
+    .fp-card:hover { box-shadow: 0 8px 20px rgba(0,0,0,.1); }
+    .fp-top {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    }
+    .fp-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .fp-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: grid; place-items: center; flex: none;
+    }
+    .fp-name { font-size: 16px; font-weight: 800; color: #111827; margin: 0; }
+    .fp-data { font-size: 13px; color: #6b7280; margin: 2px 0 0; }
+    .fp-price-box { text-align: right; flex: none; }
+    .fp-old {
+      display: block; font-size: 12px; color: #9ca3af;
+      text-decoration: line-through; line-height: 1.2;
+    }
+    .fp-price {
+      font-size: 20px; font-weight: 900; line-height: 1.15;
+    }
+    .fp-unit { font-size: 11px; color: #6b7280; }
+    .fp-promo {
+      display: inline-block; background: #dc2626; color: #fff;
+      font-size: 9px; font-weight: 800; padding: 2px 7px;
+      border-radius: 20px; text-transform: uppercase; margin-left: 4px;
+      vertical-align: middle;
+    }
+    .fp-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    .fp-tag {
+      font-size: 11px; font-weight: 600; padding: 4px 10px;
+      border-radius: 999px;
+    }
+    .fp-hint {
+      font-size: 11px; color: #6b7280; margin: 10px 0 0; text-align: right;
+    }
+    .fp-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 12px; padding: 8px 16px;
+      background: #000; color: #fff; border: none; border-radius: 10px;
+      font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
+    .fp-btn:hover { background: #222; }
+    .fp-note {
+      margin-top: 8px; padding: 12px 14px; background: #f0f9ff;
+      border: 1px solid #bae6fd; border-radius: 12px;
+      font-size: 13px; color: #0369a1; text-align: center;
+    }
+    /* slim top nav on mobile */
+    @media (max-width: 880px) {
+      .nav-cta { display: none; }
+    }
+  </style>
 </head>
-<body>
+<body class="forfaits-page">
 
   <header class="nav">
     <div class="nav-inner">
@@ -22,45 +113,42 @@
         <span class="brand-logo">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><ellipse cx="100" cy="100" rx="74" ry="55" stroke="white" stroke-width="10" fill="none" transform="rotate(-25 100 100)"></ellipse><ellipse cx="100" cy="100" rx="43" ry="33" stroke="white" stroke-width="10" fill="none" transform="rotate(65 100 100)"></ellipse><circle cx="100" cy="100" r="12" fill="white"></circle></svg>
         </span>
-        <span class="brand-name">STARNÉT<small>Reseller Starlink</small></span>
+        <span class="brand-name">STARLINK<small>Reseller</small></span>
       </a>
       <div class="nav-right">
-        <button class="lang-btn" type="button" aria-label="Langue"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 4 9 15 15 0 0 1-4 9 15 15 0 0 1-4-9 15 15 0 0 1 4-9z"/></svg> <span data-lang-label>EN</span></button>
+        <button class="lang-btn" type="button" aria-label="Langue">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 4 9 15 15 0 0 1-4 9 15 15 0 0 1-4-9 15 15 0 0 1 4-9z"/></svg>
+          <span data-lang-label>EN</span>
+        </button>
         <nav class="nav-links">
-          <a href="/index.html" data-i18n="nav-statut">Statut</a>
-          <a href="/forfaits.html" data-i18n="nav-forfaits">Forfaits</a>
-          <a href="/commandes.html" data-i18n="nav-commandes">Commandes</a>
-          <a href="/contact.html" data-i18n="nav-contact">Contact</a>
+          <a href="/index.html">Statut</a>
+          <a href="/forfaits.html" class="active">Forfaits</a>
+          <a href="/commandes.html">Commandes</a>
         </nav>
-        <a href="/commandes.html" class="nav-cta" data-i18n="nav-commander">Commander</a>
         <button class="nav-burger" aria-label="Menu">☰</button>
       </div>
     </div>
   </header>
 
   <main class="page">
-    <div class="container">
-      <div class="banner-card">
+    <div class="container" style="padding-top:20px;">
+      <div class="fp-banner">
         <div>
-          <p class="bc-label">Forfaits Internet</p>
-          <h1 class="bc-title">Choisissez Votre Forfait</h1>
-          <p class="bc-desc">Cliquez sur un forfait pour voir les options de paiement Mobile Money.</p>
+          <p class="lbl">Forfaits Internet</p>
+          <h1>Choisissez Votre Forfait</h1>
+          <p>Sélectionnez un forfait et payez via Airtel Money ou Orange Money pour activer immédiatement.</p>
         </div>
-        <div class="bc-icon">
-          <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <div class="ico">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#e5e7eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         </div>
       </div>
 
-      <div class="row" style="margin-bottom:18px;">
-        <button class="tab-btn active" data-filtre="tout">Tous</button>
-        <button class="tab-btn" data-filtre="mensuel">Mensuels</button>
-        <button class="tab-btn" data-filtre="2mois">2 mois</button>
-        <button class="tab-btn" data-filtre="3mois">3 mois</button>
-        <button class="tab-btn" data-filtre="kit">Kit matériel</button>
+      <div class="fp-grid" id="grille-forfaits">
+        <p style="text-align:center;color:#6b7280;">Chargement des forfaits…</p>
       </div>
 
-      <div class="grid" style="grid-template-columns:1fr;max-width:780px;margin:0 auto;" id="grille-forfaits">
-        <p style="grid-column:1/-1;color:#6b7280;">Chargement des forfaits…</p>
+      <div class="fp-note">
+        Cliquez d'abord sur un forfait, puis sélectionnez Airtel Money ou Orange Money pour finaliser le paiement.
       </div>
     </div>
   </main>
@@ -69,7 +157,7 @@
     <div class="container">
       <div class="footer-grid">
         <div>
-          <h4>STARNÉT AFRIC</h4>
+          <h4>STARLINK</h4>
           <p style="font-size:14px;">Revendeur de forfaits de données pour les services Starlink en Afrique.</p>
         </div>
         <div>
