@@ -1,5 +1,21 @@
 # STARNÉT AFRIC — Plateforme de revente Starlink
 
+<p align="center">
+  <img src="public/assets/icon-512.png" alt="Starnét Afric logo" width="160" height="160" />
+</p>
+
+<p align="center">
+  <strong>Starlink reseller platform for Africa</strong><br/>
+  Forfaits · Commandes · Orange Money / Airtel Money · Admin · PWA
+</p>
+
+<p align="center">
+  <a href="https://starnetafric.vercel.app">Live site</a> ·
+  <a href="https://starnetafric.online">starnetafric.online</a>
+</p>
+
+---
+
 Site + panneau d'administration pour un revendeur de forfaits Internet satellite **Starlink**
 en Afrique : forfaits de données, commandes, paiement mobile money (Moov Money, Orange Money,
 Airtel Money), statut du réseau, contact & **analytique de fréquentation éthique**.
