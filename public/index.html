@@ -3,15 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="refresh" content="0; url=/forfaits.html">
-  <title>Starnét Afric — Forfaits Internet Starlink</title>
-  <script>
-    // Page d'arrivée : ouvrir directement les Forfaits (pas le Statut).
-    if (window.location.pathname === "/" || window.location.pathname === "/index.html") {
-      window.location.replace("/forfaits.html");
-    }
-  </script>
-  <meta name="description" content="STARNÉT AFRIC, revendeur de forfaits de données Starlink en Afrique. Commandez et payez en mobile money (Moov Money, Orange Money, Airtel Money).">
+  <title>Starnét Afric — Forfaits Starlink en Afrique</title>
+  <meta name="description" content="Achetez vos forfaits de données Starlink en Afrique. Paiement sécurisé via Orange Money et Airtel Money.">
   <link rel="stylesheet" href="/css/style.css">
   <meta name="theme-color" content="#0b0f14">
   <link rel="manifest" href="/manifest.webmanifest">
@@ -45,77 +38,36 @@
     </div>
   </header>
 
-  <!-- Statut du réseau (style starnetafric.com) -->
-  <main class="page">
-    <div class="container">
-      <div class="banner-card">
-        <div>
-          <p class="bc-label">Informations sur le Service Starlink</p>
-          <h1 class="bc-title">STARNÉT AFRIC</h1>
-          <p class="bc-desc">Choisissez un forfait pour activer l'internet satellite haut débit.</p>
-        </div>
-        <div class="bc-icon">
-          <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.5" fill="currentColor"/><ellipse cx="12" cy="12" rx="9" ry="3.4" transform="rotate(-28 12 12)"/><ellipse cx="12" cy="12" rx="5" ry="1.9" transform="rotate(62 12 12)"/></svg>
-        </div>
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>Internet satellite <span class="grad">rapide et fiable</span> en Afrique</h1>
+      <p>Achetez vos forfaits Starlink en quelques clics. Paiement sécurisé via Orange Money et Airtel Money. Activation rapide après vérification.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="/forfaits.html" class="btn">Voir les forfaits</a>
+        <a href="/statut.html" class="btn ghost">État du réseau</a>
       </div>
-
-      <a href="/forfaits.html" class="btn-hero-big">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-        <span>Choisissez Votre Forfait</span>
-      </a>
-
-      <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:16px;">
-        <div class="metric-card card">
-          <div class="mc-top"><span>Téléchargement</span><span class="mc-icon" style="background:#64748b;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/></svg></span></div>
-          <b id="m-download">--</b><small>Mbps</small>
-        </div>
-        <div class="metric-card card">
-          <div class="mc-top"><span>Envoi</span><span class="mc-icon" style="background:#64748b;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></span></div>
-          <b id="m-upload">--</b><small>Mbps</small>
-        </div>
-        <div class="metric-card card">
-          <div class="mc-top"><span>PING</span><span class="mc-icon" style="background:#64748b;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></span></div>
-          <b id="m-ping">--</b><small>ms</small>
-        </div>
-        <div class="metric-card card">
-          <div class="mc-top"><span>JITTER</span><span class="mc-icon" style="background:#64748b;"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2l3-9 4 18 3-9h3"/></svg></span></div>
-          <b id="m-jitter">--</b><small>ms</small>
-        </div>
+      <div class="hero-stats">
+        <div class="stat"><b>24/7</b><span>Support disponible</span></div>
+        <div class="stat"><b>Orange</b><span>Money accepté</span></div>
+        <div class="stat"><b>Airtel</b><span>Money accepté</span></div>
       </div>
-
-      <div class="card" style="margin-bottom:16px;">
-        <div class="usage-head">
-          <h3 class="uh-title">Utilisation des Données</h3>
-          <span class="pct-pill" id="data-percentage">--</span>
-        </div>
-        <div class="usage-bar"><div id="data-progress" style="width:0%;"></div></div>
-        <div class="row" style="justify-content:space-between;margin-top:8px;">
-          <span class="muted" id="data-used">0 GB</span>
-          <span class="muted" id="data-limit">100 GB</span>
-        </div>
-      </div>
-
-      <button id="btn-diag" class="btn ghost" style="width:100%;padding:13px;border-radius:16px;font-weight:800;box-shadow:var(--shadow);border:1px solid #e5e7eb;">
-        Lancer le Test de Diagnostic
-      </button>
-      <div id="diag-result"></div>
     </div>
-  </main>
+  </section>
 
-  <!-- Comment ça marche -->
   <section>
     <div class="container">
-      <h2 style="font-size:26px;font-weight:850;margin:0 0 24px;">Comment ça marche</h2>
+      <h2 style="font-size:26px;font-weight:850;margin:0 0 8px;">Comment ça marche</h2>
+      <p style="color:#4b5563;margin:0 0 22px;">Trois étapes simples pour vous connecter.</p>
       <div class="steps">
         <div class="step">
           <div class="num">01</div>
-          <h4>Choisissez votre forfait</h4>
-          <p>Consultez les forfaits adaptés à votre usage : personnel, famille ou entreprise.</p>
+          <h4>Choisissez un forfait</h4>
+          <p>Sélectionnez le volume de données adapté à vos besoins.</p>
         </div>
         <div class="step">
           <div class="num">02</div>
-          <h4>Commandez &amp; payez</h4>
-          <p>Validez votre commande et payez en toute sécurité via Moov Money, Orange Money ou Airtel Money.</p>
+          <h4>Payez en mobile money</h4>
+          <p>Orange Money ou Airtel Money — vérification sécurisée par PIN et OTP.</p>
         </div>
         <div class="step">
           <div class="num">03</div>
@@ -126,17 +78,15 @@
     </div>
   </section>
 
-  <!-- Forfaits populaires -->
   <section>
     <div class="container">
       <h2 style="font-size:26px;font-weight:850;margin:0 0 8px;">Forfaits du moment</h2>
-      <p style="color:#4b5563;margin:0 0 22px;">Tarifs en Francs Congolais (CDF), ajustables selon votre pays.</p>
+      <p style="color:#4b5563;margin:0 0 22px;">Tarifs affichés selon votre devise locale.</p>
       <div class="grid cols-3" id="forfaits-populaires"><!-- rempli par JS --></div>
       <p style="margin-top:20px;"><a href="/forfaits.html" class="btn ghost">Tous les forfaits →</a></p>
     </div>
   </section>
 
-  <!-- État du réseau -->
   <section>
     <div class="container">
       <div class="card" id="reseau-banner">
@@ -147,21 +97,12 @@
     </div>
   </section>
 
-  <!-- Pied de page -->
   <footer class="strip">
     <div class="container">
-      <div class="grid-3">
+      <div class="footer-grid">
         <div>
           <h4>STARNÉT AFRIC</h4>
           <p style="font-size:14px;">Revendeur de forfaits de données pour les services Starlink en Afrique.</p>
-        </div>
-        <div>
-          <h4>Contact &amp; support</h4>
-          <p style="font-size:14px;line-height:1.8;">
-            Email : <a id="mail-link" data-site="email" href="#">—</a><br>
-            Téléphone : <a id="tel-link" data-site="telephone" href="#">—</a><br>
-            WhatsApp : <a id="wa-link" data-site="whatsapp" href="#">—</a>
-          </p>
         </div>
         <div>
           <h4>Moyens de paiement</h4>
