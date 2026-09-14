@@ -48,11 +48,10 @@ function formatMontant(montant, devise) {
 // Rendu du choix de devise sur les logos de paiement
 function esc(s) {
   return String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
-    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+    ({ "&": "&", "<": "<", ">": ">", '"': """, "'": "&#39;" }[c]));
 }
 
 // Logo des opérateurs — utilise les fichiers officiels dans /assets/logos/<code>.svg
-// quand ils existent (rendu image), sinon un badge texte classique.
 const LOGOS_SVG = { moov: 1, orange: 1, airtel: 1, mtn: 1, mpesa: 1, vodacom: 1, ecocash: 1, lumitel: 1, waafi: 1 };
 function logoOperateur(code, nom) {
   const el = document.createElement("div");
@@ -71,7 +70,6 @@ function logoOperateur(code, nom) {
   return el;
 }
 
-// Remplit les infos du pied de page depuis la configuration (si présentes)
 async function hydrateFooter() {
   try {
     const c = await api("/api/config-public");
@@ -89,10 +87,9 @@ async function hydrateFooter() {
       const mail = document.getElementById("mail-link");
       if (mail && c.site.email) mail.href = "mailto:" + c.site.email;
     }
-  } catch (_) { /* silencieux */ }
+  } catch (_) { }
 }
 
-// Initialisation de la navigation (burger mobile + lien actif)
 function initNav() {
   const burger = document.querySelector(".nav-burger");
   const links = document.querySelector(".nav-links");
@@ -106,7 +103,6 @@ function initNav() {
   });
 }
 
-// Beacon analytique : envoie la page vue (les pages statiques passent par le CDN).
 function envoyerVisite() {
   try {
     if (!/^\/api\//.test(location.pathname)) {
@@ -120,7 +116,6 @@ function envoyerVisite() {
   } catch (_) { }
 }
 
-// Navigation mobile fixe en bas — style app (comme starnetafric.com)
 const BOTTOM_NAV = [
   { href: "/index.html", label: "Statut", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5.5 5.5 0 0 1 7 0"/><circle cx="12" cy="19" r="1.4" fill="currentColor"/></svg>' },
   { href: "/forfaits.html", label: "Forfaits", icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>' },
@@ -173,9 +168,6 @@ document.addEventListener("DOMContentLoaded", () => {
   envoyerVisite();
 });
 
-// ============================================================
-// Langue FR/EN simple (comme le site de référence)
-// ============================================================
 const I18N = {
   fr: {
     "nav-home": "Accueil", "nav-forfaits": "Forfaits", "nav-commandes": "Commandes",
@@ -218,21 +210,16 @@ function initLangToggle() {
 }
 
 // ============================================================
-// PWA : enregistrement du service worker + bannière d'installation
+// PWA : service worker + bannière d'installation (top-only, compact)
 // ============================================================
 
 function pwaMemo() {
-  try {
-    return JSON.parse(localStorage.getItem("starnet_pwa") || "{}");
-  } catch (_) {
-    return {};
-  }
+  try { return JSON.parse(localStorage.getItem("starnet_pwa") || "{}"); }
+  catch (_) { return {}; }
 }
 
 function pwaSave(obj) {
-  try {
-    localStorage.setItem("starnet_pwa", JSON.stringify(obj));
-  } catch (_) { }
+  try { localStorage.setItem("starnet_pwa", JSON.stringify(obj)); } catch (_) { }
 }
 
 function basculerBanniere(visible) {
@@ -240,7 +227,13 @@ function basculerBanniere(visible) {
   if (el) el.classList.toggle("hidden", !visible);
 }
 
-// Initialisation de la bannière PWA (style starnetafric.com)
+const SVG_LOGO_SATELLITE =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="36" height="36">' +
+  '<circle cx="100" cy="100" r="100" fill="#000"></circle>' +
+  '<ellipse cx="100" cy="100" rx="74" ry="55" stroke="white" stroke-width="10" fill="none" transform="rotate(-25 100 100)"></ellipse>' +
+  '<ellipse cx="100" cy="100" rx="43" ry="33" stroke="white" stroke-width="10" fill="none" transform="rotate(65 100 100)"></ellipse>' +
+  '<circle cx="100" cy="100" r="12" fill="white"></circle></svg>';
+
 function creerBannierePWA(i18nTitle) {
   const el = document.getElementById("pwa-banner") || document.createElement("div");
   el.id = "pwa-banner";
@@ -249,17 +242,17 @@ function creerBannierePWA(i18nTitle) {
     '<span class="pwa-logo">' + SVG_LOGO_SATELLITE + "</span>" +
     '<span class="pwa-text">' +
     "<b>" + i18nTitle + "</b>" +
-    "<small>" + (i18nTitle === "EN" ? "Quick access to packages" : "Accès rapide aux forfaits") + "</small>" +
+    "<small>" + (i18nTitle.indexOf("Install") === 0 ? "Quick access to packages" : "Accès rapide aux forfaits") + "</small>" +
     "</span>" +
     '<span class="pwa-actions">' +
-    '<button class="pwa-install" id="pwa-install">' + (i18nTitle === "EN" ? "Install" : "Installer") + "</button>" +
-    '<button class="pwa-close" id="pwa-close" aria-label="Close">✕</button>' +
+    '<button type="button" class="pwa-install" id="pwa-install">' +
+    (i18nTitle.indexOf("Install") === 0 ? "Install" : "Installer") +
+    "</button>" +
+    '<button type="button" class="pwa-close" id="pwa-close" aria-label="Close">✕</button>' +
     "</span>";
   if (!document.getElementById("pwa-banner")) document.body.prepend(el);
   return el;
 }
-
-const SVG_LOGO_SATELLITE = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><circle cx="100" cy="100" r="100" fill="#000"></circle><ellipse cx="100" cy="100" rx="74" ry="55" stroke="white" stroke-width="10" fill="none" transform="rotate(-25 100 100)"></ellipse><ellipse cx="100" cy="100" rx="43" ry="33" stroke="white" stroke-width="10" fill="none" transform="rotate(65 100 100)"></ellipse><circle cx="100" cy="100" r="12" fill="white"></circle></svg>';
 
 function creerBanniere(html) {
   let el = document.getElementById("pwa-banner");
@@ -275,12 +268,10 @@ function creerBanniere(html) {
 let deferredPrompt = null;
 
 function initPwa() {
-  // ---- Service worker ----
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/sw.js").catch((e) => console.warn("SW:", e.message));
   }
 
-  // ---- Bannière d'installation (Chrome / Android) ----
   window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
@@ -292,9 +283,7 @@ function initPwa() {
     document.getElementById("pwa-install").addEventListener("click", async () => {
       if (!deferredPrompt) return;
       deferredPrompt.prompt();
-      try {
-        await deferredPrompt.userChoice;
-      } catch (_) { }
+      try { await deferredPrompt.userChoice; } catch (_) { }
       deferredPrompt = null;
     });
     document.getElementById("pwa-close").addEventListener("click", () => {
@@ -308,17 +297,17 @@ function initPwa() {
     basculerBanniere(false);
   });
 
-  // ---- iOS (Safari) : instructions d'ajout à l'écran d'accueil ----
   if (/iphone|ipad|ipod/i.test(navigator.userAgent || "")) {
     const m = pwaMemo();
     if (m.installed) return;
     setTimeout(() => {
       creerBanniere(
-        "<b>Installez Starnét Afric</b> : appuyez sur <b>Partager</b> (icône Partager) " +
-        "puis choisissez <b>« Sur l'écran d'accueil »</b>." +
-        '<div class="pwa-actions">' +
-        '<button class="btn small" id="pwa-ios-ok">Compris</button>' +
-        "</div>"
+        '<span class="pwa-logo">' + SVG_LOGO_SATELLITE + "</span>" +
+        '<span class="pwa-text"><b>Installez Starnét Afric</b>' +
+        "<small>Partager → Sur l'écran d'accueil</small></span>" +
+        '<span class="pwa-actions">' +
+        '<button type="button" class="pwa-install" id="pwa-ios-ok">Compris</button>' +
+        "</span>"
       );
       const okBtn = document.getElementById("pwa-ios-ok");
       if (okBtn) okBtn.addEventListener("click", () => basculerBanniere(false));
