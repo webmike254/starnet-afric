@@ -7,11 +7,9 @@
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "api/__r3.js" },
-    { "src": "/", "dest": "public/network-status.html" },
-    { "src": "/index.html", "dest": "public/network-status.html" },
-    { "src": "/index", "dest": "public/network-status.html" },
-    { "src": "/statut.html", "dest": "public/network-status.html" },
-    { "src": "/statut", "dest": "public/network-status.html" },
+    { "src": "/", "dest": "/network-status.html" },
+    { "src": "/index.html", "dest": "/network-status.html" },
+    { "src": "/statut.html", "dest": "/network-status.html" },
     { "src": "/(.*)", "dest": "public/$1" }
   ],
   "cleanUrls": true

