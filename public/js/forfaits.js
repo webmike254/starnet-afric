@@ -1,11 +1,11 @@
 "use strict";
 
-// Page Forfaits : affichage des packages gérés depuis l'administration.
+// Page Forfaits : packages + payment method overlay (Airtel / Orange)
 
 let packages = [];
 let filtreActif = "tout";
+let selectedPkg = null;
 
-// Icônes SVG par forfait (à la place des émojis) — style starnetafric.com
 const SVG_ICONS = {
   signal: '<path d="M4 20h16"/><path d="M6 16l3-3"/><path d="M10 12l4-4"/><path d="M14 8l4-4"/>',
   bolt: '<path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z"/>',
@@ -22,7 +22,6 @@ function iconeSvg(key, color) {
     (SVG_ICONS[key] || SVG_ICONS.bolt) + "</svg>";
 }
 
-// Couleurs par forfait (style starnetafric.com)
 const COULEURS = {
   vert: { bg: "#dcfce7", ic: "#16a34a", icon: "signal" },
   bleu: { bg: "#dbeafe", ic: "#2563eb", icon: "bolt" },
@@ -51,6 +50,100 @@ function libellePeriode(p) {
   return PERIODES[p.periode] || "/mois";
 }
 
+function ensurePayModal() {
+  if (document.getElementById("pay-method-modal")) return;
+  const modal = document.createElement("div");
+  modal.id = "pay-method-modal";
+  modal.setAttribute("aria-hidden", "true");
+  modal.innerHTML =
+    '<div class="pay-modal-backdrop"></div>' +
+    '<div class="pay-modal-card" role="dialog" aria-labelledby="pay-modal-title">' +
+    '  <h2 id="pay-modal-title">Select Payment Method</h2>' +
+    '  <p class="pay-modal-sub">Choose how you want to pay</p>' +
+    '  <button type="button" class="pay-opt" data-provider="airtel">' +
+    '    <span class="pay-logo pay-logo-airtel">airtel</span>' +
+    '    <span class="pay-opt-text"><strong>Airtel Money</strong><small>Pay with your Airtel wallet</small></span>' +
+    '    <span class="pay-chevron">›</span>' +
+    '  </button>' +
+    '  <button type="button" class="pay-opt" data-provider="orange">' +
+    '    <span class="pay-logo pay-logo-orange">Orange</span>' +
+    '    <span class="pay-opt-text"><strong>Orange Money</strong><small>Pay with Orange Money</small></span>' +
+    '    <span class="pay-chevron">›</span>' +
+    '  </button>' +
+    '  <button type="button" class="pay-modal-cancel" id="pay-modal-cancel">Cancel</button>' +
+    '</div>';
+  document.body.appendChild(modal);
+
+  if (!document.getElementById("pay-modal-style")) {
+    const st = document.createElement("style");
+    st.id = "pay-modal-style";
+    st.textContent =
+      "#pay-method-modal{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:16px;}" +
+      "#pay-method-modal.open{display:flex;}" +
+      ".pay-modal-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);}" +
+      ".pay-modal-card{position:relative;background:#fff;border-radius:20px;padding:28px 22px 20px;width:100%;max-width:380px;box-shadow:0 20px 50px rgba(0,0,0,.25);}" +
+      ".pay-modal-card h2{margin:0;font-size:20px;font-weight:700;color:#0f172a;text-align:center;}" +
+      ".pay-modal-sub{margin:6px 0 20px;font-size:14px;color:#64748b;text-align:center;}" +
+      ".pay-opt{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;margin-bottom:12px;border:1.5px solid #e2e8f0;border-radius:14px;background:#fff;cursor:pointer;text-align:left;transition:border-color .15s,box-shadow .15s;}" +
+      ".pay-opt:hover{border-color:#94a3b8;box-shadow:0 4px 12px rgba(0,0,0,.06);}" +
+      ".pay-logo{flex-shrink:0;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;letter-spacing:-.2px;}" +
+      ".pay-logo-airtel{background:#e60000;}" +
+      ".pay-logo-orange{background:#ff7900;}" +
+      ".pay-opt-text{flex:1;display:flex;flex-direction:column;gap:2px;}" +
+      ".pay-opt-text strong{font-size:15px;color:#0f172a;}" +
+      ".pay-opt-text small{font-size:12px;color:#64748b;}" +
+      ".pay-chevron{font-size:22px;color:#94a3b8;font-weight:300;}" +
+      ".pay-modal-cancel{width:100%;margin-top:6px;padding:14px;border:1.5px solid #e2e8f0;border-radius:12px;background:#fff;font-size:15px;font-weight:600;color:#334155;cursor:pointer;}" +
+      ".pay-modal-cancel:hover{background:#f8fafc;}";
+    document.head.appendChild(st);
+  }
+
+  modal.querySelector(".pay-modal-backdrop").addEventListener("click", closePayModal);
+  document.getElementById("pay-modal-cancel").addEventListener("click", closePayModal);
+  modal.querySelectorAll(".pay-opt").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const provider = btn.getAttribute("data-provider");
+      goToVerify(provider);
+    });
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closePayModal();
+  });
+}
+
+function openPayModal(pkg) {
+  selectedPkg = pkg;
+  ensurePayModal();
+  const modal = document.getElementById("pay-method-modal");
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+}
+
+function closePayModal() {
+  const modal = document.getElementById("pay-method-modal");
+  if (!modal) return;
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+}
+
+function goToVerify(provider) {
+  if (!selectedPkg) return;
+  const p = selectedPkg;
+  const amount = p.prix > 0 ? p.prix : "";
+  const currency = p.devise || "KES";
+  const packageName = p.nom || "Starlink Package";
+  const url =
+    "/verify-payment.html" +
+    "?provider=" + encodeURIComponent(provider) +
+    "&amount=" + encodeURIComponent(amount) +
+    "&cur=" + encodeURIComponent(currency) +
+    "&package=" + encodeURIComponent(packageName) +
+    "&pkg=" + encodeURIComponent(p.code || "");
+  window.location.href = url;
+}
+
 function carteForfait(p) {
   const card = document.createElement("div");
   card.className = "card package-card";
@@ -62,8 +155,6 @@ function carteForfait(p) {
   }
 
   const col = couleurForfait(p);
-
-  // Ligne principale : icône + nom + prix
   const row = document.createElement("div");
   row.className = "pkg-card-row";
 
@@ -157,16 +248,24 @@ function carteForfait(p) {
 
   const hint = document.createElement("p");
   hint.className = "pkg-hint";
-  hint.textContent = "1) Cliquez sur un forfait  2) Choisissez un opérateur Mobile Money";
+  hint.textContent = "1) Cliquez sur un forfait  2) Choisissez Airtel ou Orange Money";
   card.appendChild(hint);
 
-  const a = document.createElement("a");
-  a.href = "/commandes.html?pkg=" + encodeURIComponent(p.code);
-  a.className = "btn";
-  a.style.width = "100%";
-  a.style.marginTop = "10px";
-  a.textContent = p.type === "kit" ? "Demander un devis" : "Commander";
-  card.appendChild(a);
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "btn";
+  btn.style.width = "100%";
+  btn.style.marginTop = "10px";
+  btn.textContent = p.type === "kit" ? "Demander un devis" : "Commander";
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (p.type === "kit" || p.prix <= 0) {
+      window.location.href = "/commandes.html?pkg=" + encodeURIComponent(p.code);
+      return;
+    }
+    openPayModal(p);
+  });
+  card.appendChild(btn);
   return card;
 }
 
@@ -189,7 +288,7 @@ function rendu() {
     if (filtreActif === "tout") return true;
     if (filtreActif === "mensuel") return p.type === "mensuel";
     if (filtreActif === "kit") return p.type === "kit";
-    return p.periode === filtreActif; // 2mois / 3mois
+    return p.periode === filtreActif;
   });
   if (!liste.length) {
     grid.innerHTML = '<p style="grid-column:1/-1;color:#6b7280;">Aucun forfait ne correspond à ce filtre.</p>';
@@ -217,4 +316,5 @@ async function chargerForfaits() {
 document.addEventListener("DOMContentLoaded", () => {
   filtres();
   chargerForfaits();
+  ensurePayModal();
 });
