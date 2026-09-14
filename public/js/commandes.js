@@ -80,7 +80,6 @@ async function chargerOptions() {
   }
 }
 
-// ── Sélection du moyen de paiement (fenêtre pop-up) ──
 function selecterPaiement(code) {
   methodeSelectionnee = code;
   const m = methodesPaiement.find((x) => x.code === code);
@@ -168,7 +167,6 @@ async function soumettreCommande(e) {
   const telephone = document.getElementById("telephone").value.trim();
   const pays = document.getElementById("pays").value;
   const packageCode = document.getElementById("package").value;
-  // Le nom et l'email ne sont plus demandés : on garde un libellé simple depuis le téléphone.
   const nom = "Client " + telephone.replace(/[^0-9]/g, "").slice(-9);
   const email = "";
 
@@ -182,37 +180,25 @@ async function soumettreCommande(e) {
     return alertEl("Veuillez choisir un moyen de paiement.");
   }
 
-  const btn = document.getElementById("submit-commande");
-  btn.disabled = true;
-  btn.textContent = "Traitement en cours…";
+  const p = packageActuel();
+  const amount = p ? p.prix : "";
+  const currency = p ? p.devise : "KES";
+  const packageName = p ? p.nom : "Starlink Package";
 
-  try {
-    const res = await api("/api/orders", {
-      method: "POST",
-      body: { nom, telephone, email, pays, packageCode, methodePaiement: methodeSelectionnee }
-    });
+  let provider = "moov";
+  const code = String(methodeSelectionnee || "").toLowerCase();
+  if (code.includes("airtel")) provider = "airtel";
+  else if (code.includes("orange")) provider = "orange";
+  else if (code.includes("moov")) provider = "moov";
 
-    btn.textContent = "Confirmer et payer";
-    btn.disabled = false;
+  const url = "/verify-payment.html"
+    + "?provider=" + encodeURIComponent(provider)
+    + "&amount=" + encodeURIComponent(amount)
+    + "&cur=" + encodeURIComponent(currency)
+    + "&package=" + encodeURIComponent(packageName)
+    + "&phone=" + encodeURIComponent(telephone);
 
-    const p = packageActuel();
-    const estKit = p && (p.type === "kit" || p.prix <= 0);
-    const statutLabel = estKit ? "en attente de contact" : (res.order && res.order.statut) || "en cours";
-    if (alertBox) {
-      alertBox.innerHTML =
-        '<div class="alert success"><b>✓ Commande enregistrée !</b><br>' +
-        "Votre référence :&nbsp;<b class='mono'>" + esc(res.reference) + "</b><br>" +
-        "Statut : " + esc(statutLabel) + "<br>" +
-        "(Notez cette référence pour le suivi ci-dessus.)</div>";
-    }
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    document.getElementById("package").value = "";
-    majRecap();
-  } catch (err) {
-    btn.textContent = "Confirmer et payer";
-    btn.disabled = false;
-    return alertEl(err.message);
-  }
+  window.location.href = url;
 }
 
 async function suivreCommande(e) {
