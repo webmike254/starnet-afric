@@ -3,20 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Page introuvable — Starnét Afric</title>
+  <title>Page introuvable — Starlink</title>
+  <meta http-equiv="refresh" content="2;url=/">
   <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body { min-height: 100vh; display: grid; place-items: center; background: #0b0b0b; color: #fff; font-family: system-ui, sans-serif; text-align: center; padding: 24px; }
+    a { color: #60a5fa; }
+    .logo { width: 64px; height: 64px; margin: 0 auto 16px; }
+  </style>
 </head>
 <body>
-  <section class="hero" style="min-height:70vh;display:flex;align-items:center;">
-    <div class="hero-inner text-center">
-      <h1>404</h1>
-      <h2 style="margin:0 0 10px;">Page introuvable</h2>
-      <p>La page que vous cherchez n'existe pas ou a été déplacée.</p>
-      <div class="hero-actions" style="justify-content:center;">
-        <a href="/index.html" class="btn">Retour à l'accueil</a>
-        <a href="/forfaits.html" class="btn ghost">Voir les forfaits</a>
-      </div>
+  <div>
+    <div class="logo">
+      <svg viewBox="0 0 200 200" width="64" height="64"><ellipse cx="100" cy="100" rx="74" ry="55" stroke="white" stroke-width="10" fill="none" transform="rotate(-25 100 100)"/><ellipse cx="100" cy="100" rx="43" ry="33" stroke="white" stroke-width="10" fill="none" transform="rotate(65 100 100)"/><circle cx="100" cy="100" r="12" fill="white"/></svg>
     </div>
-  </section>
+    <h1>Page introuvable</h1>
+    <p>Redirection vers l'accueil…</p>
+    <p><a href="/">Aller aux forfaits</a></p>
+  </div>
 </body>
 </html>
