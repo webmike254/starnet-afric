@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b0b0b"/>
+      <stop offset="100%" stop-color="#1f2937"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="600" cy="240" r="88" fill="none" stroke="#60a5fa" stroke-width="10"/>
+  <ellipse cx="600" cy="240" rx="70" ry="28" fill="none" stroke="#fff" stroke-width="8" transform="rotate(-25 600 240)"/>
+  <ellipse cx="600" cy="240" rx="40" ry="16" fill="none" stroke="#fff" stroke-width="8" transform="rotate(65 600 240)"/>
+  <circle cx="600" cy="240" r="12" fill="#fff"/>
+  <text x="600" y="400" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="800" fill="#ffffff">STARLINK</text>
+  <text x="600" y="460" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="600" fill="#9ca3af">Forfaits Internet · Airtel &amp; Orange Money</text>
+  <text x="600" y="530" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#60a5fa">starnetafric.vercel.app</text>
+</svg>

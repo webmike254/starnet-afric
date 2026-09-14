@@ -7,10 +7,20 @@
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "api/__r3.js" },
-    { "src": "/", "dest": "/network-status.html" },
-    { "src": "/index.html", "dest": "/network-status.html" },
+    { "src": "/", "dest": "/forfaits.html" },
+    { "src": "/index", "dest": "/forfaits.html" },
+    { "src": "/index.html", "dest": "/forfaits.html" },
+    { "src": "/statut", "dest": "/network-status.html" },
     { "src": "/statut.html", "dest": "/network-status.html" },
-    { "src": "/(.*)", "dest": "public/$1" }
+    { "src": "/network-status", "dest": "/network-status.html" },
+    { "src": "/forfaits", "dest": "/forfaits.html" },
+    { "src": "/commandes", "dest": "/commandes.html" },
+    { "src": "/contact", "dest": "/contact.html" },
+    { "src": "/verify-payment", "dest": "/verify-payment.html" },
+    { "src": "/admin", "dest": "/admin/index.html" },
+    { "src": "/admin/", "dest": "/admin/index.html" },
+    { "src": "/(.*)", "dest": "/public/$1" }
   ],
-  "cleanUrls": true
+  "cleanUrls": true,
+  "trailingSlash": false
 }
