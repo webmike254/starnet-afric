@@ -2,12 +2,10 @@
 
 /* Importants utilitaires partagés du site public. */
 
-// Récupération d'un paramètre d'URL
 function getParam(nom) {
   return new URLSearchParams(window.location.search).get(nom);
 }
 
-// Affiche une petite notification en bas à droite
 function toast(message, type) {
   let wrap = document.querySelector(".toast-wrap");
   if (!wrap) {
@@ -22,7 +20,6 @@ function toast(message, type) {
   setTimeout(() => el.remove(), 4200);
 }
 
-// Appel API unifié (JSON). Throws en cas d'erreur HTTP.
 async function api(url, opts) {
   const res = await fetch(url, {
     headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
@@ -30,12 +27,11 @@ async function api(url, opts) {
     body: opts && opts.body ? JSON.stringify(opts.body) : undefined
   });
   let data = {};
-  try { data = await res.json(); } catch (_) { /* corps non-JSON */ }
+  try { data = await res.json(); } catch (_) {}
   if (!res.ok) throw new Error(data.error || "Erreur (" + res.status + ")");
   return data;
 }
 
-// Formatage d'un montant en devise locale
 function formatMontant(montant, devise) {
   if (montant == null) return "Sur devis";
   try {
@@ -45,13 +41,11 @@ function formatMontant(montant, devise) {
   }
 }
 
-// Rendu du choix de devise sur les logos de paiement
 function esc(s) {
-  return String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
-    ({ "&": "&", "<": "<", ">": ">", '"': """, "'": "&#39;" }[c]));
+  const map = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
+  return String(s == null ? "" : s).replace(/[&<>"']/g, (c) => map[c] || c);
 }
 
-// Logo des opérateurs — utilise les fichiers officiels dans /assets/logos/<code>.svg
 const LOGOS_SVG = { moov: 1, orange: 1, airtel: 1, mtn: 1, mpesa: 1, vodacom: 1, ecocash: 1, lumitel: 1, waafi: 1 };
 function logoOperateur(code, nom) {
   const el = document.createElement("div");
@@ -79,15 +73,7 @@ async function hydrateFooter() {
       const val = c.site && c.site[key];
       if (val) el.textContent = val;
     }
-    if (c.site && c.site.telephone && document.body) {
-      const tel = document.getElementById("tel-link");
-      if (tel) tel.href = "tel:" + c.site.telephone.replace(/[^+\d]/g, "");
-      const wa = document.getElementById("wa-link");
-      if (wa) wa.href = "https://wa.me/" + String(c.site.whatsapp || "").replace(/[^+\d]/g, "");
-      const mail = document.getElementById("mail-link");
-      if (mail && c.site.email) mail.href = "mailto:" + c.site.email;
-    }
-  } catch (_) { }
+  } catch (_) {}
 }
 
 function initNav() {
@@ -107,13 +93,10 @@ function envoyerVisite() {
   try {
     if (!/^\/api\//.test(location.pathname)) {
       const p = encodeURIComponent(location.pathname.split("/").pop() || "index.html");
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon("/api/visit?p=" + p);
-      } else {
-        fetch("/api/visit?p=" + p, { method: "GET", keepalive: true }).catch(() => {});
-      }
+      if (navigator.sendBeacon) navigator.sendBeacon("/api/visit?p=" + p);
+      else fetch("/api/visit?p=" + p, { method: "GET", keepalive: true }).catch(() => {});
     }
-  } catch (_) { }
+  } catch (_) {}
 }
 
 const BOTTOM_NAV = [
@@ -172,12 +155,12 @@ const I18N = {
   fr: {
     "nav-home": "Accueil", "nav-forfaits": "Forfaits", "nav-commandes": "Commandes",
     "nav-statut": "Statut réseau", "nav-contact": "Contact", "nav-commander": "Commander",
-    "pwa-title": "Installer l'application Starnét"
+    "pwa-title": "Installer l'application Starlink"
   },
   en: {
     "nav-home": "Home", "nav-forfaits": "Packages", "nav-commandes": "Orders",
     "nav-statut": "Status", "nav-contact": "Contact", "nav-commander": "Order",
-    "pwa-title": "Install the Starnét App"
+    "pwa-title": "Install the Starlink App"
   }
 };
 
@@ -193,25 +176,18 @@ function appliquerLangue() {
     const val = t[key] || I18N.fr[key];
     if (val) el.textContent = val;
   });
-  const btns = document.querySelectorAll(".lang-btn");
-  btns.forEach((b) => { b.setAttribute("aria-label", en ? "Langue : Français" : "Language: English"); });
-  const labels = document.querySelectorAll("[data-lang-label]");
-  labels.forEach((l) => { l.textContent = en ? "FR" : "EN"; });
+  document.querySelectorAll("[data-lang-label]").forEach((l) => { l.textContent = en ? "FR" : "EN"; });
 }
 
 function initLangToggle() {
   document.querySelectorAll(".lang-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      try { localStorage.setItem("starnet_lang", estLangueEN() ? "fr" : "en"); } catch (_) { }
+      try { localStorage.setItem("starnet_lang", estLangueEN() ? "fr" : "en"); } catch (_) {}
       appliquerLangue();
     });
   });
   appliquerLangue();
 }
-
-// ============================================================
-// PWA : service worker + bannière d'installation (top-only, compact)
-// ============================================================
 
 function pwaMemo() {
   try { return JSON.parse(localStorage.getItem("starnet_pwa") || "{}"); }
@@ -219,7 +195,7 @@ function pwaMemo() {
 }
 
 function pwaSave(obj) {
-  try { localStorage.setItem("starnet_pwa", JSON.stringify(obj)); } catch (_) { }
+  try { localStorage.setItem("starnet_pwa", JSON.stringify(obj)); } catch (_) {}
 }
 
 function basculerBanniere(visible) {
@@ -234,29 +210,25 @@ const SVG_LOGO_SATELLITE =
   '<ellipse cx="100" cy="100" rx="43" ry="33" stroke="white" stroke-width="10" fill="none" transform="rotate(65 100 100)"></ellipse>' +
   '<circle cx="100" cy="100" r="12" fill="white"></circle></svg>';
 
-function creerBannierePWA(i18nTitle) {
+function creerBannierePWA(title) {
   const el = document.getElementById("pwa-banner") || document.createElement("div");
   el.id = "pwa-banner";
   el.className = "pwa-banner";
+  const isEn = title.indexOf("Install") === 0;
   el.innerHTML =
     '<span class="pwa-logo">' + SVG_LOGO_SATELLITE + "</span>" +
-    '<span class="pwa-text">' +
-    "<b>" + i18nTitle + "</b>" +
-    "<small>" + (i18nTitle.indexOf("Install") === 0 ? "Quick access to packages" : "Accès rapide aux forfaits") + "</small>" +
-    "</span>" +
+    '<span class="pwa-text"><b>' + title + "</b>" +
+    "<small>" + (isEn ? "Quick access to packages" : "Accès rapide aux forfaits") + "</small></span>" +
     '<span class="pwa-actions">' +
-    '<button type="button" class="pwa-install" id="pwa-install">' +
-    (i18nTitle.indexOf("Install") === 0 ? "Install" : "Installer") +
-    "</button>" +
-    '<button type="button" class="pwa-close" id="pwa-close" aria-label="Close">✕</button>' +
-    "</span>";
+    '<button type="button" class="pwa-install" id="pwa-install">' + (isEn ? "Install" : "Installer") + "</button>" +
+    '<button type="button" class="pwa-close" id="pwa-close" aria-label="Close">✕</button></span>';
   if (!document.getElementById("pwa-banner")) document.body.prepend(el);
   return el;
 }
 
 function creerBanniere(html) {
   let el = document.getElementById("pwa-banner");
-  if (el) return el;
+  if (el) { el.innerHTML = html; return el; }
   el = document.createElement("div");
   el.id = "pwa-banner";
   el.className = "pwa-banner";
@@ -279,11 +251,11 @@ function initPwa() {
     const dismissed7j = m.dismissed && Date.now() - m.dismissed < 7 * 24 * 3600 * 1000;
     if (m.installed || dismissed7j) return;
     const langEn = estLangueEN();
-    creerBannierePWA(langEn ? "Install the Starnét App" : "Installer l'application Starnét");
+    creerBannierePWA(langEn ? "Install the Starlink App" : "Installer l'application Starlink");
     document.getElementById("pwa-install").addEventListener("click", async () => {
       if (!deferredPrompt) return;
       deferredPrompt.prompt();
-      try { await deferredPrompt.userChoice; } catch (_) { }
+      try { await deferredPrompt.userChoice; } catch (_) {}
       deferredPrompt = null;
     });
     document.getElementById("pwa-close").addEventListener("click", () => {
@@ -303,11 +275,10 @@ function initPwa() {
     setTimeout(() => {
       creerBanniere(
         '<span class="pwa-logo">' + SVG_LOGO_SATELLITE + "</span>" +
-        '<span class="pwa-text"><b>Installez Starnét Afric</b>' +
+        '<span class="pwa-text"><b>Installer l\'application Starlink</b>' +
         "<small>Partager → Sur l'écran d'accueil</small></span>" +
         '<span class="pwa-actions">' +
-        '<button type="button" class="pwa-install" id="pwa-ios-ok">Compris</button>' +
-        "</span>"
+        '<button type="button" class="pwa-install" id="pwa-ios-ok">Compris</button></span>'
       );
       const okBtn = document.getElementById("pwa-ios-ok");
       if (okBtn) okBtn.addEventListener("click", () => basculerBanniere(false));
